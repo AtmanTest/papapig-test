@@ -51,6 +51,17 @@
              transform: translate(var(--mx,0px), var(--my,0px));
              -webkit-filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));
              filter: drop-shadow(0 6px 18px rgba(0,0,0,.25)); }
+  /* Témoignages flottants autour du cochon — sans cadres, texte pur */
+  .testi { position:absolute; top:50%; transform:translateY(-50%); width:96px;
+    color:#fff; font-size:10.5px; font-weight:600; line-height:1.35; text-align:center;
+    text-shadow:0 1px 4px rgba(0,0,0,.4); pointer-events:none; z-index:2; }
+  .testi-left { left:-104px; }
+  .testi-right { right:-104px; }
+  @media (max-width:430px) {
+    .testi { width:88px; font-size:9.5px; }
+    .testi-left { left:-96px; }
+    .testi-right { right:-96px; }
+  }
   #login > *:not(.login-fade) { position:relative; z-index:1; }
   #login .pig { font-size: 84px; animation: bounce 2.2s infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
@@ -288,7 +299,7 @@
   </div>
   <h1 class="login-quote">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
   <div class="app-title">SuperPapapig APP</div>
-  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.jpg" alt=""></div>
+  <div class="pig-uke-wrap"><span class="testi testi-left"></span><img class="pig-uke" src="images/peppa-uke.jpg" alt=""><span class="testi testi-right"></span></div>
   <form id="login-form">
     <input type="password" id="pwd" placeholder="enter your password here" autocomplete="off">
     <button type="submit" data-i18n="login_btn">เข้า</button>
@@ -859,13 +870,53 @@ function showQuote() {
   const h = document.querySelector("#login h1");
   if (h) h.textContent = LOGIN_QUOTES[LANG][window._quoteIdx];
 }
+
+/* Témoignages flottants autour du cochon — pool bilingue, tirage aléatoire à chaque chargement */
+const TESTIMONIALS = {
+  en: [
+    "\"Best pig ever — he truly listens.\"",
+    "\"My little pig keeps every secret safe.\"",
+    "\"He naps when I nap. Perfect friend.\"",
+    "\"100% private, 100% adorable.\"",
+    "\"He grew with me, day by day.\"",
+    "\"No cloud, no strangers — just my pig.\"",
+    "\"He knows my mood before I do!\"",
+    "\"Raised at home, loved forever.\"",
+    "\"My days, his eyes — pure warmth.\"",
+    "\"A pig with a heart of gold.\""
+  ],
+  th: [
+    "\"หมูที่ดีที่สุดในโลก — เขาฟังเราจริงๆ\"",
+    "\"หมูน้อยของฉันเก็บความลับทุกอย่างไว้\"",
+    "\"เขางีบพร้อมกับฉัน เพื่อนที่สมบูรณ์แบบ\"",
+    "\"เป็นส่วนตัว 100% และน่ารัก 100%\"",
+    "\"เขาโตไปพร้อมกับฉัน ทีละวัน\"",
+    "\"ไม่มีคลาวด์ ไม่มีคนแปลกหน้า — มีแค่หมูของฉัน\"",
+    "\"เขารู้จักอารมณ์ฉันก่อนฉันอีก!\"",
+    "\"เลี้ยงที่บ้าน รักตลอดไป\"",
+    "\"วันของฉัน ในสายตาเขา — ความอบอุ่นแท้ๆ\"",
+    "\"หมูใจทองคำตัวน้อย\""
+  ]
+};
+function fillTestimonials() {
+  const arr = TESTIMONIALS[LANG];
+  let i = Math.floor(Math.random() * arr.length);
+  let j = Math.floor(Math.random() * (arr.length - 1));
+  if (j >= i) j++;
+  const l = document.querySelector(".testi-left");
+  const r = document.querySelector(".testi-right");
+  if (l) l.textContent = arr[i];
+  if (r) r.textContent = arr[j];
+}
 showQuote();
+fillTestimonials();
 applyLang();
 document.querySelectorAll("#login-langs button").forEach(b =>
   b.addEventListener("click", () => {
     LANG = b.dataset.lang;
     applyLang();
     showQuote();
+    fillTestimonials();
   }));
 </script>
 </body>
