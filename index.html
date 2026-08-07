@@ -23,17 +23,18 @@
   #login {
     min-height: 100vh; display:flex; flex-direction:column; align-items:center;
     justify-content:center; gap: 20px;
-    background: linear-gradient(135deg, var(--pink), var(--teal));
+    background: linear-gradient(135deg, rgba(255,143,182,.62), rgba(94,217,200,.62)), url('images/peppa-family.jpg') center/cover no-repeat;
     padding: 30px; position:relative; overflow:hidden;
   }
-  .login-bg {
-    position:absolute; left:50%; top:58%; width:min(82vw, 560px);
-    transform: translate(-50%, -50%) translate(var(--mx,0px), var(--my,0px));
-    opacity:.32; pointer-events:none; z-index:0;
-    -webkit-filter: drop-shadow(0 8px 34px rgba(255,255,255,.28));
-    filter: drop-shadow(0 8px 34px rgba(255,255,255,.28));
-  }
-  #login > *:not(.login-bg) { position:relative; z-index:1; }
+  .login-fade { position:absolute; inset:0; background:rgba(255,255,255,.12);
+                backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px);
+                z-index:0; pointer-events:none; }
+  .pig-uke-wrap { position:relative; z-index:1; animation: bounce 2.2s infinite; }
+  .pig-uke { width:min(38vw, 190px); display:block;
+             transform: translate(var(--mx,0px), var(--my,0px));
+             -webkit-filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));
+             filter: drop-shadow(0 6px 18px rgba(0,0,0,.25)); }
+  #login > *:not(.login-fade) { position:relative; z-index:1; }
   #login .pig { font-size: 84px; animation: bounce 2.2s infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
   #login h1 { color:#fff; font-size: 26px; font-weight: 800; }
@@ -110,6 +111,8 @@
   .cal { width:100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
   .cal th { font-size: 10px; color:#b06a86; padding-bottom: 4px; }
   .cal-head { text-align:center; font-weight:800; font-size:14px; color:#c44a74; margin-bottom:8px; }
+  .cal-row { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .cal-year { font-weight:800; font-size:12px; color:#1d3f73; letter-spacing:.3px; white-space:nowrap; }
   .cal td { text-align:center; font-size: 13px; font-weight: 700; }
   .cal td .d {
     display:flex; flex-direction:column; align-items:center; justify-content:center; height: 46px;
@@ -196,8 +199,8 @@
 
 <!-- ═══ LOGIN ═══ -->
 <div id="login">
-  <img class="login-bg" src="images/joy-oval.png" alt="">
-  <span class="pig">🐷</span>
+  <div class="login-fade"></div>
+  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <h1 data-i18n="login_title">Papapig</h1>
   <p data-i18n="login_sub">ป้อนรหัสผ่านเพื่อเข้า</p>
   <form id="login-form">
@@ -243,8 +246,8 @@
         <div class="bar"><div id="j-energy-bar" style="width:50%"></div></div>
       </div>
       <div class="card full">
-        <h3 data-i18n="joy_cal">📅 ปฏิทินอารมณ์ — Calendrier d'humeur</h3>
-        <table class="cal" id="j-cal"></table>
+        <div class="cal-row"><h3 data-i18n="joy_cal">📅 ปฏิทินอารมณ์ — Calendrier d'humeur</h3><span id="cal-year" class="cal-year"></span></div>
+        <div id="j-cal"></div>
       </div>
       <div class="card full">
         <h3 data-i18n="joy_meals">🍜 กินอะไรมาบ้าง — Repas détectés</h3>
@@ -518,8 +521,9 @@ function renderCal(moods) {
        "July","August","September","October","November","December"];
   const hol = d => (S.holidays || {})[d] || null;
   const sunBadge = LANG === "th" ? "วันพักผ่อน 🌿" : "Rest Day 🌿";
-  let html = "<div class='cal-head'>" + months[mo] + " " + y + "</div>" +
-             "<table class='cal'><tbody><tr>" + labels.map(l => "<th>" + l + "</th>").join("") + "</tr>";
+  const yEl = document.getElementById("cal-year");
+  if (yEl) yEl.textContent = months[mo] + " " + y;
+  let html = "<table class='cal'><tbody><tr>" + labels.map(l => "<th>" + l + "</th>").join("") + "</tr>";
   for (let i = 0; i < startDow; i++) html += "<td><div class='d blank'></div></td>";
   for (let d = 1; d <= daysInMonth; d++) {
     const ds = `${y}-${pad(mo + 1)}-${pad(d)}`;
