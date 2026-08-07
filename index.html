@@ -105,10 +105,11 @@
   .cal td { text-align:center; font-size: 13px; font-weight: 700; }
   .cal td .d {
     display:flex; flex-direction:column; align-items:center; justify-content:center; height: 46px;
-    border-radius: 10px; background: #faf0f4; color:#b9a3ad; cursor: default;
-    touch-action: manipulation; line-height: 1.1;
+    border-radius: 10px; background: #fbeadd; color:#a8886e;
   }
-  .cal td .d.clickable { background: #ffe9c9; color:#a86a2b; cursor:pointer; }
+  .cal td .d.sun { background:#d9f2e6; color:#2e7d5b; }
+  .cal td .d .sunb { font-size: 8px; line-height: 1; margin-top: 1px; font-weight: 700; letter-spacing:.2px; }
+  .cal td .d.clickable { cursor:pointer; }
   .cal td .d.clickable:active { transform: scale(.93); }
   .cal td .d.m1 { background:#ff5d6c; color:#fff; }
   .cal td .d.m2 { background:#ffa05c; color:#fff; }
@@ -314,7 +315,7 @@ const TR = {
   th: {
     login_title: "Papapig 🐷", login_sub: "ป้อนรหัสผ่านเพื่อเข้า", login_btn: "เข้า",
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "👧 ชีวิตจอย", tab_papapig: "🐷 ชีวิตพ่อหมู",
-    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร",
+    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     p_energy: "⚡ พลังงาน", p_hunger: "🍗 ความหิว", p_sleep: "😴 การนอน",
     p_persona: "🎭 บุคลิก", p_persona_sub: "พ่อหมู — ค่าเริ่มต้น",
@@ -328,7 +329,7 @@ const TR = {
   en: {
     login_title: "Papapig 🐷", login_sub: "Enter password", login_btn: "Enter",
     app_title: "Papapig AI with Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life",
-    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food",
+    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     p_energy: "⚡ Energy", p_hunger: "🍗 Hunger", p_sleep: "😴 Sleep",
     p_persona: "🎭 Persona", p_persona_sub: "Papa Pig — default",
@@ -500,6 +501,7 @@ function renderCal(moods) {
     : ["January","February","March","April","May","June",
        "July","August","September","October","November","December"];
   const hol = d => (S.holidays || {})[d] || null;
+  const sunBadge = LANG === "th" ? "วันพักผ่อน 🌿" : "Rest Day 🌿";
   let html = "<div class='cal-head'>" + months[mo] + " " + y + "</div>" +
              "<table class='cal'><tbody><tr>" + labels.map(l => "<th>" + l + "</th>").join("") + "</tr>";
   for (let i = 0; i < startDow; i++) html += "<td><div class='d blank'></div></td>";
@@ -509,7 +511,8 @@ function renderCal(moods) {
     const w = (S.weather || {})[ds];
     const hasWeather = w && w.tmax !== undefined && w.tmax !== null;
     const hasData = mood || hasWeather;
-    let cls = mood ? "m" + mood : (hasWeather ? "clickable" : "blank");
+    const isSun = new Date(y, mo, d).getDay() === 0;
+    let cls = mood ? "m" + mood : (isSun ? "sun" : "day");
     if (ds === todayStr) cls += " today";
     const click = hasData || hol(ds) ? ` onclick='openDay("${ds}")'` : "";
     let wico = "";
@@ -518,7 +521,8 @@ function renderCal(moods) {
       wico = "<span class='w'>" + rain + "</span>";
     }
     const holDot = hol(ds) ? "<span class='hol'></span>" : "";
-    html += "<td><div class='d " + cls + "'" + click + ">" + d + wico + holDot + "</div></td>";
+    const badge = isSun ? "<span class='sunb'>" + sunBadge + "</span>" : "";
+    html += "<td><div class='d " + cls + "'" + click + ">" + d + badge + wico + holDot + "</div></td>";
     if ((startDow + d) % 7 === 0) html += "</tr><tr>";
   }
   html += "</tr></tbody></table>";
