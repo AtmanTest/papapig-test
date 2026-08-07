@@ -66,6 +66,21 @@
   #login form button:active { transform: scale(.97); }
   #login .err { color:#ffe066; font-size:12px; text-align:center; min-height:16px; }
 
+  /* Vitrine tech sous le bouton Enter */
+  .tech-showcase { width:100%; max-width:760px; margin:6px auto 0; padding:18px 16px 46px; text-align:center; }
+  .tech-showcase h2 { color:#fff; font-size:22px; font-weight:900; margin:0 0 4px;
+    text-shadow: 0 2px 10px rgba(0,0,0,.35); }
+  .tech-showcase .tech-sub { color:rgba(255,255,255,.85); font-size:13px; margin:0 0 16px; text-align:center; }
+  .tech-showcase .tech-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(225px,1fr)); gap:10px; text-align:left; }
+  .tcard { display:flex; gap:10px; align-items:flex-start; background:rgba(255,255,255,.22);
+    border:1px solid rgba(255,255,255,.28); border-radius:16px; padding:12px 14px;
+    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+    box-shadow:0 4px 14px rgba(0,0,0,.12); }
+  .tcard .t-ico { font-size:26px; line-height:1.15; flex:none; }
+  .tcard b { color:#fff; font-size:14px; display:block; margin-bottom:2px;
+    text-shadow:0 1px 4px rgba(0,0,0,.25); }
+  #login .tcard p { color:rgba(255,255,255,.85); font-size:12px; line-height:1.45; margin:0; text-align:left; }
+
   /* ── APP ── */
   header {
     background: linear-gradient(135deg, var(--pink), var(--teal));
@@ -257,6 +272,22 @@
     <button type="submit" data-i18n="login_btn">เข้า</button>
   </form>
   <div class="err" id="login-err"></div>
+  <div class="tech-showcase">
+    <h2 data-i18n="tech_title">🧠 สมองและความสามารถของพ่อหมู</h2>
+    <p class="tech-sub" data-i18n="tech_sub">ระบบ AI ที่ทำงานบนเครื่องส่วนตัว 100% — ไม่มีข้อมูลส่วนตัวบนอินเทอร์เน็ต</p>
+    <div class="tech-grid">
+      <div class="tcard"><span class="t-ico">🧠</span><div><b data-i18n="t1_t">เครื่องยนต์อารมณ์</b><p data-i18n="t1_d">ความสุข × ความตื่นเต้น (Russell) · 27 อารมณ์ · กระจกสะท้อนอารมณ์ 70%</p></div></div>
+      <div class="tcard"><span class="t-ico">🐷</span><div><b data-i18n="t2_t">ทามาก็อตจิมีชีวิต</b><p data-i18n="t2_d">พลังงาน · ความหิว · การนอน · XP · อารมณ์ — เปลี่ยนแบบเรียลไทม์</p></div></div>
+      <div class="tcard"><span class="t-ico">📝</span><div><b data-i18n="t3_t">บันทึกอัตโนมัติ</b><p data-i18n="t3_d">วิเคราะห์คำศัพท์ ไม่ใช้ LLM — ทำงานในเครื่อง ฟรี</p></div></div>
+      <div class="tcard"><span class="t-ico">⏰</span><div><b data-i18n="t4_t">ระบบอัตโนมัติ</b><p data-i18n="t4_d">มื้ออาหาร · เช้า · กลางคืน · สติกเกอร์ · เตือนความจำ (cron ในเครื่อง)</p></div></div>
+      <div class="tcard"><span class="t-ico">📅</span><div><b data-i18n="t5_t">ปฏิทินอัจฉริยะ</b><p data-i18n="t5_d">อารมณ์ + อากาศ + อาหาร + วันหยุดไทย (Open-Meteo กรุงเทพ)</p></div></div>
+      <div class="tcard"><span class="t-ico">🌐</span><div><b data-i18n="t6_t">สองภาษา</b><p data-i18n="t6_d">ไทย & อังกฤษ — แปลทั้งหมด</p></div></div>
+      <div class="tcard"><span class="t-ico">🎨</span><div><b data-i18n="t7_t">ดีไซน์และฟอนต์</b><p data-i18n="t7_d">ฟอนต์ Peppa ทางการ · ดีไซน์สีชมพูน่ารัก</p></div></div>
+      <div class="tcard"><span class="t-ico">🔒</span><div><b data-i18n="t8_t">ความปลอดภัย</b><p data-i18n="t8_d">เข้ารหัส AES-256 · ไม่มีข้อมูลส่วนตัวออนไลน์ · ไม่มีความลับในเว็บ</p></div></div>
+      <div class="tcard"><span class="t-ico">🖥️</span><div><b data-i18n="t9_t">ทำงานในเครื่อง 100%</b><p data-i18n="t9_d">AI รันบนเครื่องส่วนตัว ไม่ใช้คลาวด์</p></div></div>
+      <div class="tcard"><span class="t-ico">📱</span><div><b data-i18n="t10_t">เชื่อมต่อ</b><p data-i18n="t10_d">WhatsApp + Telegram · สติกเกอร์สร้างในเครื่อง</p></div></div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ APP ═══ -->
@@ -384,7 +415,7 @@
       <div class="card tech-item"><div class="t-ico">⏰</div><div><b data-i18n="t4_t">ระบบอัตโนมัติ</b><div class="t-t" data-i18n="t4_d">มื้ออาหาร · เช้า · กลางคืน · สติกเกอร์ · เตือนความจำ (cron ในเครื่อง)</div></div></div>
       <div class="card tech-item"><div class="t-ico">📅</div><div><b data-i18n="t5_t">ปฏิทินอัจฉริยะ</b><div class="t-t" data-i18n="t5_d">อารมณ์ + อากาศ + อาหาร + วันหยุดไทย (Open-Meteo กรุงเทพ)</div></div></div>
       <div class="card tech-item"><div class="t-ico">🌐</div><div><b data-i18n="t6_t">สองภาษา</b><div class="t-t" data-i18n="t6_d">ไทย & อังกฤษ — แปลทั้งหมด</div></div></div>
-      <div class="card tech-item"><div class="t-ico">🎵</div><div><b data-i18n="t7_t">เพลงและฟอนต์</b><div class="t-t" data-i18n="t7_d">เพลงเปิด 15 วิ · ฟอนต์ Peppa ทางการ</div></div></div>
+      <div class="card tech-item"><div class="t-ico">🎨</div><div><b data-i18n="t7_t">ดีไซน์และฟอนต์</b><div class="t-t" data-i18n="t7_d">ฟอนต์ Peppa ทางการ · ดีไซน์สีชมพูน่ารัก</div></div></div>
       <div class="card tech-item"><div class="t-ico">🔒</div><div><b data-i18n="t8_t">ความปลอดภัย</b><div class="t-t" data-i18n="t8_d">เข้ารหัส AES-256 · ไม่มีข้อมูลส่วนตัวออนไลน์ · ไม่มีความลับในเว็บ</div></div></div>
       <div class="card tech-item"><div class="t-ico">🖥️</div><div><b data-i18n="t9_t">ทำงานในเครื่อง 100%</b><div class="t-t" data-i18n="t9_d">AI รันบนเครื่องส่วนตัว ไม่ใช้คลาวด์</div></div></div>
       <div class="card tech-item"><div class="t-ico">📱</div><div><b data-i18n="t10_t">เชื่อมต่อ</b><div class="t-t" data-i18n="t10_d">WhatsApp + Telegram · สติกเกอร์สร้างในเครื่อง</div></div></div>
@@ -424,7 +455,7 @@ const TR = {
     t4_t: "ระบบอัตโนมัติ", t4_d: "มื้ออาหาร · เช้า · กลางคืน · สติกเกอร์ · เตือนความจำ (cron ในเครื่อง)",
     t5_t: "ปฏิทินอัจฉริยะ", t5_d: "อารมณ์ + อากาศ + อาหาร + วันหยุดไทย (Open-Meteo กรุงเทพ)",
     t6_t: "สองภาษา", t6_d: "ไทย & อังกฤษ — แปลทั้งหมด",
-    t7_t: "เพลงและฟอนต์", t7_d: "เพลงเปิด 15 วิ · ฟอนต์ Peppa ทางการ",
+    t7_t: "🎨 ดีไซน์และฟอนต์", t7_d: "ฟอนต์ Peppa ทางการ · ดีไซน์สีชมพูน่ารัก",
     t8_t: "ความปลอดภัย", t8_d: "เข้ารหัส AES-256 · ไม่มีข้อมูลส่วนตัวออนไลน์ · ไม่มีความลับในเว็บ",
     t9_t: "ทำงานในเครื่อง 100%", t9_d: "AI รันบนเครื่องส่วนตัว ไม่ใช้คลาวด์",
     t10_t: "เชื่อมต่อ", t10_d: "WhatsApp + Telegram · สติกเกอร์สร้างในเครื่อง",
@@ -450,7 +481,7 @@ const TR = {
     t4_t: "Automations", t4_d: "meals · morning · bedtime · stickers · reminders (local cron jobs)",
     t5_t: "Smart calendar", t5_d: "mood + weather + food + Thai holidays (Open-Meteo Bangkok)",
     t6_t: "Bilingual", t6_d: "Thai & English — fully translated",
-    t7_t: "Music & fonts", t7_d: "15s login music · official Peppa fonts",
+    t7_t: "🎨 Design & fonts", t7_d: "official Peppa fonts · cozy pink design",
     t8_t: "Security", t8_d: "AES-256 encryption · zero private data online · zero secrets in the site",
     t9_t: "100% local", t9_d: "AI runs on a local machine, zero cloud",
     t10_t: "Connected", t10_d: "WhatsApp + Telegram · stickers generated locally",
