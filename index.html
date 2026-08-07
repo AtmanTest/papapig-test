@@ -65,15 +65,21 @@
     background: linear-gradient(135deg, var(--pink), var(--teal));
     color:#fff; padding: 0 0 0; text-align:center;
   }
-  .banner { position:relative; width:100%; height:170px; overflow:hidden; }
-  .banner img { width:100%; height:100%; object-fit:cover; object-position:72% 25%; display:block; }
+  .banner { position:relative; width:100%; height:170px; overflow:visible; }
+  .banner img.bg { width:100%; height:100%; object-fit:cover; object-position:72% 25%; display:block; }
+  .banner .logo {
+    position:absolute; left:8px; top:0; z-index:1;
+    width:min(334px, 55vw); height:auto; aspect-ratio:477/460;
+    border-radius:50%; overflow:hidden; display:block;
+    mix-blend-mode:screen;
+    border:2px solid rgba(255,110,160,.65);
+    box-shadow: 0 0 22px rgba(255,107,157,.85), 0 0 55px rgba(255,107,157,.45), inset 0 0 16px rgba(255,107,157,.4);
+  }
   @media (min-width: 600px) { .banner { height: 230px; } }
   .banner .top {
-    position:absolute; top:10px; left:12px; right:12px;
+    position:absolute; top:10px; left:12px; right:12px; z-index:2; padding-left:min(340px, 58vw);
     display:flex; justify-content:space-between; align-items:center; gap:8px;
   }
-  header .logo { width:34px; height:34px; border-radius:50%; object-fit:cover; display:inline-block;
-                 box-shadow: 0 2px 8px rgba(0,0,0,.25); }
   .banner h1 {
     font-size: clamp(12px, 3.6vw, 17px); font-weight: 800; letter-spacing:.3px; padding: 6px 12px;
     background: rgba(255,255,255,.20); border-radius:999px;
@@ -226,9 +232,9 @@
 <div id="app" class="hidden">
 <header>
   <div class="banner">
-    <img src="images/peppa-header.jpg" alt="Peppa Pig">
+    <img class="bg" src="images/peppa-header.jpg" alt="Peppa Pig">
+    <img class="logo" src="images/peppa-logo.jpg" alt="Papapig">
     <div class="top">
-      <img class="logo" src="images/peppa-logo.jpg" alt="Papapig">
       <h1 data-i18n="app_title">Papapig — ระบบใจ</h1>
       <div class="actions">
         <button class="btn" id="lang-btn">EN</button>
