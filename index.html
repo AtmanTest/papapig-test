@@ -37,13 +37,17 @@
   .login-fade { position:absolute; inset:0; background:rgba(255,255,255,.12);
                 backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px);
                 z-index:0; pointer-events:none; }
-  #login-langs { position:absolute; top:14px; right:14px; z-index:2; display:flex; align-items:center; gap:2px; }
-  #login-langs button { background:transparent; border:none; color:rgba(255,255,255,.45);
-    font-size:13px; font-weight:700; padding:4px 8px; cursor:pointer; letter-spacing:.5px; }
-  #login-langs button.active { color:#ffc2d8; font-weight:900;
-    text-shadow: 0 1px 6px rgba(255,107,157,.55); }
+  #login-langs { position:absolute; top:14px; right:14px; z-index:2; display:flex; align-items:center; gap:6px; }
+  #login-langs button { border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.15);
+    color:#fff; font-weight:700; padding:8px 14px; border-radius:999px; cursor:pointer;
+    font-size:14px; letter-spacing:.5px;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    transition: transform .15s; }
+  #login-langs button.active { background:rgba(255,107,157,.6); border-color:rgba(255,255,255,.65);
+    color:#fff; font-weight:900; }
+  #login-langs button:active { transform: scale(.94); }
   .pig-uke-wrap { position:relative; z-index:1; animation: bounce 2.2s infinite; }
-  .pig-uke { width:min(38vw, 190px); display:block;
+  .pig-uke { width:min(38vw, 190px); display:block; border-radius:50%;
              transform: translate(var(--mx,0px), var(--my,0px));
              -webkit-filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));
              filter: drop-shadow(0 6px 18px rgba(0,0,0,.25)); }
@@ -275,12 +279,12 @@
 <div id="login">
   <div class="login-fade"></div>
   <div id="login-langs">
-    <button data-lang="th" class="active">TH</button>
+    <button data-lang="th" class="active">ไทย</button>
     <button data-lang="en">EN</button>
   </div>
   <h1 class="login-quote">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
-  <div class="app-title">🧠 Papapig APP</div>
-  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
+  <div class="app-title">SuperPapapig APP</div>
+  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.jpg" alt=""></div>
   <form id="login-form">
     <input type="password" id="pwd" placeholder="enter your password here" autocomplete="off">
     <button type="submit" data-i18n="login_btn">เข้า</button>
