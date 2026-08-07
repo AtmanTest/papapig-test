@@ -29,6 +29,11 @@
   .login-fade { position:absolute; inset:0; background:rgba(255,255,255,.12);
                 backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px);
                 z-index:0; pointer-events:none; }
+  #music-btn { position:absolute; top:14px; right:14px; z-index:2; width:46px; height:46px;
+    border-radius:50%; border:none; font-size:20px; cursor:pointer;
+    background:rgba(255,255,255,.38); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 4px 14px rgba(0,0,0,.15); transition: transform .15s; }
+  #music-btn:active { transform: scale(.9); }
   .pig-uke-wrap { position:relative; z-index:1; animation: bounce 2.2s infinite; }
   .pig-uke { width:min(38vw, 190px); display:block;
              transform: translate(var(--mx,0px), var(--my,0px));
@@ -196,6 +201,8 @@
 <!-- ═══ LOGIN ═══ -->
 <div id="login">
   <div class="login-fade"></div>
+  <audio id="login-music" src="audio/login-music.mp3" loop preload="none"></audio>
+  <button id="music-btn" aria-label="Music">🎵</button>
   <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <h1 data-i18n="login_title">Papapig</h1>
   <p data-i18n="login_sub">ป้อนรหัสผ่านเพื่อเข้า</p>
@@ -387,6 +394,16 @@ function tryLogin() {
   }
 }
 document.getElementById("login-form").addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
+// Musique de la page de connexion (bouton play/pause, boucle)
+const _music = document.getElementById("login-music");
+const _mbtn = document.getElementById("music-btn");
+let _musicOn = false;
+_mbtn.addEventListener("click", () => {
+  if (_musicOn) { _music.pause(); _mbtn.textContent = "🎵"; }
+  else { _music.play().catch(()=>{}); _mbtn.textContent = "🔊"; }
+  _musicOn = !_musicOn;
+});
+function _stopMusic() { if (_musicOn) { _music.pause(); _music.currentTime = 0; _mbtn.textContent = "🎵"; _musicOn = false; } }
 // Regard de Joy qui suit le curseur (parallax doux)
 window.addEventListener("mousemove", e => {
   const mx = (e.clientX / window.innerWidth - .5) * 26;
