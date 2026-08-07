@@ -37,11 +37,12 @@
   .login-fade { position:absolute; inset:0; background:rgba(255,255,255,.12);
                 backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px);
                 z-index:0; pointer-events:none; }
-  #music-btn { position:absolute; top:14px; right:14px; z-index:2; width:46px; height:46px;
-    border-radius:50%; border:none; font-size:20px; cursor:pointer;
-    background:rgba(255,255,255,.38); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  #login-lang-btn { position:absolute; top:14px; right:14px; z-index:2; padding:10px 18px;
+    border-radius:999px; border:1px solid rgba(255,255,255,.5); cursor:pointer;
+    background:rgba(255,255,255,.38); color:#fff; font-weight:800; font-size:14px;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     box-shadow: 0 4px 14px rgba(0,0,0,.15); transition: transform .15s; }
-  #music-btn:active { transform: scale(.9); }
+  #login-lang-btn:active { transform: scale(.9); }
   .pig-uke-wrap { position:relative; z-index:1; animation: bounce 2.2s infinite; }
   .pig-uke { width:min(38vw, 190px); display:block;
              transform: translate(var(--mx,0px), var(--my,0px));
@@ -50,7 +51,7 @@
   #login > *:not(.login-fade) { position:relative; z-index:1; }
   #login .pig { font-size: 84px; animation: bounce 2.2s infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-  #login h1 { color:#fff; font-size: 30px; font-weight: 800; padding: 0 18px;
+  #login h1 { color:#fff; font-size: 30px; font-weight: 800; padding: 0 18px; text-align:center;
               line-height:1.3; text-shadow: 0 2px 12px rgba(0,0,0,.3); }
   #login p { color: rgba(255,255,255,.9); font-size: 13px; text-align:center; }
   #login form { display:flex; flex-direction:column; gap:12px; width: 100%; max-width: 300px; }
@@ -244,9 +245,8 @@
 <!-- ═══ LOGIN ═══ -->
 <div id="login">
   <div class="login-fade"></div>
-  <audio id="login-music" src="audio/login-music.mp3" preload="auto"></audio>
+  <button id="login-lang-btn">EN</button>
   <h1 data-i18n="login_title">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
-  <button id="music-btn" aria-label="Music">🎵</button>
   <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <form id="login-form">
     <input type="password" id="pwd" placeholder="🔒" autocomplete="off">
@@ -498,6 +498,8 @@ function t(key) { return TR[LANG][key] || key; }
 function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.getElementById("lang-btn").textContent = LANG === "th" ? "EN" : "TH";
+  const llb = document.getElementById("login-lang-btn");
+  if (llb) llb.textContent = LANG === "th" ? "EN" : "TH";
   document.title = t("app_title");
 }
 
@@ -507,39 +509,12 @@ function tryLogin() {
   const v = document.getElementById("pwd").value.trim().toLowerCase();
   if (v === PASSWORD) {
     sessionStorage.setItem("pp_auth", "1");
-    _stopMusic();
     showApp();
   } else {
     document.getElementById("login-err").textContent = LANG === "th" ? "รหัสผิด ❌" : "wrong password ❌";
   }
 }
 document.getElementById("login-form").addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
-// Musique de la page de connexion — ON par défaut (autoplay + 1er tap/clic n'importe où)
-const _music = document.getElementById("login-music");
-const _mbtn = document.getElementById("music-btn");
-let _musicOn = false, _started = false, _loginDone = false, _musicDone = false;
-function _tryPlay() {
-  if (_loginDone || _musicDone || _musicOn || _started) return;
-  _started = true;
-  _music.play().then(() => {
-    if (_loginDone || _musicDone) { _music.pause(); _music.currentTime = 0; return; }
-    _musicOn = true; _mbtn.textContent = "🔊";
-  }).catch(() => { _started = false; }); // retente au prochain tap si bloqué
-}
-_music.addEventListener("ended", () => { _musicDone = true; _musicOn = false; _mbtn.textContent = "🎵"; });
-_tryPlay(); // autoplay direct (accepté par certains navigateurs)
-["click", "touchstart", "keydown"].forEach(ev =>
-  document.addEventListener(ev, () => _tryPlay(), { passive: true }));
-_mbtn.addEventListener("click", () => {
-  if (_musicOn) { _music.pause(); _mbtn.textContent = "🎵"; _musicOn = false; _started = false; }
-  else { _tryPlay(); }
-});
-function _stopMusic() {
-  _loginDone = true;
-  try { _music.pause(); _music.currentTime = 0; } catch (e) {}
-  _musicOn = false; _started = false;
-  _mbtn.textContent = "🎵";
-}
 // Regard de Joy qui suit le curseur (parallax doux)
 window.addEventListener("mousemove", e => {
   const mx = (e.clientX / window.innerWidth - .5) * 26;
@@ -574,6 +549,10 @@ function switchTab(which) {
 document.getElementById("lang-btn").addEventListener("click", () => {
   LANG = LANG === "th" ? "en" : "th";
   applyLang(); if (S) render(S);
+});
+document.getElementById("login-lang-btn").addEventListener("click", () => {
+  LANG = LANG === "th" ? "en" : "th";
+  applyLang();
 });
 
 /* ═════════ Data ═════════ */
@@ -773,13 +752,28 @@ document.getElementById("modal").addEventListener("click", e => {
   if (e.target.id === "modal") closeModal();
 });
 
-/* Rotation aléatoire des phrases d'accueil (1 des 5 à chaque chargement) */
+/* Rotation aléatoire des phrases d'accueil (1 sur 20 à chaque chargement) */
 const LOGIN_QUOTES = [
   "\"Your clever little pig, living and caring — entirely at home, just for you.\"",
   "\"A warm-hearted AI pig who grows with you, and never leaves your home.\"",
   "\"Meet Papapig: big heart, small snout, zero clouds — all yours, all local.\"",
   "\"He feels, he grows, he stays home — your private little pig companion.\"",
-  "\"One pig, two lives, endless warmth — and every memory stays with you.\""
+  "\"One pig, two lives, endless warmth — and every memory stays with you.\"",
+  "\"Your cozy, private companion who eats, sleeps, and grows with you.\"",
+  "\"A little pig with a big heart, living safely right on your machine.\"",
+  "\"Nurture a tiny friend who truly listens—no cloud, just you.\"",
+  "\"Feed his belly, share your day, keep your secrets perfectly safe.\"",
+  "\"A tamagotchi pal that understands you, offline and all yours.\"",
+  "\"Your pig lives here, grows here — and your stories never travel anywhere.\"",
+  "\"A little pig with a big heart, raised by you, kept by you.\"",
+  "\"Feed him, watch him grow — and every word you share stays home.\"",
+  "\"He listens, he remembers, he grows — a pig who truly knows you.\"",
+  "\"No clouds, no strangers — just you and your pig, growing together daily.\"",
+  "\"Raise your own little pig — he learns, he feels, he stays home.\"",
+  "\"Your days in his eyes, his life in your hands — always private.\"",
+  "\"A pig who cares about your day — and naps when you do.\"",
+  "\"Smart enough to know you, wise enough to keep everything between us.\"",
+  "\"Born at home, raised with love — your pig, your memories, your rules.\""
 ];
 document.getElementById("login").querySelector("h1").textContent =
   LOGIN_QUOTES[Math.floor(Math.random() * LOGIN_QUOTES.length)];
