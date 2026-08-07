@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-07 23:49 Bangkok",
+  "generated_at": "2026-08-08 00:00 Bangkok",
   "joy": {
     "mood_today": 2,
     "mood_note": "ฉันเหนื่อยมากเลย — เหนื่อยจากงาน (très fatiguée après le travail)",
@@ -62,7 +62,7 @@
   "papapig": {
     "persona": "papapig",
     "energy": 85,
-    "hunger": 23,
+    "hunger": 24,
     "sleep": 60,
     "xp": 125,
     "level": 2,
@@ -199,11 +199,6 @@
     }
   },
   "weather": {
-    "2026-07-24": {
-      "tmax": 34.6,
-      "tmin": 26.4,
-      "pop": 94
-    },
     "2026-07-25": {
       "tmax": 35.8,
       "tmin": 26.3,
@@ -338,6 +333,11 @@
       "tmax": 31.8,
       "tmin": 26.1,
       "pop": 78
+    },
+    "2026-08-21": {
+      "tmax": 31.4,
+      "tmin": 25.9,
+      "pop": 71
     }
   }
 }
