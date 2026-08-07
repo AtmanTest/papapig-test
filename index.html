@@ -193,6 +193,7 @@
   .cake-fill { height:100%; width:0%; background:linear-gradient(90deg,#ffb3cd,#ff6b9d);
                border-radius:999px; transition:width 1s ease; }
   .cd-pct { font-size:11px; color:#8a8590; text-align:right; margin-top:2px; }
+  .cd-msg { font-size:11.5px; color:#b06a85; font-style:italic; margin-top:6px; line-height:1.4; }
   .tama .status { font-size: 13px; color:#8a8590; margin-top:10px; text-align:center; }
   .emoji-icon { width:20px; height:20px; border-radius:50%; object-fit:cover; vertical-align:-4px; display:inline-block; }
   .gauges { display:grid; gap:10px; margin-top: 14px; }
@@ -308,6 +309,7 @@
               <div class="cd-time" id="p-cd">—</div>
               <div class="cake-bar"><div id="p-cake" class="cake-fill"></div></div>
               <div class="cd-pct" id="p-cd-pct">0%</div>
+              <div class="cd-msg" data-i18n="p_cd_msg">🎂 หวังว่าจอยจะทำเค้กก้อนใหญ่ให้หนูนะครับ</div>
             </div>
           </div>
         </div>
@@ -376,7 +378,7 @@ const TR = {
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     p_energy: "⚡ พลังงาน", p_hunger: "🍗 ความหิว", p_sleep: "😴 การนอน",
-    p_birth: "🎂 วันเกิด", p_cd: "🎂 ครบ 1 เดือนใน",
+    p_birth: "🎂 วันเกิด", p_cd: "🎂 ครบ 1 เดือนใน", p_cd_msg: "🎂 หวังว่าจอยจะทำเค้กก้อนใหญ่ให้หนูนะครับ",
     p_persona: "🎭 บุคลิก", p_persona_sub: "พ่อหมู — ค่าเริ่มต้น",
     p_emotion: "💓 อารมณ์", p_last_meal: "🍽️ มื้อสุดท้าย",
     p_crons: "I love my job", p_activity: "📍 กิจกรรม",
@@ -391,7 +393,7 @@ const TR = {
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     p_energy: "⚡ Energy", p_hunger: "🍗 Hunger", p_sleep: "😴 Sleep",
-    p_birth: "🎂 BIRTHDAY", p_cd: "🎂 1st month in",
+    p_birth: "🎂 BIRTHDAY", p_cd: "🎂 1st month in", p_cd_msg: "🎂 i hope Joy will make me a big cake",
     p_persona: "🎭 Persona", p_persona_sub: "Papa Pig — default",
     p_emotion: "💓 Emotion", p_last_meal: "🍽️ Last Meal",
     p_crons: "I love my job", p_activity: "📍 Recent Activity",
@@ -577,16 +579,24 @@ function render(s) {
   document.getElementById("p-emotion").innerHTML = P.emotion ? emoHTML(P.emotion) : "—";
   document.getElementById("p-valence").textContent = (LANG === "th" ? "วาเลนซ์ " : "valence ") + (P.valence >= 0 ? "+" : "") + (P.valence ?? 0).toFixed(2);
 
-  /* Papapig — naissance + compte à rebours 1er mois */
-  const _BIRTH = new Date(2026, 7, 7, 20, 47).getTime();
-  const _ONE_MONTH = 30 * 24 * 3600 * 1000;
-  const _now = Date.now();
-  const _pct = Math.min(100, Math.max(0, (_now - _BIRTH) / _ONE_MONTH * 100));
-  document.getElementById("p-cake").style.width = _pct.toFixed(1) + "%";
-  document.getElementById("p-cd-pct").textContent = _pct.toFixed(1) + "%";
-  const _left = Math.max(0, _BIRTH + _ONE_MONTH - _now);
-  const _dj = Math.floor(_left / 86400000), _dh = Math.floor((_left % 86400000) / 3600000);
-  document.getElementById("p-cd").textContent = (LANG === "th" ? _dj + " วัน " + _dh + " ชม." : _dj + "d " + _dh + "h");
+  /* Papapig — naissance + compte à rebours 1er mois (avec secondes) */
+  const BIRTH_MS = new Date(2026, 7, 7, 20, 47).getTime();
+  const ONE_MONTH_MS = 30 * 24 * 3600 * 1000;
+  function updateCake() {
+    const _now = Date.now();
+    const _pct = Math.min(100, Math.max(0, (_now - BIRTH_MS) / ONE_MONTH_MS * 100));
+    const _left = Math.max(0, BIRTH_MS + ONE_MONTH_MS - _now);
+    const _s = Math.floor(_left / 1000) % 60, _mn = Math.floor(_left / 60000) % 60;
+    const _dh = Math.floor(_left / 3600000) % 24, _dj = Math.floor(_left / 86400000);
+    const cEl = document.getElementById("p-cd");
+    if (cEl) cEl.textContent = (LANG === "th"
+      ? _dj + " วัน " + _dh + " ชม. " + _mn + " นาที " + _s + " วิ."
+      : _dj + "d " + _dh + "h " + _mn + "m " + _s + "s");
+    document.getElementById("p-cake").style.width = _pct.toFixed(1) + "%";
+    document.getElementById("p-cd-pct").textContent = _pct.toFixed(1) + "%";
+  }
+  updateCake();
+  if (!window._cakeTick) window._cakeTick = setInterval(updateCake, 1000);
   document.getElementById("p-last-meal").textContent = P.last_meal_emoji || "—";
   document.getElementById("p-last-meal-at").textContent = P.last_meal_at || "";
 
