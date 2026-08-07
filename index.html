@@ -206,6 +206,7 @@
   .cal td .d.clickable { cursor:pointer; }
   .cal td .d.clickable:active { transform: scale(.93); }
   .cal td .d.sun { background:#d9f2e6; color:#2e7d5b; }
+  .cal td .d .sunb { font-size: 8px; line-height: 1; margin-top: 1px; font-weight: 700; letter-spacing:.2px; }
   .cal td .d.sun.other { background:#eef7f2; color:#8fbfa8; }
   .cal td .d.m1 { background:#ff5d6c; color:#fff; }
   .cal td .d.m2 { background:#ffa05c; color:#fff; }
@@ -942,7 +943,6 @@ function calRender() {
   const todayDs = calDs(new Date());
   const pad = d => String(d).padStart(2, "0");
   const hol = d => (S.holidays || {})[d] || null;
-  const isSun = d => new Date(CAL.year, CAL.month, d).getDay() === 0;
 
   let html = "<table class='cal'><tbody><tr>" + labels.map(l => "<th>" + l + "</th>").join("") + "</tr>";
   const cell = (ds, num, extra) => {
@@ -951,7 +951,8 @@ function calRender() {
     const hasWeather = w && w.tmax !== undefined && w.tmax !== null;
     const evs = calEventsOn(ds);
     const isToday = ds === todayDs;
-    let cls = mood ? "m" + mood.mood : (isSun(ds.split("-")[2] | 0) ? "sun" : "day");
+    const isSun = new Date(ds).getDay() === 0;
+    let cls = mood ? "m" + mood.mood : (isSun ? "sun" : "day");
     if (extra === "other") cls += " other";
     if (isToday) cls += " today";
     if (CAL.sel === ds) cls += " sel";
@@ -962,9 +963,10 @@ function calRender() {
       "</span>" : "";
     const wico = hasWeather && !mood ? "<span class='w'>" + (w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️")) + "</span>" : "";
     const holDot = hol(ds) ? "<span class='hol'></span>" : "";
+    const badge = isSun ? "<span class='sunb'>" + (LANG === "th" ? "วันพักผ่อน 🌿" : "Rest 🌿") + "</span>" : "";
     const ari = "aria-label='" + ds + (evs.length ? " " + evs.length + " events" : "") + "'";
     return "<td><div class='d " + cls + "' tabindex='0' " + ari + " data-ds='" + ds + "'>" + num +
-      (dots || wico || holDot ? "<span style='display:flex;flex-direction:column;align-items:center;gap:1px'>" + dots + wico + holDot + "</span>" : "") +
+      (dots || wico || holDot || badge ? "<span style='display:flex;flex-direction:column;align-items:center;gap:1px'>" + badge + dots + wico + holDot + "</span>" : "") +
       "</div></td>";
   };
   let prevM = CAL.month - 1;
@@ -1055,23 +1057,61 @@ function calRenderAgenda() {
   }));
 }
 
-/* Panneau latéral — événements du jour */
+/* Panneau latéral — vraies données du jour (humeur, repas, météo, fête) + événements réels */
 function calOpenDay(ds) {
   const evs = calEventsOn(ds);
   const body = document.getElementById("cal-panel-body");
   const title = document.getElementById("cal-panel-date");
   if (title) title.textContent = ds;
-  if (!evs.length) {
-    body.innerHTML = "<div class='cal-ev-empty'>" + (LANG === "th" ? "ไม่มีนัดหมายวันนี้" : "no events this day") + "</div>";
-  } else {
-    body.innerHTML = evs.map(e =>
-      "<div class='cal-ev'><span class='ev-dot " + catOf(e.category) + (evs.length === 1 ? " only" : "") + "'></span>" +
-      "<div class='ev-info'><div class='ev-title'>" + e.title +
-      (e.created_via === "telegram" ? " <span class='ev-tg'>✈️ Telegram</span>" : "") + "</div>" +
-      "<div class='ev-meta'>" + catName(e.category, LANG) +
-      (e.start_time ? " · " + e.start_time + (e.end_time ? "–" + e.end_time : "") : "") + "</div></div></div>"
+  const m = (S.joy.moods || []).find(x => x.date === ds);
+  const w = (S.weather || {})[ds];
+  const mealsDay = (S.joy.meals || []).filter(x => x.date === ds);
+  const hol = (S.holidays || {})[ds];
+  let bodyHtml = "";
+
+  /* Mood (vraie donnée) */
+  if (m && m.mood) {
+    const em = ["😭","😟","😐","🙂","😍"][m.mood - 1];
+    bodyHtml += "<div class='cal-ev'><span style='font-size:20px'>" + em + "</span>" +
+      "<div class='ev-info'><div class='ev-title'>" + MOODS[LANG][m.mood] + "</div>" +
+      "<div class='ev-meta'>" + (LANG === "th" ? "อารมณ์" : "mood") +
+      (m.note ? " · " + m.note : "") + "</div></div></div>";
+  }
+  /* Repas (vraie donnée) */
+  if (mealsDay.length) {
+    bodyHtml += mealsDay.map(x =>
+      "<div class='cal-ev'><span style='font-size:18px'>" + x.emoji + "</span>" +
+      "<div class='ev-info'><div class='ev-title'>" + (x.word || (LANG === "th" ? "อาหาร" : "meal")) + "</div>" +
+      "<div class='ev-meta'>" + (LANG === "th" ? "กิน" : "meals") + " · " + x.at + "</div></div></div>"
     ).join("");
   }
+  /* Météo (vraie donnée) */
+  if (w && w.tmax !== undefined && w.tmax !== null) {
+    const rain = w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️");
+    bodyHtml += "<div class='cal-ev'><span style='font-size:18px'>" + rain + "</span>" +
+      "<div class='ev-info'><div class='ev-title'>" + w.tmax + "° / " + w.tmin + "°</div>" +
+      "<div class='ev-meta'>" + (LANG === "th" ? "สภาพอากาศกรุงเทพ" : "Bangkok weather") + " · ☔ " + w.pop + "%</div></div></div>";
+  }
+  /* Fête thaïlandaise (vraie donnée) */
+  if (hol) {
+    bodyHtml += "<div class='cal-ev'><span style='font-size:18px'>🎉</span>" +
+      "<div class='ev-info'><div class='ev-title'>" + hol[LANG] + "</div>" +
+      "<div class='ev-meta'>" + (LANG === "th" ? "วันสำคัญ" : "Thai holiday") + "</div></div></div>";
+  }
+  /* Événements réels (Supabase) */
+  if (evs.length) {
+    bodyHtml += "<div class='cal-ev' style='border-top:2px solid #f6e3ea;margin-top:6px;padding-top:12px'></div>" +
+      evs.map(e =>
+        "<div class='cal-ev'><span class='ev-dot " + catOf(e.category) + (evs.length === 1 ? " only" : "") + "'></span>" +
+        "<div class='ev-info'><div class='ev-title'>" + e.title +
+        (e.created_via === "telegram" ? " <span class='ev-tg'>✈️ Telegram</span>" : "") + "</div>" +
+        "<div class='ev-meta'>" + catName(e.category, LANG) +
+        (e.start_time ? " · " + e.start_time + (e.end_time ? "–" + e.end_time : "") : "") + "</div></div></div>"
+      ).join("");
+  }
+  if (!bodyHtml) bodyHtml = "<div class='cal-ev-empty'>" +
+    (LANG === "th" ? "ไม่มีข้อมูลวันนี้" : "no data for this day") + "</div>";
+  body.innerHTML = bodyHtml;
   _calPanel.classList.add("open");
 }
 
