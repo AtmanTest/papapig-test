@@ -388,6 +388,7 @@ function tryLogin() {
   const v = document.getElementById("pwd").value.trim().toLowerCase();
   if (v === PASSWORD) {
     sessionStorage.setItem("pp_auth", "1");
+    _stopMusic();
     showApp();
   } else {
     document.getElementById("login-err").textContent = LANG === "th" ? "รหัสผิด ❌" : "wrong password ❌";
