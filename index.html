@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ff6b9d">
+<title>Papapig 🐷</title>
+<style>
+  :root {
+    --pink: #ff6b9d; --teal: #2ec4b6; --cream: #fff8f0; --dark: #2d2a32;
+    --card: #ffffff; --soft: #fdf0f4; --line: #ffe3ec;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, "SF Pro Thai", "Noto Sans Thai", sans-serif;
+    background: var(--cream); color: var(--dark); min-height: 100vh;
+    padding-top: env(safe-area-inset-top);
+  }
+  .hidden { display:none !important; }
+
+  /* ── LOGIN ── */
+  #login {
+    min-height: 100vh; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap: 20px;
+    background: linear-gradient(135deg, var(--pink), var(--teal));
+    padding: 30px;
+  }
+  #login .pig { font-size: 84px; animation: bounce 2.2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  #login h1 { color:#fff; font-size: 26px; font-weight: 800; }
+  #login p { color: rgba(255,255,255,.9); font-size: 13px; text-align:center; }
+  #login form { display:flex; flex-direction:column; gap:12px; width: 100%; max-width: 300px; }
+  #login input {
+    padding: 14px 18px; border-radius: 999px; border: none; font-size: 16px;
+    text-align:center; outline:none; background: #fff;
+  }
+  #login button {
+    padding: 14px; border-radius: 999px; border: none; font-size: 16px;
+    font-weight: 800; background: var(--dark); color: #fff; cursor: pointer;
+  }
+  #login .err { color:#ffe066; font-size:12px; text-align:center; min-height:16px; }
+
+  /* ── APP ── */
+  header {
+    background: linear-gradient(135deg, var(--pink), var(--teal));
+    color:#fff; padding: 0 0 0; text-align:center;
+  }
+  .banner { position:relative; width:100%; height:170px; overflow:hidden; }
+  .banner img { width:100%; height:100%; object-fit:cover; object-position:72% 25%; display:block; }
+  @media (min-width: 600px) { .banner { height: 230px; } }
+  .banner .top {
+    position:absolute; top:10px; left:12px; right:12px;
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+  }
+  header .logo { font-size: 30px; text-shadow: 0 1px 6px rgba(45,42,50,.4); }
+  .banner h1 {
+    font-size: clamp(12px, 3.6vw, 17px); font-weight: 800; letter-spacing:.3px; padding: 6px 12px;
+    background: rgba(255,255,255,.20); border-radius:999px;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    text-shadow: 0 1px 4px rgba(45,42,50,.35); white-space:nowrap;
+  }
+  header .actions { display:flex; gap:8px; align-items:center; }
+  .btn {
+    border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.22); color:#fff; font-weight:700;
+    padding: 10px 16px; border-radius: 999px; cursor:pointer; font-size: 14px;
+    min-height: 44px; min-width: 44px;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    text-shadow: 0 1px 3px rgba(45,42,50,.3);
+  }
+  .btn:hover { background: rgba(255,255,255,.38); }
+  .tabs { display:flex; max-width:640px; margin:0 auto; gap:6px; padding: 12px 16px 0; }
+  .tab {
+    flex:1; padding: 14px 8px; border-radius: 16px 16px 0 0; border:none; cursor:pointer;
+    font-size: 14px; font-weight: 700; background: rgba(255,255,255,.18); color:#fff;
+    min-height: 48px; touch-action: manipulation;
+  }
+  .tab.active { background: var(--cream); color: var(--dark); }
+  main { max-width: 640px; margin: 0 auto; padding: 18px 14px 60px; }
+  .joy-hero { display:flex; justify-content:center; margin: 0 0 16px; }
+  .joy-hero img {
+    width: 100%; max-width: 300px; display:block;
+    box-shadow: 0 12px 30px rgba(255,107,157,.30);
+  }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--card); border-radius: 18px; padding: 16px;
+    box-shadow: 0 2px 10px rgba(45,42,50,.06); border: 1px solid var(--line);
+  }
+  .card h3 { font-size: 12px; text-transform: uppercase; letter-spacing:1.2px;
+             color:#b06a86; margin-bottom: 10px; font-weight: 800; }
+  .card .big { font-size: 34px; font-weight: 800; line-height:1.15; }
+  .card .sub { font-size: 12px; color:#8a8590; margin-top:5px; }
+  .full { grid-column: 1 / -1; }
+  .bar { height: 10px; border-radius: 999px; background: #ffe3ec; overflow:hidden; margin-top: 10px; }
+  .bar > div { height:100%; border-radius:999px;
+               background: linear-gradient(90deg, var(--pink), var(--teal)); }
+
+  /* Calendrier */
+  .cal { width:100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
+  .cal th { font-size: 10px; color:#b06a86; padding-bottom: 4px; }
+  .cal-head { text-align:center; font-weight:800; font-size:14px; color:#c44a74; margin-bottom:8px; }
+  .cal td { text-align:center; font-size: 13px; font-weight: 700; }
+  .cal td .d {
+    display:flex; flex-direction:column; align-items:center; justify-content:center; height: 46px;
+    border-radius: 10px; background: #faf0f4; color:#b9a3ad; cursor: default;
+    touch-action: manipulation; line-height: 1.1;
+  }
+  .cal td .d.clickable { background: #ffe9c9; color:#a86a2b; cursor:pointer; }
+  .cal td .d.clickable:active { transform: scale(.93); }
+  .cal td .d.m1 { background:#ff5d6c; color:#fff; }
+  .cal td .d.m2 { background:#ffa05c; color:#fff; }
+  .cal td .d.m3 { background:#f7d154; color:#7a6420; }
+  .cal td .d.m4 { background:#9be89b; color:#1e6b1e; }
+  .cal td .d.m5 { background:#2ecc71; color:#fff; }
+  .cal td .d.today { background:#ff9f43 !important; color:#fff !important;
+                     animation: pulseRing 2s ease-in-out infinite; }
+  @keyframes pulseRing {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(255,255,255,.95); }
+    50%      { box-shadow: 0 0 0 5px rgba(255,255,255,0); }
+  }
+  .cal td .d .hol { width:5px; height:5px; border-radius:50%; background:#ff4d88;
+                    display:inline-block; margin-top:2px; box-shadow: 0 0 4px rgba(255,77,136,.7); }
+  .cal td .d.blank { background:transparent; }
+  .cal td .d .w { font-size: 9px; line-height: 1; margin-top: 1px; opacity: .85; }
+
+  .list { list-style:none; }
+  .list li { padding: 8px 0; border-bottom: 1px solid #f6e3ea; font-size: 14px;
+             display:flex; justify-content:space-between; gap:10px; align-items:center; }
+  .list li:last-child { border-bottom:none; }
+  .list .time { color:#8a8590; font-size: 12px; white-space:nowrap; }
+  .meals { display:flex; flex-wrap:wrap; gap:8px; }
+  .meal {
+    background:var(--soft); border:1px solid var(--line); border-radius: 12px;
+    padding: 8px 12px; font-size: 20px; display:flex; align-items:center; gap:8px;
+  }
+  .meal .t { font-size: 10px; color:#8a8590; }
+  .meal b { font-size: 13px; font-weight: 700; }
+  .chip { display:inline-block; padding:3px 10px; border-radius:999px;
+          font-size:11px; font-weight:700; }
+  .chip.on { background:#e6faf7; color:#1a9e90; }
+  .chip.off { background:#fde8ee; color:#c44a74; }
+  .lock { text-align:center; padding: 14px; color:#8a8590; font-size:12px;
+          background:#fff; border-radius:18px; border:1px dashed #e5c9d5; }
+  footer { text-align:center; font-size:11px; color:#b9b2bc; margin-top: 24px; }
+
+  /* Tamagotchi */
+  .tama { text-align:center; }
+  .tama .face { font-size: 76px; display:inline-block; }
+  .tama .status { font-size: 13px; color:#8a8590; margin-top:4px; }
+  .gauges { display:grid; gap:10px; margin-top: 14px; }
+  .gauge .lab { display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:4px; }
+  .gauge .lab span:last-child { color:#8a8590; }
+  .levels { display:flex; gap:8px; align-items:center; margin-top:12px;
+            justify-content:center; font-size:13px; font-weight:700; }
+  .xpbar { height:8px; border-radius:999px; background:#ffe3ec; overflow:hidden; margin-top:6px; }
+  .xpbar > div { height:100%; background:linear-gradient(90deg,#f9d423,#ff6b9d); }
+
+  /* Modal jour */
+  #modal { position:fixed; inset:0; background:rgba(45,42,50,.55);
+           display:none; align-items:flex-end; justify-content:center; z-index:99; }
+  #modal.open { display:flex; }
+  #modal .sheet {
+    background: var(--cream); width:100%; max-width:640px; max-height: 82vh; overflow-y:auto;
+    border-radius: 24px 24px 0 0; padding: 24px 20px 40px;
+    animation: up .25s ease;
+  }
+  @keyframes up { from { transform: translateY(60px); opacity:0 } to { transform:none; opacity:1 } }
+  #modal .handle { width:44px; height:5px; border-radius:99px; background:#e0ccd6;
+                   margin:0 auto 14px; }
+  #modal h2 { font-size:18px; margin-bottom:14px; text-align:center; }
+  #modal .mrow { display:flex; align-items:center; gap:12px; background:#fff;
+                 border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; }
+  #modal .mrow .ico { font-size:26px; }
+  #modal .mrow .lb { font-size:11px; color:#b06a86; font-weight:800; letter-spacing:.8px;
+                     text-transform:uppercase; }
+  #modal .mrow .vl { font-size:15px; font-weight:700; margin-top:2px; }
+  #modal .close { width:100%; padding:14px; border:none; border-radius:999px;
+                  background:var(--pink); color:#fff; font-weight:800; font-size:15px;
+                  margin-top:8px; cursor:pointer; min-height:44px; }
+  .wico { font-size:20px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="login">
+  <span class="pig">🐷</span>
+  <h1 data-i18n="login_title">Papapig</h1>
+  <p data-i18n="login_sub">ป้อนรหัสผ่านเพื่อเข้า</p>
+  <form id="login-form">
+    <input type="password" id="pwd" placeholder="password" autocomplete="off">
+    <button type="submit" data-i18n="login_btn">เข้า</button>
+  </form>
+  <div class="err" id="login-err"></div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app" class="hidden">
+<header>
+  <div class="banner">
+    <img src="images/peppa-header.jpg" alt="Peppa Pig">
+    <div class="top">
+      <span class="logo">🐷</span>
+      <h1 data-i18n="app_title">Papapig — ระบบใจ</h1>
+      <div class="actions">
+        <button class="btn" id="lang-btn">EN</button>
+        <button class="btn" id="logout-btn">⎋</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tab-joy" data-i18n="tab_joy">👧 ชีวิตจอย</button>
+    <button class="tab" id="tab-papapig" data-i18n="tab_papapig">🐷 ชีวิตพ่อหมู</button>
+  </div>
+</header>
+
+<main>
+  <!-- ── ONGLET JOY ── -->
+  <section id="view-joy">
+    <div class="joy-hero"><img src="images/joy-oval.png" alt="Joy 💕"></div>
+    <div class="grid">
+      <div class="card">
+        <h3 data-i18n="joy_mood_today">😊 อารมณ์วันนี้</h3>
+        <div class="big" id="j-mood-today">—</div>
+        <div class="sub" id="j-mood-note"></div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="joy_energy">⚡ พลังงาน</h3>
+        <div class="big" id="j-energy">—</div>
+        <div class="bar"><div id="j-energy-bar" style="width:50%"></div></div>
+      </div>
+      <div class="card full">
+        <h3 data-i18n="joy_cal">📅 ปฏิทินอารมณ์ — Calendrier d'humeur</h3>
+        <table class="cal" id="j-cal"></table>
+      </div>
+      <div class="card full">
+        <h3 data-i18n="joy_meals">🍜 กินอะไรมาบ้าง — Repas détectés</h3>
+        <div class="meals" id="j-meals"></div>
+      </div>
+      <div class="card full">
+        <h3 data-i18n="joy_goal">🎯 เป้าหมาย — Goal</h3>
+        <div class="big" style="font-size:22px" id="j-goal">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ONGLET PAPAPIG ── -->
+  <section id="view-papapig" class="hidden">
+    <div class="grid">
+      <div class="card full tama">
+        <div class="face" id="p-face">🐷</div>
+        <div class="status" id="p-status">—</div>
+        <div class="gauges">
+          <div class="gauge"><div class="lab"><span data-i18n="p_energy">⚡ พลังงาน</span><span id="p-energy">85</span></div>
+            <div class="bar"><div id="p-energy-bar" style="width:85%"></div></div></div>
+          <div class="gauge"><div class="lab"><span data-i18n="p_hunger">🍗 ความหิว</span><span id="p-hunger">40</span></div>
+            <div class="bar"><div id="p-hunger-bar" style="width:40%"></div></div></div>
+          <div class="gauge"><div class="lab"><span data-i18n="p_sleep">😴 การนอน</span><span id="p-sleep">60</span></div>
+            <div class="bar"><div id="p-sleep-bar" style="width:60%"></div></div></div>
+        </div>
+        <div class="levels">
+          <span id="p-level">Niv. 2</span>
+          <span>·</span>
+          <span id="p-xp">XP 120</span>
+        </div>
+        <div class="xpbar"><div id="p-xp-bar" style="width:20%"></div></div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="p_persona">🎭 บุคลิก — Persona</h3>
+        <div class="big" style="font-size:26px">🐷 Papa Pig</div>
+        <div class="sub" data-i18n="p_persona_sub">พ่อหมู — défaut</div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="p_emotion">💓 อารมณ์ — Émotion</h3>
+        <div class="big" id="p-emotion">—</div>
+        <div class="sub" id="p-valence">valence +0.30</div>
+      </div>
+      <div class="card full">
+        <h3 data-i18n="p_last_meal">🍽️ มื้อสุดท้าย — Dernier repas</h3>
+        <div class="big" id="p-last-meal">—</div>
+        <div class="sub" id="p-last-meal-at"></div>
+      </div>
+      <div class="card full">
+        <h3 data-i18n="p_crons">⏰ ระบบอัตโนมัติ — Automatismes</h3>
+        <ul class="list" id="p-crons"></ul>
+      </div>
+      <div class="card full">
+        <h3 data-i18n="p_activity">📍 กิจกรรม — Activité récente</h3>
+        <ul class="list" id="p-activity"></ul>
+      </div>
+      <div class="card full lock" data-i18n="lock">🔐 ข้อความทั้งหมดถูกเข้ารหัส (AES-256) — Toutes les conversations sont chiffrées (AES-256).</div>
+    </div>
+  </section>
+  <footer data-i18n="footer">Papapig Intelligence System · LM Studio local · zéro donnée partagée hors de ce dashboard</footer>
+</main>
+</div>
+
+<!-- Modal jour -->
+<div id="modal">
+  <div class="sheet">
+    <div class="handle"></div>
+    <h2 id="m-title">—</h2>
+    <div id="m-body"></div>
+    <button class="close" onclick="closeModal()" data-i18n="close">ปิด</button>
+  </div>
+</div>
+
+<script>
+/* ═════════ i18n : thaï par défaut + anglais ═════════ */
+const TR = {
+  th: {
+    login_title: "Papapig 🐷", login_sub: "ป้อนรหัสผ่านเพื่อเข้า", login_btn: "เข้า",
+    app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "👧 ชีวิตจอย", tab_papapig: "🐷 ชีวิตพ่อหมู",
+    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร",
+    joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
+    p_energy: "⚡ พลังงาน", p_hunger: "🍗 ความหิว", p_sleep: "😴 การนอน",
+    p_persona: "🎭 บุคลิก", p_persona_sub: "พ่อหมู — ค่าเริ่มต้น",
+    p_emotion: "💓 อารมณ์", p_last_meal: "🍽️ มื้อสุดท้าย",
+    p_crons: "⏰ ระบบอัตโนมัติ", p_activity: "📍 กิจกรรม",
+    lock: "🔐 ข้อความทั้งหมดถูกเข้ารหัส (AES-256)",
+    footer: "Papapig Intelligence System · ใช้ LM Studio ในเครื่อง · ไม่มีการแชร์ข้อมูลส่วนตัว",
+    no_data: "ยังไม่มีข้อมูล — เริ่มบันทึกคืนนี้ 📔", no_meal: "ยังไม่มีข้อมูลมื้ออาหาร",
+    logout: "ออกจากระบบ", close: "ปิด",
+  },
+  en: {
+    login_title: "Papapig 🐷", login_sub: "Enter password", login_btn: "Enter",
+    app_title: "Papapig AI with Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life",
+    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food",
+    joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
+    p_energy: "⚡ Energy", p_hunger: "🍗 Hunger", p_sleep: "😴 Sleep",
+    p_persona: "🎭 Persona", p_persona_sub: "Papa Pig — default",
+    p_emotion: "💓 Emotion", p_last_meal: "🍽️ Last Meal",
+    p_crons: "⏰ Automations", p_activity: "📍 Recent Activity",
+    lock: "🔐 All conversations are encrypted (AES-256)",
+    footer: "Papapig Intelligence System · Local LM Studio · no private data shared",
+    no_data: "no data yet — journal starts tonight 📔", no_meal: "no meal data yet",
+    logout: "Log out", close: "Close",
+  }
+};
+let LANG = "th";
+const MOODS = {
+  th: {1:"แย่มาก 😭", 2:"ไม่ดี 😟", 3:"เฉยๆ 😐", 4:"ดี 🙂", 5:"สุดยอด 😍"},
+  en: {1:"awful 😭", 2:"bad 😟", 3:"ok 😐", 4:"good 🙂", 5:"amazing 😍"}
+};
+const EMOMAP = {
+  th: {joie:"ดีใจ 😄", fatigue:"เหนื่อย 😩", stress:"เครียด 😮‍💨", tristesse:"เศร้า 😢",
+       amour:"รัก 💕", faim:"หิว 🍜", neutre:"เฉยๆ 😐", amusement:"สนุก 🤣",
+       somnolence:"ง่วง 😴", nostalgie:"คิดถึง 💭", colère:"โมโห 😤", peur:"กลัว 😨",
+       épuisement:"ไม่ไหว 😵", anxiété:"กังวล 😰"},
+  en: {joie:"joy 😄", fatigue:"tired 😩", stress:"stressed 😮‍💨", tristesse:"sad 😢",
+       amour:"love 💕", faim:"hungry 🍜", neutre:"neutral 😐", amusement:"fun 🤣",
+       somnolence:"sleepy 😴", nostalgie:"miss you 💭", colère:"angry 😤", peur:"scared 😨",
+       épuisement:"drained 😵", anxiété:"anxious 😰"}
+};
+
+/* ═════════ État ═════════ */
+let S = null;
+
+function t(key) { return TR[LANG][key] || key; }
+function applyLang() {
+  document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  document.getElementById("lang-btn").textContent = LANG === "th" ? "EN" : "TH";
+  document.title = t("app_title");
+}
+
+/* ═════════ Login ═════════ */
+const PASSWORD = "smoothie";
+function tryLogin() {
+  const v = document.getElementById("pwd").value.trim().toLowerCase();
+  if (v === PASSWORD) {
+    sessionStorage.setItem("pp_auth", "1");
+    showApp();
+  } else {
+    document.getElementById("login-err").textContent = LANG === "th" ? "รหัสผิด ❌" : "wrong password ❌";
+  }
+}
+document.getElementById("login-form").addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
+document.getElementById("logout-btn").addEventListener("click", () => {
+  sessionStorage.removeItem("pp_auth"); location.reload();
+});
+function showApp() {
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  init();
+}
+if (sessionStorage.getItem("pp_auth") === "1") showApp();
+
+/* ═════════ Tabs ═════════ */
+document.getElementById("tab-joy").addEventListener("click", () => switchTab("joy"));
+document.getElementById("tab-papapig").addEventListener("click", () => switchTab("papapig"));
+function switchTab(which) {
+  document.getElementById("view-joy").classList.toggle("hidden", which !== "joy");
+  document.getElementById("view-papapig").classList.toggle("hidden", which !== "papapig");
+  document.getElementById("tab-joy").classList.toggle("active", which === "joy");
+  document.getElementById("tab-papapig").classList.toggle("active", which === "papapig");
+}
+
+/* ═════════ Lang switch ═════════ */
+document.getElementById("lang-btn").addEventListener("click", () => {
+  LANG = LANG === "th" ? "en" : "th";
+  applyLang(); if (S) render(S);
+});
+
+/* ═════════ Data ═════════ */
+function init() {
+  applyLang();
+  fetch("data/state.json?cb=" + Date.now())
+    .then(r => r.json()).then(s => { S = s; render(s); })
+    .catch(() => setTimeout(init, 15000));
+}
+setInterval(() => { if (S) init(); }, 60000);
+
+function render(s) {
+  const J = s.joy || {}, P = s.papapig || {};
+
+  /* Joy — mood du jour */
+  const m = J.mood_today;
+  document.getElementById("j-mood-today").textContent = m ? (MOODS[LANG][m] || m) : "—";
+  document.getElementById("j-mood-note").textContent = J.mood_note || "";
+
+  /* Joy — énergie */
+  document.getElementById("j-energy").textContent = (J.energy ?? 70) + "%";
+  document.getElementById("j-energy-bar").style.width = (J.energy ?? 70) + "%";
+
+  /* Joy — calendrier */
+  renderCal(J.moods || []);
+
+  /* Joy — repas */
+  const meals = J.meals || [];
+  const mWrap = document.getElementById("j-meals");
+  mWrap.innerHTML = "";
+  if (!meals.length) mWrap.innerHTML = "<span style='color:#8a8590;font-size:13px'>" + t("no_meal") + "</span>";
+  meals.forEach(me => {
+    const el = document.createElement("div"); el.className = "meal";
+    el.innerHTML = "<span>" + me.emoji + "</span>" +
+      (me.word ? "<b>" + me.word + "</b>" : "") +
+      "<span class='t'>" + me.date.slice(5) + " " + me.at + "</span>";
+    mWrap.appendChild(el);
+  });
+
+  /* Joy — goal */
+  document.getElementById("j-goal").textContent = J.goal || "—";
+
+  /* Papapig — tamagotchi */
+  document.getElementById("p-energy").textContent = P.energy ?? 85;
+  document.getElementById("p-energy-bar").style.width = (P.energy ?? 85) + "%";
+  document.getElementById("p-hunger").textContent = P.hunger ?? 40;
+  document.getElementById("p-hunger-bar").style.width = (P.hunger ?? 40) + "%";
+  document.getElementById("p-sleep").textContent = P.sleep ?? 60;
+  document.getElementById("p-sleep-bar").style.width = (P.sleep ?? 60) + "%";
+  document.getElementById("p-level").textContent = (LANG === "th" ? "เลเวล " : "Niv. ") + (P.level ?? 2);
+  document.getElementById("p-xp").textContent = "XP " + (P.xp ?? 120);
+  document.getElementById("p-xp-bar").style.width = ((P.xp ?? 120) % 100) + "%";
+  document.getElementById("p-face").textContent = "🐷";
+  document.getElementById("p-status").textContent = P.emotion ? (EMOMAP[LANG][P.emotion] || P.emotion) : "—";
+  document.getElementById("p-emotion").textContent = P.emotion ? (EMOMAP[LANG][P.emotion] || P.emotion) : "—";
+  document.getElementById("p-valence").textContent = "valence " + (P.valence >= 0 ? "+" : "") + (P.valence ?? 0).toFixed(2);
+  document.getElementById("p-last-meal").textContent = P.last_meal_emoji || "—";
+  document.getElementById("p-last-meal-at").textContent = P.last_meal_at || "";
+
+  /* Papapig — crons */
+  const cWrap = document.getElementById("p-crons");
+  cWrap.innerHTML = "";
+  (P.crons || []).forEach(c => {
+    const li = document.createElement("li");
+    li.innerHTML = "<span>" + c.name + "</span><span class='chip " + (c.status === "active" ? "on" : "off") + "'>" +
+      (c.status === "active" ? "✓" : "⏸") + "</span>";
+    cWrap.appendChild(li);
+  });
+
+  /* Papapig — activité */
+  const aWrap = document.getElementById("p-activity");
+  aWrap.innerHTML = "";
+  (P.activity || []).forEach(a => {
+    const li = document.createElement("li");
+    li.innerHTML = "<span>" + a.t + "</span><span class='time'>" + a.d + "</span>";
+    aWrap.appendChild(li);
+  });
+}
+
+/* ═════════ Calendrier mensuel + modal jour ═════════ */
+function renderCal(moods) {
+  const byDate = {};
+  moods.forEach(m => byDate[m.date] = m.mood);
+  const now = new Date();
+  const y = now.getFullYear(), mo = now.getMonth();
+  const first = new Date(y, mo, 1);
+  const startDow = (first.getDay() + 6) % 7; // lundi = 0
+  const daysInMonth = new Date(y, mo + 1, 0).getDate();
+  const pad = d => String(d).padStart(2, "0");
+  const todayStr = `${y}-${pad(mo + 1)}-${pad(now.getDate())}`;
+
+  const labels = LANG === "th" ? ["จ","อ","พ","พฤ","ศ","ส","อา"] : ["M","T","W","T","F","S","S"];
+  const months = LANG === "th"
+    ? ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
+       "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"]
+    : ["January","February","March","April","May","June",
+       "July","August","September","October","November","December"];
+  const hol = d => (S.holidays || {})[d] || null;
+  let html = "<div class='cal-head'>" + months[mo] + " " + y + "</div>" +
+             "<table class='cal'><tbody><tr>" + labels.map(l => "<th>" + l + "</th>").join("") + "</tr>";
+  for (let i = 0; i < startDow; i++) html += "<td><div class='d blank'></div></td>";
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${y}-${pad(mo + 1)}-${pad(d)}`;
+    const mood = byDate[ds];
+    const w = (S.weather || {})[ds];
+    const hasWeather = w && w.tmax !== undefined && w.tmax !== null;
+    const hasData = mood || hasWeather;
+    let cls = mood ? "m" + mood : (hasWeather ? "clickable" : "blank");
+    if (ds === todayStr) cls += " today";
+    const click = hasData || hol(ds) ? ` onclick='openDay("${ds}")'` : "";
+    let wico = "";
+    if (hasWeather && !mood) {
+      const rain = w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️");
+      wico = "<span class='w'>" + rain + "</span>";
+    }
+    const holDot = hol(ds) ? "<span class='hol'></span>" : "";
+    html += "<td><div class='d " + cls + "'" + click + ">" + d + wico + holDot + "</div></td>";
+    if ((startDow + d) % 7 === 0) html += "</tr><tr>";
+  }
+  html += "</tr></tbody></table>";
+  document.getElementById("j-cal").innerHTML = html;
+}
+
+function openDay(ds) {
+  const m = (S.joy.moods || []).find(x => x.date === ds);
+  const w = (S.weather || {})[ds];
+  const mealsDay = (S.joy.meals || []).filter(x => x.date === ds);
+  document.getElementById("m-title").textContent = ds.slice(5);
+  let body = "";
+
+  /* Mood */
+  if (m && m.mood) {
+    const em = ["😭","😟","😐","🙂","😍"][m.mood - 1];
+    body += "<div class='mrow'><div class='ico'>" + em + "</div><div><div class='lb'>" +
+      (LANG === "th" ? "อารมณ์" : "MOOD") + "</div><div class='vl'>" + MOODS[LANG][m.mood] +
+      (m.note ? "<br><span style='font-size:12px;color:#8a8590;font-weight:400'>" + m.note + "</span>" : "") +
+      "</div></div></div>";
+  }
+  /* Repas */
+  if (mealsDay.length) {
+    body += "<div class='mrow'><div class='ico'>🍜</div><div><div class='lb'>" +
+      (LANG === "th" ? "กิน" : "MEALS") + "</div><div class='vl'>" +
+      mealsDay.map(x => x.emoji + " " + (x.word || "") + " <span style='font-size:11px;color:#8a8590'>" + x.at + "</span>").join(" · ") +
+      "</div></div></div>";
+  }
+  /* Météo */
+  if (w && w.tmax !== undefined && w.tmax !== null) {
+    const rain = w.pop >= 40 ? "🌧️ " + (LANG === "th" ? "ฝน" : "rain") : (w.pop >= 15 ? "⛅" : "☀️");
+    body += "<div class='mrow'><div class='ico'><span class='wico'>" + rain + "</span></div><div><div class='lb'>" +
+      (LANG === "th" ? "สภาพอากาศกรุงเทพ" : "BANGKOK WEATHER") + "</div><div class='vl'>" +
+      w.tmax + "° / " + w.tmin + "° <span style='font-size:12px;color:#8a8590'>· ☔ " + w.pop + "%</span>" +
+      "</div></div></div>";
+  }
+  /* Fête thaïlandaise */
+  const hol = (S.holidays || {})[ds];
+  if (hol) {
+    body += "<div class='mrow'><div class='ico'>🎉</div><div><div class='lb'>" +
+      (LANG === "th" ? "วันสำคัญ" : "THAI HOLIDAY") + "</div><div class='vl'>" + hol[LANG] +
+      "</div></div></div>";
+  }
+  /* Aucune donnée */
+  if (!body) body = "<div class='mrow'><div class='ico'>🕳️</div><div><div class='vl'>" +
+    (LANG === "th" ? "ไม่มีข้อมูลวันนี้" : "no data for this day") + "</div></div></div>";
+
+  document.getElementById("m-body").innerHTML = body;
+  document.getElementById("modal").classList.add("open");
+}
+function closeModal() { document.getElementById("modal").classList.remove("open"); }
+document.getElementById("modal").addEventListener("click", e => {
+  if (e.target.id === "modal") closeModal();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+{
+  "generated_at": "2026-08-07 22:43 Bangkok",
+  "joy": {
+    "mood_today": 2,
+    "mood_note": "ฉันเหนื่อยมากเลย — เหนื่อยจากงาน (très fatiguée après le travail)",
+    "moods": [
+      {
+        "date": "2026-08-07",
+        "mood": 2,
+        "note": "ฉันเหนื่อยมากเลย — เหนื่อยจากงาน (très fatiguée après le travail)",
+        "axe": "นอนเร็วขึ้น (dormir plus tôt)"
+      }
+    ],
+    "meals": [
+      {
+        "emoji": "🍽️",
+        "at": "23:14",
+        "date": "2026-08-07",
+        "word": "เคลอรี่"
+      },
+      {
+        "emoji": "☕",
+        "at": "23:13",
+        "date": "2026-08-07",
+        "word": "มอคค่า"
+      },
+      {
+        "emoji": "🍽️",
+        "at": "23:12",
+        "date": "2026-08-07",
+        "word": "แคลอรี่"
+      },
+      {
+        "emoji": "🍽️",
+        "at": "02:08",
+        "date": "2026-08-06",
+        "word": "ข้าว"
+      },
+      {
+        "emoji": "🍽️",
+        "at": "01:33",
+        "date": "2026-08-05",
+        "word": "ร้าน"
+      },
+      {
+        "emoji": "🍵",
+        "at": "01:21",
+        "date": "2026-08-05",
+        "word": "ชา"
+      },
+      {
+        "emoji": "🍽️",
+        "at": "01:20",
+        "date": "2026-08-05",
+        "word": "หวาน"
+      }
+    ],
+    "energy": 70,
+    "goal": "นอนเร็วขึ้น (dormir plus tôt)",
+    "streak": 0
+  },
+  "papapig": {
+    "persona": "papapig",
+    "energy": 85,
+    "hunger": 16,
+    "sleep": 60,
+    "xp": 125,
+    "level": 2,
+    "valence": 0.3,
+    "activation": 0.5,
+    "emotion": "joie",
+    "last_meal_emoji": "🍽️",
+    "last_meal_at": "23:14",
+    "crons": [
+      {
+        "name": "papapig-news",
+        "status": "active"
+      },
+      {
+        "name": "papapig-emotions-update",
+        "status": "active"
+      },
+      {
+        "name": "papapig-bedtime-sticker",
+        "status": "active"
+      },
+      {
+        "name": "papapig-morning-sticker",
+        "status": "active"
+      },
+      {
+        "name": "papapig-journal",
+        "status": "active"
+      },
+      {
+        "name": "papapig-daily-message",
+        "status": "active"
+      },
+      {
+        "name": "papapig-bedtime-reminder",
+        "status": "active"
+      },
+      {
+        "name": "papapig-weekly-review",
+        "status": "active"
+      }
+    ],
+    "activity": [
+      {
+        "t": "🏠 rentrée maison",
+        "d": "08-06 22:10"
+      }
+    ]
+  },
+  "holidays": {
+    "2026-01-01": {
+      "th": "วันขึ้นปีใหม่",
+      "en": "New Year's Day"
+    },
+    "2026-02-17": {
+      "th": "วันตรุษจีน",
+      "en": "Chinese New Year"
+    },
+    "2026-03-03": {
+      "th": "วันมาฆบูชา",
+      "en": "Makha Bucha Day"
+    },
+    "2026-04-06": {
+      "th": "วันจักรี",
+      "en": "Chakri Day"
+    },
+    "2026-04-13": {
+      "th": "วันสงกรานต์",
+      "en": "Songkran Day 1"
+    },
+    "2026-04-14": {
+      "th": "วันสงกรานต์",
+      "en": "Songkran Day 2"
+    },
+    "2026-04-15": {
+      "th": "วันสงกรานต์",
+      "en": "Songkran Day 3"
+    },
+    "2026-05-01": {
+      "th": "วันแรงงาน",
+      "en": "Labour Day"
+    },
+    "2026-05-04": {
+      "th": "วันฉัตรมงคล",
+      "en": "Coronation Day"
+    },
+    "2026-05-31": {
+      "th": "วันวิสาขบูชา",
+      "en": "Visakha Bucha Day"
+    },
+    "2026-06-03": {
+      "th": "วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าสุทิดา",
+      "en": "Queen Suthida's Birthday"
+    },
+    "2026-07-28": {
+      "th": "วันเฉลิมพระชนมพรรษา ร.10",
+      "en": "King's Birthday"
+    },
+    "2026-07-29": {
+      "th": "วันอาสาฬหบูชา",
+      "en": "Asalha Bucha Day"
+    },
+    "2026-07-30": {
+      "th": "วันเข้าพรรษา",
+      "en": "Khao Phansa (Buddhist Lent)"
+    },
+    "2026-08-12": {
+      "th": "วันแม่",
+      "en": "Mother's Day"
+    },
+    "2026-10-13": {
+      "th": "วันคล้ายวันสวรรคต ร.9",
+      "en": "King Bhumibol Memorial Day"
+    },
+    "2026-10-23": {
+      "th": "วันปิยมหาราช",
+      "en": "Chulalongkorn Day"
+    },
+    "2026-11-24": {
+      "th": "วันลอยกระทง",
+      "en": "Loy Krathong"
+    },
+    "2026-12-05": {
+      "th": "วันพ่อ",
+      "en": "Father's Day"
+    },
+    "2026-12-10": {
+      "th": "วันรัฐธรรมนูญ",
+      "en": "Constitution Day"
+    },
+    "2026-12-31": {
+      "th": "วันสิ้นปี",
+      "en": "New Year's Eve"
+    }
+  },
+  "weather": {
+    "2026-07-24": {
+      "tmax": 34.6,
+      "tmin": 26.4,
+      "pop": 94
+    },
+    "2026-07-25": {
+      "tmax": 35.8,
+      "tmin": 26.3,
+      "pop": 99
+    },
+    "2026-07-26": {
+      "tmax": 33.8,
+      "tmin": 26.0,
+      "pop": 80
+    },
+    "2026-07-27": {
+      "tmax": 34.3,
+      "tmin": 25.4,
+      "pop": 100
+    },
+    "2026-07-28": {
+      "tmax": 31.1,
+      "tmin": 25.8,
+      "pop": 75
+    },
+    "2026-07-29": {
+      "tmax": 32.4,
+      "tmin": 25.6,
+      "pop": 98
+    },
+    "2026-07-30": {
+      "tmax": 31.3,
+      "tmin": 25.2,
+      "pop": 100
+    },
+    "2026-07-31": {
+      "tmax": 30.7,
+      "tmin": 24.2,
+      "pop": 100
+    },
+    "2026-08-01": {
+      "tmax": 32.8,
+      "tmin": 25.0,
+      "pop": 99
+    },
+    "2026-08-02": {
+      "tmax": 33.3,
+      "tmin": 25.8,
+      "pop": 97
+    },
+    "2026-08-03": {
+      "tmax": 33.0,
+      "tmin": 25.7,
+      "pop": 79
+    },
+    "2026-08-04": {
+      "tmax": 32.7,
+      "tmin": 26.4,
+      "pop": 100
+    },
+    "2026-08-05": {
+      "tmax": 32.1,
+      "tmin": 25.7,
+      "pop": 98
+    },
+    "2026-08-06": {
+      "tmax": 31.4,
+      "tmin": 26.7,
+      "pop": 92
+    },
+    "2026-08-07": {
+      "tmax": 30.8,
+      "tmin": 25.6,
+      "pop": 92
+    },
+    "2026-08-08": {
+      "tmax": 31.1,
+      "tmin": 26.4,
+      "pop": 98
+    },
+    "2026-08-09": {
+      "tmax": 31.6,
+      "tmin": 26.4,
+      "pop": 92
+    },
+    "2026-08-10": {
+      "tmax": 31.7,
+      "tmin": 26.5,
+      "pop": 90
+    },
+    "2026-08-11": {
+      "tmax": 30.6,
+      "tmin": 26.6,
+      "pop": 86
+    },
+    "2026-08-12": {
+      "tmax": 28.8,
+      "tmin": 26.3,
+      "pop": 84
+    },
+    "2026-08-13": {
+      "tmax": 31.8,
+      "tmin": 26.3,
+      "pop": 80
+    },
+    "2026-08-14": {
+      "tmax": 32.0,
+      "tmin": 26.8,
+      "pop": 90
+    },
+    "2026-08-15": {
+      "tmax": 29.8,
+      "tmin": 26.9,
+      "pop": 84
+    },
+    "2026-08-16": {
+      "tmax": 32.7,
+      "tmin": 26.8,
+      "pop": 91
+    },
+    "2026-08-17": {
+      "tmax": 32.4,
+      "tmin": 26.3,
+      "pop": 80
+    },
+    "2026-08-18": {
+      "tmax": 31.7,
+      "tmin": 26.1,
+      "pop": 59
+    },
+    "2026-08-19": {
+      "tmax": 29.3,
+      "tmin": 26.2,
+      "pop": 67
+    },
+    "2026-08-20": {
+      "tmax": 31.8,
+      "tmin": 26.1,
+      "pop": 78
+    }
+  }
+}
