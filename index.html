@@ -24,8 +24,16 @@
     min-height: 100vh; display:flex; flex-direction:column; align-items:center;
     justify-content:center; gap: 20px;
     background: linear-gradient(135deg, var(--pink), var(--teal));
-    padding: 30px;
+    padding: 30px; position:relative; overflow:hidden;
   }
+  .login-bg {
+    position:absolute; left:50%; top:58%; width:min(82vw, 560px);
+    transform: translate(-50%, -50%) translate(var(--mx,0px), var(--my,0px));
+    opacity:.32; pointer-events:none; z-index:0;
+    -webkit-filter: drop-shadow(0 8px 34px rgba(255,255,255,.28));
+    filter: drop-shadow(0 8px 34px rgba(255,255,255,.28));
+  }
+  #login > *:not(.login-bg) { position:relative; z-index:1; }
   #login .pig { font-size: 84px; animation: bounce 2.2s infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
   #login h1 { color:#fff; font-size: 26px; font-weight: 800; }
@@ -188,6 +196,7 @@
 
 <!-- ═══ LOGIN ═══ -->
 <div id="login">
+  <img class="login-bg" src="images/joy-oval.png" alt="">
   <span class="pig">🐷</span>
   <h1 data-i18n="login_title">Papapig</h1>
   <p data-i18n="login_sub">ป้อนรหัสผ่านเพื่อเข้า</p>
@@ -379,6 +388,13 @@ function tryLogin() {
   }
 }
 document.getElementById("login-form").addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
+// Regard de Joy qui suit le curseur (parallax doux)
+window.addEventListener("mousemove", e => {
+  const mx = (e.clientX / window.innerWidth - .5) * 26;
+  const my = (e.clientY / window.innerHeight - .5) * 26;
+  document.documentElement.style.setProperty("--mx", mx.toFixed(1) + "px");
+  document.documentElement.style.setProperty("--my", my.toFixed(1) + "px");
+}, { passive: true });
 document.getElementById("logout-btn").addEventListener("click", () => {
   sessionStorage.removeItem("pp_auth"); location.reload();
 });
