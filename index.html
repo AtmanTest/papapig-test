@@ -395,19 +395,21 @@ function tryLogin() {
   }
 }
 document.getElementById("login-form").addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
-// Musique de la page de connexion — ON par défaut (autoplay + démarrage au 1er tap/scroll)
+// Musique de la page de connexion — ON par défaut (autoplay + 1er tap/clic n'importe où)
 const _music = document.getElementById("login-music");
 const _mbtn = document.getElementById("music-btn");
-let _musicOn = false;
+let _musicOn = false, _started = false;
 function _tryPlay() {
-  if (_musicOn) return;
-  _music.play().then(() => { _musicOn = true; _mbtn.textContent = "🔊"; }).catch(() => {});
+  if (_musicOn || _started) return;
+  _started = true;
+  _music.play().then(() => { _musicOn = true; _mbtn.textContent = "🔊"; })
+                .catch(() => { _started = false; }); // retente au prochain tap si bloqué
 }
 _tryPlay(); // autoplay direct (accepté par certains navigateurs)
-["click", "touchstart", "keydown", "scroll"].forEach(ev =>
-  document.addEventListener(ev, () => _tryPlay(), { once: true, passive: true }));
+["click", "touchstart", "keydown"].forEach(ev =>
+  document.addEventListener(ev, () => _tryPlay(), { passive: true }));
 _mbtn.addEventListener("click", () => {
-  if (_musicOn) { _music.pause(); _mbtn.textContent = "🎵"; _musicOn = false; }
+  if (_musicOn) { _music.pause(); _mbtn.textContent = "🎵"; _musicOn = false; _started = false; }
   else { _tryPlay(); }
 });
 function _stopMusic() { if (_musicOn) { _music.pause(); _music.currentTime = 0; _mbtn.textContent = "🎵"; _musicOn = false; } }
