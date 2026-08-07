@@ -47,6 +47,21 @@
     color:#fff; font-weight:900; }
   #login-langs button:active { transform: scale(.94); }
   .pig-uke-wrap { position:relative; z-index:1; animation: bounce 2.2s infinite; }
+  /* témoignages flottants autour du cochon — pas de cadre */
+  .uc { position:absolute; font-family:'PeppaRegular', sans-serif; font-size:13px; line-height:1.4;
+        color:rgba(255,255,255,.95); text-shadow:0 1px 5px rgba(0,0,0,.35);
+        max-width:150px; z-index:2; }
+  .uc1 { left:-36px; top:6%; transform:rotate(-5deg); }
+  .uc2 { right:-44px; top:34%; transform:rotate(3.5deg); }
+  .uc3 { left:-30px; bottom:18%; transform:rotate(3deg); }
+  .uc4 { right:-36px; bottom:6%; transform:rotate(-4deg); }
+  @media (max-width:480px){
+    .uc { font-size:12px; max-width:115px; }
+    .uc1 { left:-14px; top:2%; }
+    .uc2 { right:-16px; top:32%; }
+    .uc3 { left:-10px; bottom:16%; }
+    .uc4 { right:-12px; bottom:4%; }
+  }
   .pig-uke { width:min(38vw, 190px); display:block; border-radius:50%;
              transform: translate(var(--mx,0px), var(--my,0px));
              -webkit-filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));
@@ -288,7 +303,10 @@
   </div>
   <h1 class="login-quote">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
   <div class="app-title">SuperPapapig APP</div>
-  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.jpg" alt=""></div>
+  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.jpg" alt="">
+    <span class="uc uc1"></span><span class="uc uc2"></span>
+    <span class="uc uc3"></span><span class="uc uc4"></span>
+  </div>
   <form id="login-form">
     <input type="password" id="pwd" placeholder="enter your password here" autocomplete="off">
     <button type="submit" data-i18n="login_btn">เข้า</button>
@@ -552,11 +570,21 @@ function _tTxt(s) { return LANG === "en" ? (TR_EN_TEXT[s] || s) : s; }
 let S = null;
 
 function t(key) { return TR[LANG][key] || key; }
+/* Témoignages flottants — sélection aléatoire par langue */
+const UCOMMENTS = {
+  th: ["หมูน่ารักมากเลย 🥰","AI ตัวนี้ฉลาดสุดๆ","ดูแลฉันทุกวัน ขอบคุณนะ 💕","น่ารักเกินไปแล้ววว","เขาจำวันเกิดฉันได้!","ฉลาดและน่ารักที่สุด","ชอบมาก ใช้ทุกวันเลย","อยู่กับฉันเสมอ 🐷"],
+  en: ["OMG he's so cute 🥰","Smartest little pig ever","He takes care of me daily 💕","He remembered my birthday!","Too cute, I can't 😍","My favorite AI, hands down","He's always there for me 🐷","Love him so much"]
+};
+function fillComments() {
+  const pool = [...UCOMMENTS[LANG]].sort(() => Math.random() - .5).slice(0, 4);
+  document.querySelectorAll(".uc").forEach((el, i) => { if (pool[i]) el.textContent = pool[i]; });
+}
 function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.getElementById("lang-btn").textContent = LANG === "th" ? "EN" : "TH";
   document.querySelectorAll("#login-langs button").forEach(b =>
     b.classList.toggle("active", b.dataset.lang === LANG));
+  fillComments();
   const pwd = document.getElementById("pwd");
   if (pwd) pwd.placeholder = t("pwd_ph");
   document.title = t("app_title");
