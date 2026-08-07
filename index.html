@@ -254,15 +254,15 @@
         <div class="bar"><div id="j-energy-bar" style="width:50%"></div></div>
       </div>
       <div class="card full">
-        <div class="cal-row"><h3 data-i18n="joy_cal">📅 ปฏิทินอารมณ์ — Calendrier d'humeur</h3><span id="cal-year" class="cal-year"></span></div>
+        <div class="cal-row"><h3 data-i18n="joy_cal">📅 ปฏิทินอารมณ์</h3><span id="cal-year" class="cal-year"></span></div>
         <div id="j-cal"></div>
       </div>
       <div class="card full">
-        <h3 data-i18n="joy_meals">🍜 กินอะไรมาบ้าง — Repas détectés</h3>
+        <h3 data-i18n="joy_meals">🍜 กินอะไรมาบ้าง</h3>
         <div class="meals" id="j-meals"></div>
       </div>
       <div class="card full">
-        <h3 data-i18n="joy_goal">🎯 เป้าหมาย — Goal</h3>
+        <h3 data-i18n="joy_goal">🎯 เป้าหมาย</h3>
         <div class="big" style="font-size:22px" id="j-goal">—</div>
       </div>
     </div>
@@ -283,24 +283,24 @@
             <div class="bar"><div id="p-sleep-bar" style="width:60%"></div></div></div>
         </div>
         <div class="levels">
-          <span id="p-level">Niv. 2</span>
+          <span id="p-level">เลเวล 2</span>
           <span>·</span>
           <span id="p-xp">XP 120</span>
         </div>
         <div class="xpbar"><div id="p-xp-bar" style="width:20%"></div></div>
       </div>
       <div class="card">
-        <h3 data-i18n="p_persona">🎭 บุคลิก — Persona</h3>
+        <h3 data-i18n="p_persona">🎭 บุคลิก</h3>
         <div class="big" style="font-size:26px">🐷 Papa Pig</div>
-        <div class="sub" data-i18n="p_persona_sub">พ่อหมู — défaut</div>
+        <div class="sub" data-i18n="p_persona_sub">พ่อหมู — ค่าเริ่มต้น</div>
       </div>
       <div class="card">
-        <h3 data-i18n="p_emotion">💓 อารมณ์ — Émotion</h3>
+        <h3 data-i18n="p_emotion">💓 อารมณ์</h3>
         <div class="big" id="p-emotion">—</div>
         <div class="sub" id="p-valence">valence +0.30</div>
       </div>
       <div class="card full">
-        <h3 data-i18n="p_last_meal">🍽️ มื้อสุดท้าย — Dernier repas</h3>
+        <h3 data-i18n="p_last_meal">🍽️ มื้อสุดท้าย</h3>
         <div class="big" id="p-last-meal">—</div>
         <div class="sub" id="p-last-meal-at"></div>
       </div>
@@ -309,13 +309,13 @@
         <ul class="list" id="p-crons"></ul>
       </div>
       <div class="card full">
-        <h3 data-i18n="p_activity">📍 กิจกรรม — Activité récente</h3>
+        <h3 data-i18n="p_activity">📍 กิจกรรม</h3>
         <ul class="list" id="p-activity"></ul>
       </div>
-      <div class="card full lock" data-i18n="lock">🔐 ข้อความทั้งหมดถูกเข้ารหัส (AES-256) — Toutes les conversations sont chiffrées (AES-256).</div>
+      <div class="card full lock" data-i18n="lock">🔐 ข้อความทั้งหมดถูกเข้ารหัส (AES-256)</div>
     </div>
   </section>
-  <footer data-i18n="footer">Papapig Intelligence System · LM Studio local · zéro donnée partagée hors de ce dashboard</footer>
+  <footer data-i18n="footer">Papapig Intelligence System · ใช้ LM Studio ในเครื่อง · ไม่มีการแชร์ข้อมูลส่วนตัว</footer>
 </main>
 </div>
 
@@ -376,6 +376,14 @@ const EMOMAP = {
        somnolence:"sleepy 😴", nostalgie:"miss you 💭", colère:"angry 😤", peur:"scared 😨",
        épuisement:"drained 😵", anxiété:"anxious 😰"}
 };
+
+/* Traductions EN des textes stockés en thaï (goal + activité) */
+const TR_EN_TEXT = {
+  "นอนเร็วขึ้น 💤": "sleep earlier 💤", "ผ่อนคลายสักหน่อย 🧘": "relax a bit 🧘", "ทำต่อไปแบบนี้ 💪": "keep it up 💪",
+  "🏠 กลับถึงบ้าน": "🏠 came home", "🏢 ถึงที่ทำงาน": "🏢 arrived at work",
+  "🛵 ไปทำงาน": "🛵 left for work", "🌙 ราตรีสวัสดิ์": "🌙 good night", "☀️ อรุณสวัสดิ์": "☀️ good morning"
+};
+function _tTxt(s) { return LANG === "en" ? (TR_EN_TEXT[s] || s) : s; }
 
 /* ═════════ État ═════════ */
 let S = null;
@@ -496,7 +504,7 @@ function render(s) {
   });
 
   /* Joy — goal */
-  document.getElementById("j-goal").textContent = J.goal || "—";
+  document.getElementById("j-goal").textContent = J.goal ? _tTxt(J.goal) : "—";
 
   /* Papapig — tamagotchi */
   document.getElementById("p-energy").textContent = P.energy ?? 85;
@@ -505,13 +513,13 @@ function render(s) {
   document.getElementById("p-hunger-bar").style.width = (P.hunger ?? 40) + "%";
   document.getElementById("p-sleep").textContent = P.sleep ?? 60;
   document.getElementById("p-sleep-bar").style.width = (P.sleep ?? 60) + "%";
-  document.getElementById("p-level").textContent = (LANG === "th" ? "เลเวล " : "Niv. ") + (P.level ?? 2);
+  document.getElementById("p-level").textContent = (LANG === "th" ? "เลเวล " : "Lv. ") + (P.level ?? 2);
   document.getElementById("p-xp").textContent = "XP " + (P.xp ?? 120);
   document.getElementById("p-xp-bar").style.width = ((P.xp ?? 120) % 100) + "%";
   document.getElementById("p-face").textContent = "🐷";
   document.getElementById("p-status").textContent = P.emotion ? (EMOMAP[LANG][P.emotion] || P.emotion) : "—";
   document.getElementById("p-emotion").textContent = P.emotion ? (EMOMAP[LANG][P.emotion] || P.emotion) : "—";
-  document.getElementById("p-valence").textContent = "valence " + (P.valence >= 0 ? "+" : "") + (P.valence ?? 0).toFixed(2);
+  document.getElementById("p-valence").textContent = (LANG === "th" ? "วาเลนซ์ " : "valence ") + (P.valence >= 0 ? "+" : "") + (P.valence ?? 0).toFixed(2);
   document.getElementById("p-last-meal").textContent = P.last_meal_emoji || "—";
   document.getElementById("p-last-meal-at").textContent = P.last_meal_at || "";
 
@@ -530,7 +538,7 @@ function render(s) {
   aWrap.innerHTML = "";
   (P.activity || []).forEach(a => {
     const li = document.createElement("li");
-    li.innerHTML = "<span>" + a.t + "</span><span class='time'>" + a.d + "</span>";
+    li.innerHTML = "<span>" + _tTxt(a.t) + "</span><span class='time'>" + a.d + "</span>";
     aWrap.appendChild(li);
   });
 }

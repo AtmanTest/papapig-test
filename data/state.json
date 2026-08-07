@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-08-08 00:32 Bangkok",
+  "generated_at": "2026-08-08 00:41 Bangkok",
   "joy": {
     "mood_today": 2,
-    "mood_note": "ฉันเหนื่อยมากเลย — เหนื่อยจากงาน (très fatiguée après le travail)",
+    "mood_note": "ฉันเหนื่อยมากเลย",
     "moods": [
       {
         "date": "2026-08-07",
         "mood": 2,
-        "note": "ฉันเหนื่อยมากเลย — เหนื่อยจากงาน (très fatiguée après le travail)",
-        "axe": "นอนเร็วขึ้น (dormir plus tôt)"
+        "note": "ฉันเหนื่อยมากเลย",
+        "axe": "นอนเร็วขึ้น 💤"
       }
     ],
     "meals": [
@@ -56,13 +56,13 @@
       }
     ],
     "energy": 70,
-    "goal": "นอนเร็วขึ้น (dormir plus tôt)",
+    "goal": "นอนเร็วขึ้น 💤",
     "streak": 0
   },
   "papapig": {
     "persona": "papapig",
     "energy": 85,
-    "hunger": 27,
+    "hunger": 28,
     "sleep": 60,
     "xp": 125,
     "level": 2,
@@ -107,7 +107,7 @@
     ],
     "activity": [
       {
-        "t": "🏠 rentrée maison",
+        "t": "🏠 กลับถึงบ้าน",
         "d": "08-06 22:10"
       }
     ]
@@ -267,12 +267,12 @@
     "2026-08-07": {
       "tmax": 30.8,
       "tmin": 25.6,
-      "pop": 92
+      "pop": 100
     },
     "2026-08-08": {
       "tmax": 31.1,
       "tmin": 26.4,
-      "pop": 98
+      "pop": 100
     },
     "2026-08-09": {
       "tmax": 31.6,
@@ -282,17 +282,17 @@
     "2026-08-10": {
       "tmax": 31.7,
       "tmin": 26.5,
-      "pop": 90
+      "pop": 80
     },
     "2026-08-11": {
       "tmax": 30.6,
       "tmin": 26.6,
-      "pop": 86
+      "pop": 82
     },
     "2026-08-12": {
       "tmax": 28.8,
       "tmin": 26.3,
-      "pop": 84
+      "pop": 80
     },
     "2026-08-13": {
       "tmax": 31.8,
