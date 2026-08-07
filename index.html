@@ -402,8 +402,10 @@ let _musicOn = false, _started = false, _loginDone = false;
 function _tryPlay() {
   if (_loginDone || _musicOn || _started) return;
   _started = true;
-  _music.play().then(() => { _musicOn = true; _mbtn.textContent = "🔊"; })
-                .catch(() => { _started = false; }); // retente au prochain tap si bloqué
+  _music.play().then(() => {
+    if (_loginDone) { _music.pause(); _music.currentTime = 0; return; }
+    _musicOn = true; _mbtn.textContent = "🔊";
+  }).catch(() => { _started = false; }); // retente au prochain tap si bloqué
 }
 _tryPlay(); // autoplay direct (accepté par certains navigateurs)
 ["click", "touchstart", "keydown"].forEach(ev =>
@@ -412,7 +414,12 @@ _mbtn.addEventListener("click", () => {
   if (_musicOn) { _music.pause(); _mbtn.textContent = "🎵"; _musicOn = false; _started = false; }
   else { _tryPlay(); }
 });
-function _stopMusic() { _loginDone = true; if (_musicOn) { _music.pause(); _music.currentTime = 0; _mbtn.textContent = "🎵"; _musicOn = false; } }
+function _stopMusic() {
+  _loginDone = true;
+  try { _music.pause(); _music.currentTime = 0; } catch (e) {}
+  _musicOn = false; _started = false;
+  _mbtn.textContent = "🎵";
+}
 // Regard de Joy qui suit le curseur (parallax doux)
 window.addEventListener("mousemove", e => {
   const mx = (e.clientX / window.innerWidth - .5) * 26;
