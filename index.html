@@ -80,16 +80,15 @@
   }
   @media (min-width: 600px) { .banner { height: 230px; } .banner .logo { width:286px; } }
   .banner .top {
-    position:absolute; top:10px; left:12px; right:12px; z-index:2; padding-left:min(292px, 42vw);
-    display:flex; justify-content:space-between; align-items:center; gap:8px;
+    position:absolute; left:0; right:0; top:2px; z-index:2;
+    display:flex; justify-content:center; align-items:center; pointer-events:none;
   }
   .banner h1 {
-    font-size: clamp(12px, 3.6vw, 17px); font-weight: 800; letter-spacing:.3px; padding: 6px 12px;
-    background: rgba(255,255,255,.20); border-radius:999px;
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    text-shadow: 0 1px 4px rgba(45,42,50,.35); white-space:nowrap;
+    font-size: clamp(18px, 5vw, 34px); font-weight: 900; letter-spacing:.3px; padding: 4px 14px;
+    background: transparent; text-shadow: 0 2px 10px rgba(0,0,0,.45), 0 1px 2px rgba(255,255,255,.35);
+    white-space:nowrap;
   }
-  header .actions { display:flex; gap:8px; align-items:center; }
+  header .actions { position:absolute; top:10px; right:12px; z-index:3; display:flex; gap:8px; align-items:center; }
   .btn {
     border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.22); color:#fff; font-weight:700;
     padding: 10px 16px; border-radius: 999px; cursor:pointer; font-size: 14px;
@@ -219,7 +218,7 @@
 <!-- ═══ LOGIN ═══ -->
 <div id="login">
   <div class="login-fade"></div>
-  <audio id="login-music" src="audio/login-music.mp3" loop preload="auto"></audio>
+  <audio id="login-music" src="audio/login-music.mp3" preload="auto"></audio>
   <button id="music-btn" aria-label="Music">🎵</button>
   <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <h1 data-i18n="login_title">Papapig</h1>
@@ -238,11 +237,11 @@
     <img class="bg" src="images/peppa-header.jpg" alt="Peppa Pig">
     <img class="logo" src="images/peppa-logo.jpg" alt="Papapig">
     <div class="top">
-      <h1 data-i18n="app_title">Papapig — ระบบใจ</h1>
-      <div class="actions">
-        <button class="btn" id="lang-btn">EN</button>
-        <button class="btn" id="logout-btn" title="⏻">⏻</button>
-      </div>
+      <h1 data-i18n="app_title">Papapig AI — ความฉลาดที่แท้จริง</h1>
+    </div>
+    <div class="actions">
+      <button class="btn" id="lang-btn">EN</button>
+      <button class="btn" id="logout-btn" title="⏻">⏻</button>
     </div>
   </div>
   <div class="tabs">
@@ -361,7 +360,7 @@ const TR = {
   },
   en: {
     login_title: "Papapig 🐷", login_sub: "Enter password", login_btn: "Enter",
-    app_title: "Papapig AI with Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life",
+    app_title: "Papapig AI — Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life",
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     p_energy: "⚡ Energy", p_hunger: "🍗 Hunger", p_sleep: "😴 Sleep",
@@ -424,15 +423,16 @@ document.getElementById("login-form").addEventListener("submit", e => { e.preven
 // Musique de la page de connexion — ON par défaut (autoplay + 1er tap/clic n'importe où)
 const _music = document.getElementById("login-music");
 const _mbtn = document.getElementById("music-btn");
-let _musicOn = false, _started = false, _loginDone = false;
+let _musicOn = false, _started = false, _loginDone = false, _musicDone = false;
 function _tryPlay() {
-  if (_loginDone || _musicOn || _started) return;
+  if (_loginDone || _musicDone || _musicOn || _started) return;
   _started = true;
   _music.play().then(() => {
-    if (_loginDone) { _music.pause(); _music.currentTime = 0; return; }
+    if (_loginDone || _musicDone) { _music.pause(); _music.currentTime = 0; return; }
     _musicOn = true; _mbtn.textContent = "🔊";
   }).catch(() => { _started = false; }); // retente au prochain tap si bloqué
 }
+_music.addEventListener("ended", () => { _musicDone = true; _musicOn = false; _mbtn.textContent = "🎵"; });
 _tryPlay(); // autoplay direct (accepté par certains navigateurs)
 ["click", "touchstart", "keydown"].forEach(ev =>
   document.addEventListener(ev, () => _tryPlay(), { passive: true }));
