@@ -179,19 +179,34 @@
   /* Calendrier */
   .cal { width:100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
   .cal th { font-size: 10px; color:#b06a86; padding-bottom: 4px; }
-  .cal-head { text-align:center; font-weight:800; font-size:14px; color:#c44a74; margin-bottom:8px; }
-  .cal-row { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-  .cal-year { font-weight:800; font-size:12px; color:#1d3f73; letter-spacing:.3px; white-space:nowrap; }
+  .cal-toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  .cal-title { display:flex; align-items:center; gap:8px; }
+  .cal-year { font-weight:800; font-size:15px; color:#1d3f73; letter-spacing:.3px; white-space:nowrap; min-width:120px; text-align:center; }
+  .cal-nav, .cal-today, .cal-v {
+    border:1px solid rgba(255,255,255,.55); background:#fff; color:#c44a74;
+    font-weight:800; border-radius:999px; cursor:pointer; min-height:40px; min-width:40px;
+    font-size:15px; padding:6px 12px; transition: transform .15s, background .15s;
+  }
+  .cal-nav:active, .cal-today:active, .cal-v:active { transform: scale(.94); }
+  .cal-today { font-size:12.5px; padding:8px 14px; }
+  .cal-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .cal-views { display:flex; gap:4px; background:rgba(255,107,157,.12); border-radius:999px; padding:3px; }
+  .cal-v { border:none; background:transparent; color:#c44a74; font-size:12px; min-height:34px; min-width:auto; padding:6px 11px; }
+  .cal-v.active { background:#ff6b9d; color:#fff; box-shadow:0 2px 8px rgba(255,107,157,.4); }
   .cal td { text-align:center; font-size: 13px; font-weight: 700; }
   .cal td .d {
     display:flex; flex-direction:column; align-items:center; justify-content:center; height: 46px;
     border-radius: 10px; background: #fbeadd; color:#a8886e;
     font-family:"PeppaBold", -apple-system, sans-serif; font-weight:900;
+    position:relative; outline:none; cursor:default;
   }
-  .cal td .d.sun { background:#d9f2e6; color:#2e7d5b; }
-  .cal td .d .sunb { font-size: 8px; line-height: 1; margin-top: 1px; font-weight: 700; letter-spacing:.2px; }
+  .cal td .d.other { background:#f6f0ea; color:#c9b8a8; opacity:.75; }
+  .cal td .d.sel { background:#ff6b9d !important; color:#fff !important; box-shadow:0 0 0 2px #fff, 0 0 0 4px #ff6b9d; }
+  .cal td .d:focus-visible { box-shadow:0 0 0 3px #ff6b9d; }
   .cal td .d.clickable { cursor:pointer; }
   .cal td .d.clickable:active { transform: scale(.93); }
+  .cal td .d.sun { background:#d9f2e6; color:#2e7d5b; }
+  .cal td .d.sun.other { background:#eef7f2; color:#8fbfa8; }
   .cal td .d.m1 { background:#ff5d6c; color:#fff; }
   .cal td .d.m2 { background:#ffa05c; color:#fff; }
   .cal td .d.m3 { background:#f7d154; color:#7a6420; }
@@ -207,6 +222,69 @@
                     display:inline-block; margin-top:2px; box-shadow: 0 0 4px rgba(255,77,136,.7); }
   .cal td .d.blank { background:transparent; }
   .cal td .d .w { font-size: 9px; line-height: 1; margin-top: 1px; opacity: .85; }
+  /* Dots événements — couleur par catégorie + forme distincte */
+  .cal td .d .dots { display:flex; gap:2px; align-items:center; justify-content:center; margin-top:2px; min-height:7px; }
+  .cal td .d .dots i { width:7px; height:7px; border-radius:50%; display:inline-block; }
+  .cal td .d .dots i.only { border-radius:0; transform:rotate(45deg); }
+  .cal td .d .dots i.c-perso { background:#ff4d88; }
+  .cal td .d .dots i.c-travail { background:#1d6fd1; }
+  .cal td .d .dots i.c-sante { background:#e67e22; }
+  .cal td .d .dots i.c-anniv { background:#8e44ad; }
+  .cal td .d .dots i.c-autres { background:#7f8c8d; }
+  .cal td .d .dots i + i { margin-left:0; }
+  /* Skeleton loader */
+  .cal-skel { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-skel span { height:46px; border-radius:10px; background:linear-gradient(90deg,#fbeadd 25%,#f3d6e4 50%,#fbeadd 75%);
+    background-size:200% 100%; animation: skel 1.3s infinite; }
+  @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  /* Panneau latéral événements */
+  .cal-panel { position:fixed; top:0; right:-340px; width:min(340px, 88vw); height:100%; z-index:60;
+    background:#fff; box-shadow:-6px 0 24px rgba(0,0,0,.22); transition:right .25s ease; display:flex;
+    flex-direction:column; }
+  .cal-panel.open { right:0; }
+  .cal-panel-head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px;
+    background:linear-gradient(135deg,#ff9ec2,#ff6b9d); color:#fff; }
+  .cal-panel-head b { font-size:15px; }
+  .cal-panel-close { background:rgba(255,255,255,.25); border:none; color:#fff; font-size:16px; font-weight:900;
+    border-radius:50%; width:34px; height:34px; cursor:pointer; }
+  .cal-panel-body { flex:1; overflow-y:auto; padding:14px 18px; }
+  .cal-ev { display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid #f6e3ea; }
+  .cal-ev:last-child { border-bottom:none; }
+  .cal-ev .ev-dot { width:10px; height:10px; border-radius:50%; flex:none; }
+  .cal-ev .ev-dot.only { border-radius:0; transform:rotate(45deg); }
+  .cal-ev .ev-info { flex:1; min-width:0; }
+  .cal-ev .ev-title { font-size:14px; font-weight:800; color:#5a3345; display:flex; align-items:center; gap:5px; }
+  .cal-ev .ev-meta { font-size:11.5px; color:#8a8590; margin-top:2px; }
+  .cal-ev .ev-tg { font-size:11px; background:#e6faf7; color:#1a9e90; border-radius:6px; padding:1px 6px; font-weight:800; }
+  .cal-ev-empty { text-align:center; color:#b9b2bc; font-size:13px; padding:28px 0; }
+  /* Vue semaine */
+  .cal-week { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-week .d { height:64px; }
+  /* Vue agenda */
+  .cal-agenda { display:flex; flex-direction:column; gap:6px; }
+  .cal-agenda .ag-day { background:#fff5f9; border:1px solid #f6e3ea; border-radius:12px; padding:8px 12px;
+    display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .cal-agenda .ag-day:active { transform:scale(.98); }
+  .cal-agenda .ag-date { font-weight:900; color:#c44a74; font-size:13px; min-width:64px; }
+  .cal-agenda .ag-info { font-size:12.5px; color:#5a3345; flex:1; }
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .cal-panel { background:#241c26; }
+    .cal-ev .ev-title { color:#ffd9e8; }
+    .cal-ev { border-bottom-color:#3a2f3d; }
+    .cal-agenda .ag-day { background:#2d2430; border-color:#3a2f3d; }
+    .cal-agenda .ag-info { color:#ffd9e8; }
+    .cal-nav, .cal-today { background:#2d2430; border-color:#4a3d4e; color:#ff9ec2; }
+    .cal-views { background:#3a2f3d; }
+    .cal-v { color:#ff9ec2; }
+  }
+  /* Mobile : agenda par défaut, cibles ≥44px */
+  @media (max-width:480px) {
+    .cal td .d { height:48px; }
+    .cal-toolbar { flex-direction:column; align-items:stretch; }
+    .cal-actions { justify-content:space-between; }
+    .cal-panel { width:88vw; }
+  }
 
   .list { list-style:none; }
   .list li { padding: 8px 0; border-bottom: 1px solid #f6e3ea; font-size: 14px;
@@ -363,8 +441,22 @@
         <div class="bar"><div id="j-energy-bar" style="width:50%"></div></div>
       </div>
       <div class="card full">
-        <div class="cal-row"><h3 data-i18n="joy_cal">📅 ปฏิทินอารมณ์</h3><span id="cal-year" class="cal-year"></span></div>
-        <div id="j-cal"></div>
+        <div class="cal-toolbar">
+          <div class="cal-title">
+            <button class="cal-nav" id="cal-prev" aria-label="Previous month">◀</button>
+            <span id="cal-year" class="cal-year"></span>
+            <button class="cal-nav" id="cal-next" aria-label="Next month">▶</button>
+          </div>
+          <div class="cal-actions">
+            <button class="cal-today" id="cal-today">Aujourd'hui</button>
+            <div class="cal-views" role="tablist" aria-label="Calendar view">
+              <button class="cal-v" data-v="month" role="tab">Mois</button>
+              <button class="cal-v" data-v="week" role="tab">Semaine</button>
+              <button class="cal-v" data-v="agenda" role="tab">Agenda</button>
+            </div>
+          </div>
+        </div>
+        <div id="j-cal" role="grid" aria-label="Calendar"></div>
       </div>
       <div class="card full">
         <h3 data-i18n="joy_meals">🍜 กินอะไรมาบ้าง</h3>
@@ -725,51 +817,266 @@ function render(s) {
 }
 
 /* ═════════ Calendrier mensuel + modal jour ═════════ */
-function renderCal(moods) {
-  const byDate = {};
-  moods.forEach(m => byDate[m.date] = m.mood);
-  const now = new Date();
-  const y = now.getFullYear(), mo = now.getMonth();
-  const first = new Date(y, mo, 1);
-  const startDow = (first.getDay() + 6) % 7; // lundi = 0
-  const daysInMonth = new Date(y, mo + 1, 0).getDate();
-  const pad = d => String(d).padStart(2, "0");
-  const todayStr = `${y}-${pad(mo + 1)}-${pad(now.getDate())}`;
+/* ═════════ Calendrier v2 — mois/semaine/agenda + événements Supabase ═════════ */
+const SB_URL = "https://wlxtulibsipesxpwkhyz.supabase.co";
+const SB_ANON = "sb_publishable_0MkIaGDQs3G5oJuHaKMh1A_wWsrzn4G";
+let CAL = { year: 0, month: 0, view: "month", sel: null, events: [], loading: true, inited: false };
 
+const CAT_COLOR = { perso: "c-perso", travail: "c-travail", sante: "c-sante", anniv: "c-anniv", autres: "c-autres" };
+const CAT_LBL = { perso: "perso", travail: "travail", sante: "santé", anniv: "anniv", autres: "autres" };
+const catOf = c => CAT_COLOR[c] || "c-autres";
+const catName = (c, l) => (l === "th" ? { perso: "ส่วนตัว", travail: "งาน", sante: "สุขภาพ", anniv: "วันเกิด", autres: "อื่นๆ" }[c] || "อื่นๆ" : CAT_LBL[c] || "autres");
+
+/* EventProvider — Supabase REST (lecture seule) → fallback events.json local */
+async function loadEvents() {
+  CAL.loading = true;
+  if (document.getElementById("j-cal")) calRenderSkeleton();
+  try {
+    const r = await fetch(SB_URL + "/rest/v1/events?select=*&order=date", {
+      headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON }
+    });
+    if (!r.ok) throw new Error("http " + r.status);
+    const data = await r.json();
+    CAL.events = (Array.isArray(data) ? data : []).map(e => ({
+      id: e.id, title: e.title, date: e.date, category: e.category || "autres",
+      start_time: (e.start_time || "").slice(0, 5), end_time: (e.end_time || "").slice(0, 5),
+      created_via: e.created_via || ""
+    }));
+  } catch (e) {
+    try {
+      const r = await fetch("events.json");
+      if (r.ok) {
+        const data = await r.json();
+        CAL.events = (Array.isArray(data) ? data : []).map(x => Object.assign({
+          id: "", title: "", date: "", category: "autres", start_time: "", end_time: "", created_via: ""
+        }, x));
+      } else throw new Error("no fallback");
+    } catch (e2) { CAL.events = []; }
+  }
+  CAL.loading = false;
+  calRender();
+}
+
+function calEventsOn(ds) { return CAL.events.filter(e => e.date === ds); }
+function calInit() {
+  const n = new Date();
+  CAL.year = n.getFullYear(); CAL.month = n.getMonth();
+  const pad = d => String(d).padStart(2, "0");
+  CAL.sel = `${n.getFullYear()}-${pad(n.getMonth() + 1)}-${pad(n.getDate())}`;
+  calBind();
+  loadEvents();
+}
+function calBind() {
+  document.getElementById("cal-prev").addEventListener("click", () => calMove(-1));
+  document.getElementById("cal-next").addEventListener("click", () => calMove(1));
+  document.getElementById("cal-today").addEventListener("click", calToday);
+  document.querySelectorAll(".cal-v").forEach(b =>
+    b.addEventListener("click", () => { CAL.view = b.dataset.v; calRender(); }));
+  document.addEventListener("keydown", e => {
+    if (!e.key.startsWith("Arrow") || document.getElementById("login").classList.contains("hidden") === false) return;
+    if (e.target.matches("input, textarea, select")) return;
+    const d = new Date(CAL.year, CAL.month, 1);
+    const base = CAL.sel ? new Date(CAL.sel) : new Date();
+    const move = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
+    if (move !== undefined) {
+      e.preventDefault();
+      base.setDate(base.getDate() + move);
+      CAL.sel = calDs(base);
+      CAL.year = base.getFullYear(); CAL.month = base.getMonth();
+      calRender();
+    } else if (e.key === "Enter" && CAL.sel) {
+      e.preventDefault();
+      calOpenDay(CAL.sel);
+    }
+  });
+  /* Swipe mobile */
+  let tx = null;
+  const jcal = document.getElementById("j-cal");
+  jcal.addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true });
+  jcal.addEventListener("touchend", e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 55) calMove(dx < 0 ? 1 : -1);
+    tx = null;
+  }, { passive: true });
+}
+function calDs(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+function calMove(dir) {
+  const d = new Date(CAL.year, CAL.month + dir, 1);
+  CAL.year = d.getFullYear(); CAL.month = d.getMonth();
+  calRender();
+}
+function calToday() {
+  const n = new Date();
+  CAL.year = n.getFullYear(); CAL.month = n.getMonth(); CAL.sel = calDs(n);
+  CAL.view = "month";
+  document.querySelectorAll(".cal-v").forEach(b => b.classList.toggle("active", b.dataset.v === "month"));
+  calRender();
+}
+function calRenderSkeleton() {
+  const el = document.getElementById("j-cal");
+  if (!el) return;
+  el.innerHTML = "<div class='cal-skel'>" + "<span></span>".repeat(42) + "</div>";
+  const m = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const ye = document.getElementById("cal-year");
+  if (ye) ye.textContent = (LANG === "th" ? ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"] : m)[CAL.month] + " " + CAL.year;
+}
+function calRender() {
+  if (CAL.view === "week") return calRenderWeek();
+  if (CAL.view === "agenda") return calRenderAgenda();
+  const el = document.getElementById("j-cal");
+  if (!el) return;
+  document.querySelectorAll(".cal-v").forEach(b => b.classList.toggle("active", b.dataset.v === "month"));
   const labels = LANG === "th" ? ["จ","อ","พ","พฤ","ศ","ส","อา"] : ["M","T","W","T","F","S","S"];
   const months = LANG === "th"
     ? ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
        "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"]
     : ["January","February","March","April","May","June",
        "July","August","September","October","November","December"];
+  const ye = document.getElementById("cal-year");
+  if (ye) ye.textContent = months[CAL.month] + " " + CAL.year;
+  const first = new Date(CAL.year, CAL.month, 1);
+  const startDow = (first.getDay() + 6) % 7;
+  const daysInMonth = new Date(CAL.year, CAL.month + 1, 0).getDate();
+  const prevDays = new Date(CAL.year, CAL.month, 0).getDate();
+  const todayDs = calDs(new Date());
+  const pad = d => String(d).padStart(2, "0");
   const hol = d => (S.holidays || {})[d] || null;
-  const sunBadge = LANG === "th" ? "วันพักผ่อน 🌿" : "Rest Day 🌿";
-  const yEl = document.getElementById("cal-year");
-  if (yEl) yEl.textContent = months[mo] + " " + y;
+  const isSun = d => new Date(CAL.year, CAL.month, d).getDay() === 0;
+
   let html = "<table class='cal'><tbody><tr>" + labels.map(l => "<th>" + l + "</th>").join("") + "</tr>";
-  for (let i = 0; i < startDow; i++) html += "<td><div class='d blank'></div></td>";
-  for (let d = 1; d <= daysInMonth; d++) {
-    const ds = `${y}-${pad(mo + 1)}-${pad(d)}`;
-    const mood = byDate[ds];
+  const cell = (ds, num, extra) => {
+    const mood = (S.joy.moods || []).find(x => x.date === ds);
     const w = (S.weather || {})[ds];
     const hasWeather = w && w.tmax !== undefined && w.tmax !== null;
-    const hasData = mood || hasWeather;
-    const isSun = new Date(y, mo, d).getDay() === 0;
-    let cls = mood ? "m" + mood : (isSun ? "sun" : "day");
-    if (ds === todayStr) cls += " today";
-    const click = hasData || hol(ds) ? ` onclick='openDay("${ds}")'` : "";
-    let wico = "";
-    if (hasWeather && !mood) {
-      const rain = w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️");
-      wico = "<span class='w'>" + rain + "</span>";
-    }
+    const evs = calEventsOn(ds);
+    const isToday = ds === todayDs;
+    let cls = mood ? "m" + mood.mood : (isSun(ds.split("-")[2] | 0) ? "sun" : "day");
+    if (extra === "other") cls += " other";
+    if (isToday) cls += " today";
+    if (CAL.sel === ds) cls += " sel";
+    if (evs.length || hasWeather || mood || hol(ds)) cls += " clickable";
+    const dots = evs.length ? "<span class='dots'>" +
+      evs.slice(0, 3).map((e, i) => "<i class='" + catOf(e.category) + (evs.length === 1 ? " only" : "") + "'></i>").join("") +
+      (evs.length > 3 ? "<i class='dots-more' style='font-size:7px;font-weight:900;color:#c44a74'>+" + (evs.length - 3) + "</i>" : "") +
+      "</span>" : "";
+    const wico = hasWeather && !mood ? "<span class='w'>" + (w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️")) + "</span>" : "";
     const holDot = hol(ds) ? "<span class='hol'></span>" : "";
-    const badge = isSun ? "<span class='sunb'>" + sunBadge + "</span>" : "";
-    html += "<td><div class='d " + cls + "'" + click + ">" + d + badge + wico + holDot + "</div></td>";
+    const ari = "aria-label='" + ds + (evs.length ? " " + evs.length + " events" : "") + "'";
+    return "<td><div class='d " + cls + "' tabindex='0' " + ari + " data-ds='" + ds + "'>" + num +
+      (dots || wico || holDot ? "<span style='display:flex;flex-direction:column;align-items:center;gap:1px'>" + dots + wico + holDot + "</span>" : "") +
+      "</div></td>";
+  };
+  let prevM = CAL.month - 1;
+  let prevY = CAL.year;
+  if (prevM < 0) { prevM = 11; prevY--; }
+  for (let i = startDow - 1; i >= 0; i--) {
+    const dd = prevDays - i;
+    html += cell(`${prevY}-${pad(prevM + 1)}-${pad(dd)}`, dd, "other");
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${CAL.year}-${pad(CAL.month + 1)}-${pad(d)}`;
+    html += cell(ds, d, "");
     if ((startDow + d) % 7 === 0) html += "</tr><tr>";
   }
+  let nextM = CAL.month + 1, nextY = CAL.year;
+  if (nextM > 11) { nextM = 0; nextY++; }
+  let trail = (startDow + daysInMonth) % 7;
+  if (trail !== 0) for (let i = 1; i <= 7 - trail; i++) html += cell(`${nextY}-${pad(nextM + 1)}-${pad(i)}`, i, "other");
   html += "</tr></tbody></table>";
-  document.getElementById("j-cal").innerHTML = html;
+  el.innerHTML = html;
+  el.querySelectorAll(".d[data-ds]").forEach(dv => {
+    const click = () => {
+      CAL.sel = dv.dataset.ds;
+      const dd = new Date(CAL.sel);
+      CAL.year = dd.getFullYear(); CAL.month = dd.getMonth();
+      calRender();
+      calOpenDay(CAL.sel);
+    };
+    dv.addEventListener("click", click);
+    dv.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); click(); } });
+  });
+}
+
+function calRenderWeek() {
+  const el = document.getElementById("j-cal");
+  if (!el) return;
+  document.querySelectorAll(".cal-v").forEach(b => b.classList.toggle("active", b.dataset.v === "week"));
+  const labels = LANG === "th" ? ["จ","อ","พ","พฤ","ศ","ส","อา"] : ["M","T","W","T","F","S","S"];
+  const base = CAL.sel ? new Date(CAL.sel) : new Date();
+  const dow = (base.getDay() + 6) % 7;
+  const monday = new Date(base); monday.setDate(base.getDate() - dow);
+  const ye = document.getElementById("cal-year");
+  const fmt = d => (LANG === "th" ? String(d.getDate()) + "/" + String(d.getMonth() + 1) : d.getDate() + "/" + (d.getMonth() + 1));
+  ye.textContent = fmt(monday) + " — " + fmt(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6));
+  let html = "<div class='cal-week'>";
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+    const ds = calDs(d);
+    const evs = calEventsOn(ds);
+    const mood = (S.joy.moods || []).find(x => x.date === ds);
+    const isToday = ds === calDs(new Date());
+    let cls = mood ? "m" + mood.mood : (d.getDay() === 0 ? "sun" : "day");
+    if (isToday) cls += " today";
+    if (CAL.sel === ds) cls += " sel";
+    const dots = evs.length ? "<span class='dots'>" + evs.slice(0, 3).map((e, i) => "<i class='" + catOf(e.category) + "'></i>").join("") + "</span>" : "";
+    html += "<div class='d " + cls + "' tabindex='0' data-ds='" + ds + "'><span style='font-size:10px'>" + labels[i] + "</span>" + d.getDate() +
+      (dots ? dots : "") + "</div>";
+  }
+  html += "</div>";
+  el.innerHTML = html;
+  el.querySelectorAll(".d[data-ds]").forEach(dv => dv.addEventListener("click", () => {
+    CAL.sel = dv.dataset.ds; calRenderWeek(); calOpenDay(CAL.sel);
+  }));
+}
+
+function calRenderAgenda() {
+  const el = document.getElementById("j-cal");
+  if (!el) return;
+  document.querySelectorAll(".cal-v").forEach(b => b.classList.toggle("active", b.dataset.v === "agenda"));
+  const ye = document.getElementById("cal-year");
+  ye.textContent = LANG === "th" ? "รายการนัดหมาย" : "Agenda";
+  const days = [...new Set(CAL.events.map(e => e.date))].sort();
+  if (!days.length) {
+    el.innerHTML = "<div style='text-align:center;color:#b9b2bc;font-size:13px;padding:22px'>" +
+      (LANG === "th" ? "ไม่มีนัดหมาย" : "no events") + "</div>";
+    return;
+  }
+  let html = "<div class='cal-agenda'>";
+  days.forEach(ds => {
+    const evs = calEventsOn(ds);
+    html += "<div class='ag-day' data-ds='" + ds + "'><span class='ag-date'>" + ds.slice(5) + "</span>" +
+      "<span class='ag-info'>" + evs.map(e => (e.start_time || "") + " " + e.title).join(" · ") + "</span></div>";
+  });
+  html += "</div>";
+  el.innerHTML = html;
+  el.querySelectorAll(".ag-day").forEach(dv => dv.addEventListener("click", () => {
+    CAL.sel = dv.dataset.ds; calOpenDay(CAL.sel);
+  }));
+}
+
+/* Panneau latéral — événements du jour */
+function calOpenDay(ds) {
+  const evs = calEventsOn(ds);
+  const body = document.getElementById("cal-panel-body");
+  const title = document.getElementById("cal-panel-date");
+  if (title) title.textContent = ds;
+  if (!evs.length) {
+    body.innerHTML = "<div class='cal-ev-empty'>" + (LANG === "th" ? "ไม่มีนัดหมายวันนี้" : "no events this day") + "</div>";
+  } else {
+    body.innerHTML = evs.map(e =>
+      "<div class='cal-ev'><span class='ev-dot " + catOf(e.category) + (evs.length === 1 ? " only" : "") + "'></span>" +
+      "<div class='ev-info'><div class='ev-title'>" + e.title +
+      (e.created_via === "telegram" ? " <span class='ev-tg'>✈️ Telegram</span>" : "") + "</div>" +
+      "<div class='ev-meta'>" + catName(e.category, LANG) +
+      (e.start_time ? " · " + e.start_time + (e.end_time ? "–" + e.end_time : "") : "") + "</div></div></div>"
+    ).join("");
+  }
+  _calPanel.classList.add("open");
+}
+
+function renderCal(moods) {
+  if (!CAL.inited) { CAL.inited = true; calInit(); }
 }
 
 function openDay(ds) {
@@ -920,7 +1227,17 @@ document.querySelectorAll("#login-langs button").forEach(b =>
     applyLang();
     showQuote();
     fillTestimonials();
-  }));
+  })); 
+
+/* ═════════ Panneau latéral événements ═════════ */
+const _calPanel = document.createElement("div");
+_calPanel.className = "cal-panel";
+_calPanel.innerHTML = '<div class="cal-panel-head"><b id="cal-panel-date"></b>' +
+  '<button class="cal-panel-close" aria-label="Close">✕</button></div>' +
+  '<div class="cal-panel-body" id="cal-panel-body"></div>';
+document.body.appendChild(_calPanel);
+_calPanel.querySelector(".cal-panel-close").addEventListener("click", () => _calPanel.classList.remove("open"));
+_calPanel.addEventListener("click", e => { if (e.target === _calPanel) _calPanel.classList.remove("open"); });
 </script>
 </body>
 </html>
