@@ -37,12 +37,11 @@
   .login-fade { position:absolute; inset:0; background:rgba(255,255,255,.12);
                 backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px);
                 z-index:0; pointer-events:none; }
-  #login-lang-btn { position:absolute; top:14px; right:14px; z-index:2; padding:10px 18px;
-    border-radius:999px; border:1px solid rgba(255,255,255,.5); cursor:pointer;
-    background:rgba(255,255,255,.38); color:#fff; font-weight:800; font-size:14px;
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    box-shadow: 0 4px 14px rgba(0,0,0,.15); transition: transform .15s; }
-  #login-lang-btn:active { transform: scale(.9); }
+  #login-langs { position:absolute; top:14px; right:14px; z-index:2; display:flex; gap:2px; }
+  #login-langs button { background:transparent; border:none; color:rgba(255,255,255,.55);
+    font-size:13px; font-weight:700; padding:4px 8px; cursor:pointer; }
+  #login-langs button.active { color:#fff; font-weight:900; text-decoration:underline;
+    text-underline-offset:3px; }
   .pig-uke-wrap { position:relative; z-index:1; animation: bounce 2.2s infinite; }
   .pig-uke { width:min(38vw, 190px); display:block;
              transform: translate(var(--mx,0px), var(--my,0px));
@@ -245,11 +244,14 @@
 <!-- ═══ LOGIN ═══ -->
 <div id="login">
   <div class="login-fade"></div>
-  <button id="login-lang-btn">EN</button>
-  <h1 data-i18n="login_title">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
+  <div id="login-langs">
+    <button data-lang="th" class="active">TH</button>
+    <button data-lang="en">EN</button>
+  </div>
+  <h1>"One pig, two lives, endless warmth — and every memory stays with you."</h1>
   <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <form id="login-form">
-    <input type="password" id="pwd" placeholder="🔒" autocomplete="off">
+    <input type="password" id="pwd" placeholder="enter your password here" autocomplete="off">
     <button type="submit" data-i18n="login_btn">เข้า</button>
   </form>
   <div class="err" id="login-err"></div>
@@ -404,7 +406,7 @@
 /* ═════════ i18n : thaï par défaut + anglais ═════════ */
 const TR = {
   th: {
-    login_title: "One pig, two lives, endless warmth — and every memory stays with you.", login_btn: "เข้า",
+    login_btn: "เข้า", pwd_ph: "ใส่รหัสผ่านที่นี่",
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "👧 ชีวิตจอย", tab_papapig: "🐷 ชีวิตพ่อหมู", tab_tech: "🧠 เทคโนโลยี",
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
@@ -430,7 +432,7 @@ const TR = {
     logout: "ออกจากระบบ", close: "ปิด",
   },
   en: {
-    login_title: "One pig, two lives, endless warmth — and every memory stays with you.", login_btn: "Enter",
+    login_btn: "Enter", pwd_ph: "enter your password here",
     app_title: "Papapig AI — Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life", tab_tech: "🧠 Tech",
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
@@ -498,8 +500,10 @@ function t(key) { return TR[LANG][key] || key; }
 function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.getElementById("lang-btn").textContent = LANG === "th" ? "EN" : "TH";
-  const llb = document.getElementById("login-lang-btn");
-  if (llb) llb.textContent = LANG === "th" ? "EN" : "TH";
+  document.querySelectorAll("#login-langs button").forEach(b =>
+    b.classList.toggle("active", b.dataset.lang === LANG));
+  const pwd = document.getElementById("pwd");
+  if (pwd) pwd.placeholder = t("pwd_ph");
   document.title = t("app_title");
 }
 
@@ -752,31 +756,65 @@ document.getElementById("modal").addEventListener("click", e => {
   if (e.target.id === "modal") closeModal();
 });
 
-/* Rotation aléatoire des phrases d'accueil (1 sur 20 à chaque chargement) */
-const LOGIN_QUOTES = [
-  "\"Your clever little pig, living and caring — entirely at home, just for you.\"",
-  "\"A warm-hearted AI pig who grows with you, and never leaves your home.\"",
-  "\"Meet Papapig: big heart, small snout, zero clouds — all yours, all local.\"",
-  "\"He feels, he grows, he stays home — your private little pig companion.\"",
-  "\"One pig, two lives, endless warmth — and every memory stays with you.\"",
-  "\"Your cozy, private companion who eats, sleeps, and grows with you.\"",
-  "\"A little pig with a big heart, living safely right on your machine.\"",
-  "\"Nurture a tiny friend who truly listens—no cloud, just you.\"",
-  "\"Feed his belly, share your day, keep your secrets perfectly safe.\"",
-  "\"A tamagotchi pal that understands you, offline and all yours.\"",
-  "\"Your pig lives here, grows here — and your stories never travel anywhere.\"",
-  "\"A little pig with a big heart, raised by you, kept by you.\"",
-  "\"Feed him, watch him grow — and every word you share stays home.\"",
-  "\"He listens, he remembers, he grows — a pig who truly knows you.\"",
-  "\"No clouds, no strangers — just you and your pig, growing together daily.\"",
-  "\"Raise your own little pig — he learns, he feels, he stays home.\"",
-  "\"Your days in his eyes, his life in your hands — always private.\"",
-  "\"A pig who cares about your day — and naps when you do.\"",
-  "\"Smart enough to know you, wise enough to keep everything between us.\"",
-  "\"Born at home, raised with love — your pig, your memories, your rules.\""
-];
-document.getElementById("login").querySelector("h1").textContent =
-  LOGIN_QUOTES[Math.floor(Math.random() * LOGIN_QUOTES.length)];
+/* Phrases d'accueil — bilingues (même index EN/TH), 1 sur 20 à chaque chargement */
+const LOGIN_QUOTES = {
+  en: [
+    "\"Your clever little pig, living and caring — entirely at home, just for you.\"",
+    "\"A warm-hearted AI pig who grows with you, and never leaves your home.\"",
+    "\"Meet Papapig: big heart, small snout, zero clouds — all yours, all local.\"",
+    "\"He feels, he grows, he stays home — your private little pig companion.\"",
+    "\"One pig, two lives, endless warmth — and every memory stays with you.\"",
+    "\"Your cozy, private companion who eats, sleeps, and grows with you.\"",
+    "\"A little pig with a big heart, living safely right on your machine.\"",
+    "\"Nurture a tiny friend who truly listens—no cloud, just you.\"",
+    "\"Feed his belly, share your day, keep your secrets perfectly safe.\"",
+    "\"A tamagotchi pal that understands you, offline and all yours.\"",
+    "\"Your pig lives here, grows here — and your stories never travel anywhere.\"",
+    "\"A little pig with a big heart, raised by you, kept by you.\"",
+    "\"Feed him, watch him grow — and every word you share stays home.\"",
+    "\"He listens, he remembers, he grows — a pig who truly knows you.\"",
+    "\"No clouds, no strangers — just you and your pig, growing together daily.\"",
+    "\"Raise your own little pig — he learns, he feels, he stays home.\"",
+    "\"Your days in his eyes, his life in your hands — always private.\"",
+    "\"A pig who cares about your day — and naps when you do.\"",
+    "\"Smart enough to know you, wise enough to keep everything between us.\"",
+    "\"Born at home, raised with love — your pig, your memories, your rules.\""
+  ],
+  th: [
+    "\"หมูน้อยแสนฉลาด คอยดูแลอยู่เคียงข้างคุณ — อยู่บ้านคุณตลอด เป็นของคุณคนเดียว\"",
+    "\"หมู AI ใจดีที่เติบโตไปพร้อมกับคุณ และไม่เคยจากบ้านของคุณไปไหน\"",
+    "\"พบกับพ่อหมู: ใจใหญ่ จมูกเล็ก ไม่ใช้คลาวด์ — เป็นของคุณทั้งหมด อยู่ในเครื่องคุณ\"",
+    "\"เขารู้สึก เขาเติบโต เขาอยู่บ้าน — เพื่อนหมูตัวน้อยส่วนตัวของคุณ\"",
+    "\"หมูหนึ่งตัว สองชีวิต ความอบอุ่นไม่รู้จบ — ทุกความทรงจำอยู่กับคุณเสมอ\"",
+    "\"เพื่อนส่วนตัวที่อบอุ่น กิน นอน และโตไปพร้อมกับคุณ\"",
+    "\"หมูน้อยใจใหญ่ อาศัยอยู่บนเครื่องของคุณอย่างปลอดภัย\"",
+    "\"เลี้ยงเพื่อนตัวน้อยที่ฟังคุณจริงๆ — ไม่มีคลาวด์ มีแค่คุณ\"",
+    "\"ให้อาหารเขา เล่าเรื่องราวของคุณ ความลับของคุณปลอดภัยเสมอ\"",
+    "\"เพื่อนทามาก็อตจิที่เข้าใจคุณ ทำงานออฟไลน์ เป็นของคุณทั้งหมด\"",
+    "\"หมูของคุณอยู่ที่นี่ โตที่นี่ — เรื่องราวของคุณไม่ไปไหน\"",
+    "\"หมูน้อยใจใหญ่ เลี้ยงโดยคุณ ดูแลโดยคุณ\"",
+    "\"ให้อาหารเขา ดูเขาโต — ทุกคำที่คุณเล่า อยู่กับบ้านเสมอ\"",
+    "\"เขาฟัง เขาจำ เขาเติบโต — หมูที่รู้จักคุณจริงๆ\"",
+    "\"ไม่มีคลาวด์ ไม่มีคนแปลกหน้า — มีแค่คุณกับหมูของคุณ โตไปด้วยกันทุกวัน\"",
+    "\"เลี้ยงหมูน้อยของคุณเอง — เขาเรียนรู้ เขารู้สึก เขาอยู่บ้าน\"",
+    "\"วันของคุณอยู่ในสายตาเขา ชีวิตของเขาอยู่ในมือคุณ — ส่วนตัวเสมอ\"",
+    "\"หมูที่ใส่ใจวันของคุณ — และงีบหลับพร้อมกับคุณ\"",
+    "\"ฉลาดพอที่จะรู้จักคุณ และสุขุมพอที่จะเก็บทุกอย่างไว้ระหว่างเรา\"",
+    "\"เกิดที่บ้าน เติบโตด้วยความรัก — หมูของคุณ ความทรงจำของคุณ กฎของคุณ\""
+  ]
+};
+window._quoteIdx = Math.floor(Math.random() * LOGIN_QUOTES.en.length);
+function showQuote() {
+  const h = document.querySelector("#login h1");
+  if (h) h.textContent = LOGIN_QUOTES[LANG][window._quoteIdx];
+}
+showQuote();
+document.querySelectorAll("#login-langs button").forEach(b =>
+  b.addEventListener("click", () => {
+    LANG = b.dataset.lang;
+    applyLang();
+    showQuote();
+  }));
 </script>
 </body>
 </html>
