@@ -47,10 +47,11 @@
     color:#fff; font-weight:900; }
   #login-langs button:active { transform: scale(.94); }
   .pig-uke-wrap { position:relative; z-index:1; animation: bounce 2.2s infinite; }
-  .pig-uke { width:min(38vw, 190px); display:block; border-radius:50%;
+  .pig-uke { width:min(38vw, 190px); display:block; border-radius:50%; opacity:.85;
              transform: translate(var(--mx,0px), var(--my,0px));
              -webkit-filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));
-             filter: drop-shadow(0 6px 18px rgba(0,0,0,.25)); }
+             filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));
+             box-shadow: 0 0 18px rgba(255,107,157,.45), 0 0 46px rgba(255,107,157,.25); }
   /* Témoignages flottants autour du cochon — sans cadres, texte pur */
   .testi { position:absolute; top:50%; transform:translateY(-50%); width:96px;
     color:#fff; font-size:10.5px; font-weight:600; line-height:1.35; text-align:center;
@@ -298,7 +299,7 @@
     <button data-lang="en">EN</button>
   </div>
   <h1 class="login-quote">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
-  <div class="app-title">SuperPapapig APP</div>
+  <div class="app-title">SuperPapapig App</div>
   <div class="pig-uke-wrap"><span class="testi testi-left"></span><img class="pig-uke" src="images/peppa-uke.jpg" alt=""><span class="testi testi-right"></span></div>
   <form id="login-form">
     <input type="password" id="pwd" placeholder="enter your password here" autocomplete="off">
