@@ -201,7 +201,7 @@
 <!-- ═══ LOGIN ═══ -->
 <div id="login">
   <div class="login-fade"></div>
-  <audio id="login-music" src="audio/login-music.mp3" loop preload="none"></audio>
+  <audio id="login-music" src="audio/login-music.mp3" loop preload="auto"></audio>
   <button id="music-btn" aria-label="Music">🎵</button>
   <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <h1 data-i18n="login_title">Papapig</h1>
@@ -395,14 +395,20 @@ function tryLogin() {
   }
 }
 document.getElementById("login-form").addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
-// Musique de la page de connexion (bouton play/pause, boucle)
+// Musique de la page de connexion — ON par défaut (autoplay + démarrage au 1er tap/scroll)
 const _music = document.getElementById("login-music");
 const _mbtn = document.getElementById("music-btn");
 let _musicOn = false;
+function _tryPlay() {
+  if (_musicOn) return;
+  _music.play().then(() => { _musicOn = true; _mbtn.textContent = "🔊"; }).catch(() => {});
+}
+_tryPlay(); // autoplay direct (accepté par certains navigateurs)
+["click", "touchstart", "keydown", "scroll"].forEach(ev =>
+  document.addEventListener(ev, () => _tryPlay(), { once: true, passive: true }));
 _mbtn.addEventListener("click", () => {
-  if (_musicOn) { _music.pause(); _mbtn.textContent = "🎵"; }
-  else { _music.play().catch(()=>{}); _mbtn.textContent = "🔊"; }
-  _musicOn = !_musicOn;
+  if (_musicOn) { _music.pause(); _mbtn.textContent = "🎵"; _musicOn = false; }
+  else { _tryPlay(); }
 });
 function _stopMusic() { if (_musicOn) { _music.pause(); _music.currentTime = 0; _mbtn.textContent = "🎵"; _musicOn = false; } }
 // Regard de Joy qui suit le curseur (parallax doux)
