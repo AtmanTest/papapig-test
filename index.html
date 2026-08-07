@@ -86,11 +86,8 @@
   }
   .tab.active { background: var(--cream); color: var(--dark); }
   main { max-width: 640px; margin: 0 auto; padding: 18px 14px 60px; }
-  .joy-hero { margin: 0 auto 16px; width:min(100%, 300px); border-radius:50%; overflow:hidden;
-    background: radial-gradient(circle at 50% 35%, #ffdcea 0%, #ffc9de 100%);
-    -webkit-filter: drop-shadow(0 3px 12px rgba(255, 154, 199, 0.45));
-    filter: drop-shadow(0 3px 12px rgba(255, 154, 199, 0.45)); }
-  .joy-hero img { width:100%; display:block; }
+  .joy-hero { text-align:center; margin: 0 0 16px; }
+  .joy-hero img { width:100%; max-width:300px; display:inline-block; }
   .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
   @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
   .card {
