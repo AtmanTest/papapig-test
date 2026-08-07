@@ -805,6 +805,7 @@ function showQuote() {
   if (h) h.textContent = LOGIN_QUOTES[LANG][window._quoteIdx];
 }
 showQuote();
+applyLang();
 document.querySelectorAll("#login-langs button").forEach(b =>
   b.addEventListener("click", () => {
     LANG = b.dataset.lang;
