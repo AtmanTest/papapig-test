@@ -389,11 +389,22 @@ const EMOMAP = {
        épuisement:"drained 😵", anxiété:"anxious 😰"}
 };
 
-/* Traductions EN des textes stockés en thaï (goal + activité) */
+/* Traductions EN des textes stockés en thaï (goal + activité + repas) */
 const TR_EN_TEXT = {
   "นอนเร็วขึ้น 💤": "sleep earlier 💤", "ผ่อนคลายสักหน่อย 🧘": "relax a bit 🧘", "ทำต่อไปแบบนี้ 💪": "keep it up 💪",
   "🏠 กลับถึงบ้าน": "🏠 came home", "🏢 ถึงที่ทำงาน": "🏢 arrived at work",
-  "🛵 ไปทำงาน": "🛵 left for work", "🌙 ราตรีสวัสดิ์": "🌙 good night", "☀️ อรุณสวัสดิ์": "☀️ good morning"
+  "🛵 ไปทำงาน": "🛵 left for work", "🌙 ราตรีสวัสดิ์": "🌙 good night", "☀️ อรุณสวัสดิ์": "☀️ good morning",
+  "กิน": "eat", "ทาน": "eat", "หิว": "hungry", "อิ่ม": "full", "ข้าว": "rice", "กับข้าว": "dish",
+  "อาหาร": "food", "ข้าวผัด": "fried rice", "ก๋วยเตี๋ยว": "noodles", "ชาบู": "shabu", "บุฟเฟ่ต์": "buffet",
+  "หมูกระทะ": "pork BBQ", "ไก่": "chicken", "หมู": "pork", "ปลา": "fish", "กุ้ง": "shrimp", "ไข่": "egg",
+  "ส้มตำ": "papaya salad", "ต้มยำ": "tom yum", "แกง": "curry", "สุกี้": "sukiyaki", "เค้ก": "cake",
+  "ไอศกรีม": "ice cream", "กาแฟ": "coffee", "ชา": "tea", "สมูทตี้": "smoothie", "บะหมี่": "noodles",
+  "พิซซ่า": "pizza", "เบอร์เกอร์": "burger", "ฟาสต์ฟู้ด": "fast food", "ของกิน": "snacks", "ของหวาน": "dessert",
+  "ขนม": "sweets", "ผลไม้": "fruit", "แคลอรี่": "calories", "แคลอรี": "calories", "เคลอรี่": "calories",
+  "calories": "calories", "อร่อย": "delicious", "ไม่อร่อย": "not tasty", "หวาน": "sweet", "เค็ม": "salty",
+  "เผ็ด": "spicy", "ร้าน": "restaurant", "เมนู": "menu", "สั่ง": "order", "เดลิเวอรี": "delivery",
+  "grabfood": "GrabFood", "foodpanda": "Foodpanda", "7-11": "7-Eleven", "เซเว่น": "7-Eleven",
+  "มอคค่า": "mocha", "ลาเต้": "latte", "วิปครีม": "whipped cream", "นมสด": "milk", "น้ำเปล่า": "water"
 };
 function _tTxt(s) { return LANG === "en" ? (TR_EN_TEXT[s] || s) : s; }
 
@@ -511,7 +522,7 @@ function render(s) {
   meals.forEach(me => {
     const el = document.createElement("div"); el.className = "meal";
     el.innerHTML = "<span>" + me.emoji + "</span>" +
-      (me.word ? "<b>" + me.word + "</b>" : "") +
+      (me.word ? "<b>" + _tTxt(me.word) + "</b>" : "") +
       "<span class='t'>" + me.date.slice(5) + " " + me.at + "</span>";
     mWrap.appendChild(el);
   });
