@@ -166,8 +166,11 @@
 
   /* Tamagotchi */
   .tama { text-align:center; }
-  .tama .face { font-size: 76px; display:inline-block; }
+  .tama .face { display:inline-block; width:110px; height:110px; border-radius:50%; overflow:hidden;
+                box-shadow: 0 4px 14px rgba(255,107,157,.35); }
+  .tama .face img { width:100%; height:100%; object-fit:cover; display:block; }
   .tama .status { font-size: 13px; color:#8a8590; margin-top:4px; }
+  .emoji-icon { width:20px; height:20px; border-radius:50%; object-fit:cover; vertical-align:-4px; display:inline-block; }
   .gauges { display:grid; gap:10px; margin-top: 14px; }
   .gauge .lab { display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:4px; }
   .gauge .lab span:last-child { color:#8a8590; }
@@ -272,7 +275,7 @@
   <section id="view-papapig" class="hidden">
     <div class="grid">
       <div class="card full tama">
-        <div class="face" id="p-face">🐷</div>
+        <div class="face" id="p-face"><img src="images/peppa-ai.jpg" alt="Papapig AI"></div>
         <div class="status" id="p-status">—</div>
         <div class="gauges">
           <div class="gauge"><div class="lab"><span data-i18n="p_energy">⚡ พลังงาน</span><span id="p-energy">85</span></div>
@@ -516,9 +519,13 @@ function render(s) {
   document.getElementById("p-level").textContent = (LANG === "th" ? "เลเวล " : "Lv. ") + (P.level ?? 2);
   document.getElementById("p-xp").textContent = "XP " + (P.xp ?? 120);
   document.getElementById("p-xp-bar").style.width = ((P.xp ?? 120) % 100) + "%";
-  document.getElementById("p-face").textContent = "🐷";
-  document.getElementById("p-status").textContent = P.emotion ? (EMOMAP[LANG][P.emotion] || P.emotion) : "—";
-  document.getElementById("p-emotion").textContent = P.emotion ? (EMOMAP[LANG][P.emotion] || P.emotion) : "—";
+  const emoHTML = em => {
+    const e = EMOMAP[LANG][em] || em || "";
+    const m = String(e).match(/^(.*?)(\s+[^\s]+)$/);
+    return m ? m[1] + " <img class='emoji-icon' src='images/peppa-ai.jpg' alt=''>" : e;
+  };
+  document.getElementById("p-status").innerHTML = P.emotion ? emoHTML(P.emotion) : "—";
+  document.getElementById("p-emotion").innerHTML = P.emotion ? emoHTML(P.emotion) : "—";
   document.getElementById("p-valence").textContent = (LANG === "th" ? "วาเลนซ์ " : "valence ") + (P.valence >= 0 ? "+" : "") + (P.valence ?? 0).toFixed(2);
   document.getElementById("p-last-meal").textContent = P.last_meal_emoji || "—";
   document.getElementById("p-last-meal-at").textContent = P.last_meal_at || "";
