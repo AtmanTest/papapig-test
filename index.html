@@ -50,9 +50,8 @@
   #login > *:not(.login-fade) { position:relative; z-index:1; }
   #login .pig { font-size: 84px; animation: bounce 2.2s infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-  #login h1.login-quote { color:#fff; font-size:17px; font-weight:600; font-style:italic;
-    padding: 0 18px; text-align:center; max-width:560px; line-height:1.5;
-    text-shadow: 0 1px 6px rgba(0,0,0,.3); }
+  #login h1.login-quote { color:#fff; font-size:30px; font-weight:800; padding:0 18px;
+    text-align:center; line-height:1.3; text-shadow: 0 2px 12px rgba(0,0,0,.3); }
   /* Titre du site — rose 3D cartoon */
   #login .app-title {
     font-family: 'PeppaBold', 'ButteredToast', sans-serif;
@@ -279,13 +278,13 @@
     <button data-lang="th" class="active">TH</button>
     <button data-lang="en">EN</button>
   </div>
+  <h1 class="login-quote">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
+  <div class="app-title">🧠 Papapig APP</div>
+  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <form id="login-form">
     <input type="password" id="pwd" placeholder="enter your password here" autocomplete="off">
     <button type="submit" data-i18n="login_btn">เข้า</button>
   </form>
-  <h1 class="login-quote">"One pig, two lives, endless warmth — and every memory stays with you."</h1>
-  <div class="app-title">🧠 Papapig APP</div>
-  <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <div class="err" id="login-err"></div>
   <div class="tech-showcase">
     <h2 data-i18n="tech_title">🧠 สมองและความสามารถของพ่อหมู</h2>
