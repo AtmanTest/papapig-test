@@ -240,17 +240,27 @@
   @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
   /* Panneau latéral événements */
   .cal-card { position:relative; }
-  .cal-panel { position:absolute; top:0; right:-340px; width:min(340px, 88vw); height:100%; z-index:60;
-    background:rgba(255,245,250,.42); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-    box-shadow:-6px 0 24px rgba(214,80,140,.14); transition:right .25s ease; display:flex;
-    flex-direction:column; }
+  .cal-panel { position:absolute; top:8px; bottom:8px; right:-348px; width:min(340px, 88vw); height:auto; z-index:60;
+    background:rgba(255,120,170,.24); backdrop-filter:blur(10px) saturate(1.5); -webkit-backdrop-filter:blur(10px) saturate(1.5);
+    border-radius:20px; border:1px solid rgba(255,255,255,.5);
+    box-shadow:0 8px 32px rgba(214,60,130,.28); transition:right .25s ease; display:flex;
+    flex-direction:column; overflow:hidden; }
   .cal-panel.open { right:0; }
   .cal-panel-head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px;
     background:linear-gradient(135deg,#ff9ec2,#ff6b9d); color:#fff; }
-  .cal-panel-head b { font-size:15px; }
-  .cal-panel-close { background:rgba(255,255,255,.25); border:none; color:#fff; font-size:16px; font-weight:900;
-    border-radius:50%; width:34px; height:34px; cursor:pointer; }
+  .cal-panel-head b { font-size:15px; text-shadow:0 1px 2px rgba(180,40,90,.3); }
+  .cal-panel-close { background:rgba(255,255,255,.55); border:none; color:#d6336c; font-size:16px; font-weight:900;
+    border-radius:50%; width:34px; height:34px; cursor:pointer; line-height:1; }
   .cal-panel-body { flex:1; overflow-y:auto; padding:14px 18px; }
+  .cal-panel-body .sec { margin:14px 0; }
+  .cal-panel-body .sec:first-child { margin-top:0; }
+  .cal-panel-body .sec-t { font-size:10.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase;
+    color:#b06a86; margin-bottom:6px; }
+  .cal-panel-body .row { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid rgba(214,80,140,.14); }
+  .cal-panel-body .row:last-child { border-bottom:none; }
+  .cal-panel-body .row .ico { font-size:18px; width:26px; text-align:center; flex:none; }
+  .cal-panel-body .row .tx { font-size:13.5px; font-weight:700; color:#4a2b3d; line-height:1.35; }
+  .cal-panel-body .row .tx small { display:block; font-size:11px; font-weight:600; color:#7a4f66; margin-top:1px; }
   .cal-ev { display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid #f6e3ea; }
   .cal-ev:last-child { border-bottom:none; }
   .cal-ev .ev-dot { width:10px; height:10px; border-radius:50%; flex:none; }
@@ -272,7 +282,11 @@
   .cal-agenda .ag-info { font-size:12.5px; color:#5a3345; flex:1; }
   /* Dark mode */
   @media (prefers-color-scheme: dark) {
-    .cal-panel { background:rgba(52,36,56,.5); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:-6px 0 24px rgba(0,0,0,.3); }
+    .cal-panel { background:rgba(120,30,70,.38); backdrop-filter:blur(10px) saturate(1.5); -webkit-backdrop-filter:blur(10px) saturate(1.5); border-color:rgba(255,158,194,.35); box-shadow:0 8px 32px rgba(0,0,0,.4); }
+    .cal-panel-body .sec-t { color:#ff9ec2; }
+    .cal-panel-body .row .tx { color:#ffe3ec; }
+    .cal-panel-body .row .tx small { color:#ffb8cf; }
+    .cal-panel-body .row { border-bottom-color:rgba(255,158,194,.18); }
     .cal-ev .ev-title { color:#ffd9e8; }
     .cal-ev { border-bottom-color:#3a2f3d; }
     .cal-agenda .ag-day { background:#2d2430; border-color:#3a2f3d; }
@@ -829,6 +843,7 @@ let CAL = { year: 0, month: 0, view: "month", sel: null, events: [], loading: tr
 const CAT_COLOR = { perso: "c-perso", travail: "c-travail", sante: "c-sante", anniv: "c-anniv", autres: "c-autres" };
 const CAT_LBL = { perso: "perso", travail: "travail", sante: "santé", anniv: "anniv", autres: "autres" };
 const catOf = c => CAT_COLOR[c] || "c-autres";
+const catIcon = c => ({ perso: "🧡", travail: "💼", sante: "🩺", anniv: "🎂", autres: "📌" }[c] || "📌");
 const catName = (c, l) => (l === "th" ? { perso: "ส่วนตัว", travail: "งาน", sante: "สุขภาพ", anniv: "วันเกิด", autres: "อื่นๆ" }[c] || "อื่นๆ" : CAT_LBL[c] || "autres");
 
 /* EventProvider — Supabase REST (lecture seule) → fallback events.json local */
@@ -1070,51 +1085,38 @@ function calOpenDay(ds) {
   const w = (S.weather || {})[ds];
   const mealsDay = (S.joy.meals || []).filter(x => x.date === ds);
   const hol = (S.holidays || {})[ds];
-  let bodyHtml = "";
+  const T = LANG === "th";
+  let h = "";
+
+  const sec = (label, rows) => { if (!rows) return ""; return "<div class='sec'><div class='sec-t'>" + label + "</div>" + rows + "</div>"; };
+  const row = (ico, tx, small) => "<div class='row'><span class='ico'>" + ico + "</span><div class='tx'>" + tx + (small ? "<small>" + small + "</small>" : "") + "</div></div>";
 
   /* Mood (vraie donnée) */
   if (m && m.mood) {
     const em = ["😭","😟","😐","🙂","😍"][m.mood - 1];
-    bodyHtml += "<div class='cal-ev'><span style='font-size:20px'>" + em + "</span>" +
-      "<div class='ev-info'><div class='ev-title'>" + MOODS[LANG][m.mood] + "</div>" +
-      "<div class='ev-meta'>" + (LANG === "th" ? "อารมณ์" : "mood") +
-      (m.note ? " · " + m.note : "") + "</div></div></div>";
+    h += sec(T ? "อารมณ์" : "Mood", row(em, MOODS[LANG][m.mood], m.note || (T ? "อารมณ์ประจำวัน" : "daily mood")));
   }
   /* Repas (vraie donnée) */
   if (mealsDay.length) {
-    bodyHtml += mealsDay.map(x =>
-      "<div class='cal-ev'><span style='font-size:18px'>" + x.emoji + "</span>" +
-      "<div class='ev-info'><div class='ev-title'>" + (x.word || (LANG === "th" ? "อาหาร" : "meal")) + "</div>" +
-      "<div class='ev-meta'>" + (LANG === "th" ? "กิน" : "meals") + " · " + x.at + "</div></div></div>"
-    ).join("");
+    h += sec(T ? "อาหาร" : "Meals", mealsDay.map(x =>
+      row(x.emoji || "🍽️", x.word || (T ? "อาหาร" : "meal"), (T ? "กิน" : "ate") + " · " + x.at)).join(""));
   }
   /* Météo (vraie donnée) */
   if (w && w.tmax !== undefined && w.tmax !== null) {
     const rain = w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️");
-    bodyHtml += "<div class='cal-ev'><span style='font-size:18px'>" + rain + "</span>" +
-      "<div class='ev-info'><div class='ev-title'>" + w.tmax + "° / " + w.tmin + "°</div>" +
-      "<div class='ev-meta'>" + (LANG === "th" ? "สภาพอากาศกรุงเทพ" : "Bangkok weather") + " · ☔ " + w.pop + "%</div></div></div>";
+    h += sec(T ? "อากาศ" : "Weather", row(rain, w.tmax + "° / " + w.tmin + "°", (T ? "สภาพอากาศกรุงเทพ" : "Bangkok weather") + " · ☔ " + w.pop + "%"));
   }
   /* Fête thaïlandaise (vraie donnée) */
   if (hol) {
-    bodyHtml += "<div class='cal-ev'><span style='font-size:18px'>🎉</span>" +
-      "<div class='ev-info'><div class='ev-title'>" + hol[LANG] + "</div>" +
-      "<div class='ev-meta'>" + (LANG === "th" ? "วันสำคัญ" : "Thai holiday") + "</div></div></div>";
+    h += sec(T ? "วันสำคัญ" : "Thai holiday", row("🎉", hol[LANG], T ? "วันหยุดและเทศกาล" : "holiday & festival"));
   }
   /* Événements réels (Supabase) */
   if (evs.length) {
-    bodyHtml += "<div class='cal-ev' style='border-top:2px solid #f6e3ea;margin-top:6px;padding-top:12px'></div>" +
-      evs.map(e =>
-        "<div class='cal-ev'><span class='ev-dot " + catOf(e.category) + (evs.length === 1 ? " only" : "") + "'></span>" +
-        "<div class='ev-info'><div class='ev-title'>" + e.title +
-        (e.created_via === "telegram" ? " <span class='ev-tg'>✈️ Telegram</span>" : "") + "</div>" +
-        "<div class='ev-meta'>" + catName(e.category, LANG) +
-        (e.start_time ? " · " + e.start_time + (e.end_time ? "–" + e.end_time : "") : "") + "</div></div></div>"
-      ).join("");
+    h += sec(T ? "กิจกรรม" : "Events", evs.map(e =>
+      row(catIcon(e.category), e.title + (e.created_via === "telegram" ? " ✈️" : ""),
+        catName(e.category, LANG) + (e.start_time ? " · " + e.start_time + (e.end_time ? "–" + e.end_time : "") : ""))).join(""));
   }
-  if (!bodyHtml) bodyHtml = "<div class='cal-ev-empty'>" +
-    (LANG === "th" ? "ไม่มีข้อมูลวันนี้" : "no data for this day") + "</div>";
-  body.innerHTML = bodyHtml;
+  body.innerHTML = h || "<div class='cal-ev-empty'>" + (T ? "ไม่มีข้อมูลวันนี้" : "no data this day") + "</div>";
   _calPanel.classList.add("open");
 }
 
