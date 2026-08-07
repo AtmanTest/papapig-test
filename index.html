@@ -176,11 +176,23 @@
   footer { text-align:center; font-size:11px; color:#b9b2bc; margin-top: 24px; }
 
   /* Tamagotchi */
-  .tama { text-align:center; }
-  .tama .face { display:inline-block; width:110px; height:110px; border-radius:50%; overflow:hidden;
+  .tama { text-align:left; }
+  .tama-row { display:flex; gap:16px; align-items:center; }
+  .tama .face { display:inline-block; width:110px; height:110px; border-radius:50%; overflow:hidden; flex:none;
                 box-shadow: 0 4px 14px rgba(255,107,157,.35); }
   .tama .face img { width:100%; height:100%; object-fit:cover; display:block; }
-  .tama .status { font-size: 13px; color:#8a8590; margin-top:4px; }
+  .tama-info { flex:1; min-width:0; }
+  .birth { font-size:12px; color:#8a8590; }
+  .birth b { display:block; font-size:15px; color:var(--dark); margin-top:2px; letter-spacing:.3px; }
+  .countdown { margin-top:10px; }
+  .cd-label { font-size:12px; color:#8a8590; }
+  .cd-time { font-weight:800; font-size:18px; color:var(--pink); }
+  .cake-bar { height:16px; background:#fde3ec; border-radius:999px; overflow:hidden; margin-top:6px;
+              border:1px solid #ffd1e0; }
+  .cake-fill { height:100%; width:0%; background:linear-gradient(90deg,#ffb3cd,#ff6b9d);
+               border-radius:999px; transition:width 1s ease; }
+  .cd-pct { font-size:11px; color:#8a8590; text-align:right; margin-top:2px; }
+  .tama .status { font-size: 13px; color:#8a8590; margin-top:10px; text-align:center; }
   .emoji-icon { width:20px; height:20px; border-radius:50%; object-fit:cover; vertical-align:-4px; display:inline-block; }
   .gauges { display:grid; gap:10px; margin-top: 14px; }
   .gauge .lab { display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:4px; }
@@ -285,7 +297,18 @@
   <section id="view-papapig" class="hidden">
     <div class="grid">
       <div class="card full tama">
-        <div class="face" id="p-face"><img src="images/peppa-ai.jpg" alt="Papapig AI"></div>
+        <div class="tama-row">
+          <div class="face" id="p-face"><img src="images/peppa-ai.jpg" alt="Papapig AI"></div>
+          <div class="tama-info">
+            <div class="birth"><span data-i18n="p_birth">🎂 วันเกิด</span><b>07/08/2026 · 20:47</b></div>
+            <div class="countdown">
+              <div class="cd-label" data-i18n="p_cd">🎂 ครบ 1 เดือนใน</div>
+              <div class="cd-time" id="p-cd">—</div>
+              <div class="cake-bar"><div id="p-cake" class="cake-fill"></div></div>
+              <div class="cd-pct" id="p-cd-pct">0%</div>
+            </div>
+          </div>
+        </div>
         <div class="status" id="p-status">—</div>
         <div class="gauges">
           <div class="gauge"><div class="lab"><span data-i18n="p_energy">⚡ พลังงาน</span><span id="p-energy">85</span></div>
@@ -351,6 +374,7 @@ const TR = {
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     p_energy: "⚡ พลังงาน", p_hunger: "🍗 ความหิว", p_sleep: "😴 การนอน",
+    p_birth: "🎂 วันเกิด", p_cd: "🎂 ครบ 1 เดือนใน",
     p_persona: "🎭 บุคลิก", p_persona_sub: "พ่อหมู — ค่าเริ่มต้น",
     p_emotion: "💓 อารมณ์", p_last_meal: "🍽️ มื้อสุดท้าย",
     p_crons: "I love my job", p_activity: "📍 กิจกรรม",
@@ -365,6 +389,7 @@ const TR = {
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     p_energy: "⚡ Energy", p_hunger: "🍗 Hunger", p_sleep: "😴 Sleep",
+    p_birth: "🎂 BIRTHDAY", p_cd: "🎂 1st month in",
     p_persona: "🎭 Persona", p_persona_sub: "Papa Pig — default",
     p_emotion: "💓 Emotion", p_last_meal: "🍽️ Last Meal",
     p_crons: "I love my job", p_activity: "📍 Recent Activity",
@@ -549,6 +574,17 @@ function render(s) {
   document.getElementById("p-status").innerHTML = P.emotion ? emoHTML(P.emotion) : "—";
   document.getElementById("p-emotion").innerHTML = P.emotion ? emoHTML(P.emotion) : "—";
   document.getElementById("p-valence").textContent = (LANG === "th" ? "วาเลนซ์ " : "valence ") + (P.valence >= 0 ? "+" : "") + (P.valence ?? 0).toFixed(2);
+
+  /* Papapig — naissance + compte à rebours 1er mois */
+  const _BIRTH = new Date(2026, 7, 7, 20, 47).getTime();
+  const _ONE_MONTH = 30 * 24 * 3600 * 1000;
+  const _now = Date.now();
+  const _pct = Math.min(100, Math.max(0, (_now - _BIRTH) / _ONE_MONTH * 100));
+  document.getElementById("p-cake").style.width = _pct.toFixed(1) + "%";
+  document.getElementById("p-cd-pct").textContent = _pct.toFixed(1) + "%";
+  const _left = Math.max(0, _BIRTH + _ONE_MONTH - _now);
+  const _dj = Math.floor(_left / 86400000), _dh = Math.floor((_left % 86400000) / 3600000);
+  document.getElementById("p-cd").textContent = (LANG === "th" ? _dj + " วัน " + _dh + " ชม." : _dj + "d " + _dh + "h");
   document.getElementById("p-last-meal").textContent = P.last_meal_emoji || "—";
   document.getElementById("p-last-meal-at").textContent = P.last_meal_at || "";
 
