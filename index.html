@@ -175,6 +175,15 @@
           background:#fff; border-radius:18px; border:1px dashed #e5c9d5; }
   footer { text-align:center; font-size:11px; color:#b9b2bc; margin-top: 24px; }
 
+  /* Vitrine techno */
+  .tech-hero h3 { margin:0 0 6px; }
+  .tech-sub { font-size:12.5px; color:#8a8590; line-height:1.5; }
+  .tech-grid { margin-top:12px; }
+  .tech-item { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; }
+  .tech-item b { font-size:13.5px; color:var(--dark); display:block; margin-bottom:3px; }
+  .t-ico { font-size:26px; line-height:1.1; flex:none; }
+  .t-t { font-size:12px; color:#8a8590; line-height:1.45; }
+
   /* Tamagotchi */
   .tama { text-align:left; }
   .tama-row { display:flex; gap:16px; align-items:center; }
@@ -262,6 +271,7 @@
   <div class="tabs">
     <button class="tab active" id="tab-joy" data-i18n="tab_joy">👧 ชีวิตจอย</button>
     <button class="tab" id="tab-papapig" data-i18n="tab_papapig">🐷 ชีวิตพ่อหมู</button>
+    <button class="tab" id="tab-tech" data-i18n="tab_tech">🧠 เทคโนโลยี</button>
   </div>
 </header>
 
@@ -355,6 +365,26 @@
       <div class="card full lock" data-i18n="lock">🔐 ข้อความทั้งหมดถูกเข้ารหัส (AES-256)</div>
     </div>
   </section>
+
+  <!-- ── ONGLET TECHNO (vitrine — zéro donnée personnelle) ── -->
+  <section id="view-tech" class="hidden">
+    <div class="card full tech-hero">
+      <h3 data-i18n="tech_title">🧠 สมองและความสามารถของพ่อหมู</h3>
+      <div class="tech-sub" data-i18n="tech_sub">ระบบ AI ที่ทำงานบนเครื่องส่วนตัว 100% — ไม่มีข้อมูลส่วนตัวบนอินเทอร์เน็ต</div>
+    </div>
+    <div class="grid tech-grid">
+      <div class="card tech-item"><div class="t-ico">🧠</div><div><b data-i18n="t1_t">เครื่องยนต์อารมณ์</b><div class="t-t" data-i18n="t1_d">ความสุข × ความตื่นเต้น (Russell) · 27 อารมณ์ · กระจกสะท้อนอารมณ์ 70%</div></div></div>
+      <div class="card tech-item"><div class="t-ico">🐷</div><div><b data-i18n="t2_t">ทามาก็อตจิมีชีวิต</b><div class="t-t" data-i18n="t2_d">พลังงาน · ความหิว · การนอน · XP · อารมณ์ — เปลี่ยนแบบเรียลไทม์</div></div></div>
+      <div class="card tech-item"><div class="t-ico">📝</div><div><b data-i18n="t3_t">บันทึกอัตโนมัติ</b><div class="t-t" data-i18n="t3_d">วิเคราะห์คำศัพท์ ไม่ใช้ LLM — ทำงานในเครื่อง ฟรี</div></div></div>
+      <div class="card tech-item"><div class="t-ico">⏰</div><div><b data-i18n="t4_t">ระบบอัตโนมัติ</b><div class="t-t" data-i18n="t4_d">มื้ออาหาร · เช้า · กลางคืน · สติกเกอร์ · เตือนความจำ (cron ในเครื่อง)</div></div></div>
+      <div class="card tech-item"><div class="t-ico">📅</div><div><b data-i18n="t5_t">ปฏิทินอัจฉริยะ</b><div class="t-t" data-i18n="t5_d">อารมณ์ + อากาศ + อาหาร + วันหยุดไทย (Open-Meteo กรุงเทพ)</div></div></div>
+      <div class="card tech-item"><div class="t-ico">🌐</div><div><b data-i18n="t6_t">สองภาษา</b><div class="t-t" data-i18n="t6_d">ไทย & อังกฤษ — แปลทั้งหมด</div></div></div>
+      <div class="card tech-item"><div class="t-ico">🎵</div><div><b data-i18n="t7_t">เพลงและฟอนต์</b><div class="t-t" data-i18n="t7_d">เพลงเปิด 15 วิ · ฟอนต์ Peppa ทางการ</div></div></div>
+      <div class="card tech-item"><div class="t-ico">🔒</div><div><b data-i18n="t8_t">ความปลอดภัย</b><div class="t-t" data-i18n="t8_d">เข้ารหัส AES-256 · ไม่มีข้อมูลส่วนตัวออนไลน์ · ไม่มีความลับในเว็บ</div></div></div>
+      <div class="card tech-item"><div class="t-ico">🖥️</div><div><b data-i18n="t9_t">ทำงานในเครื่อง 100%</b><div class="t-t" data-i18n="t9_d">AI รันบนเครื่องส่วนตัว ไม่ใช้คลาวด์</div></div></div>
+      <div class="card tech-item"><div class="t-ico">📱</div><div><b data-i18n="t10_t">เชื่อมต่อ</b><div class="t-t" data-i18n="t10_d">WhatsApp + Telegram · สติกเกอร์สร้างในเครื่อง</div></div></div>
+    </div>
+  </section>
   <footer data-i18n="footer">Papapig Intelligence System · ใช้ LM Studio ในเครื่อง · ไม่มีการแชร์ข้อมูลส่วนตัว</footer>
 </main>
 </div>
@@ -374,7 +404,7 @@
 const TR = {
   th: {
     login_title: "Papapig AI Daily Dashboard", login_btn: "เข้า",
-    app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "👧 ชีวิตจอย", tab_papapig: "🐷 ชีวิตพ่อหมู",
+    app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "👧 ชีวิตจอย", tab_papapig: "🐷 ชีวิตพ่อหมู", tab_tech: "🧠 เทคโนโลยี",
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     p_energy: "⚡ พลังงาน", p_hunger: "🍗 ความหิว", p_sleep: "😴 การนอน",
@@ -382,6 +412,17 @@ const TR = {
     p_persona: "🎭 บุคลิก", p_persona_sub: "พ่อหมู — ค่าเริ่มต้น",
     p_emotion: "💓 อารมณ์", p_last_meal: "🍽️ มื้อสุดท้าย",
     p_crons: "I love my job", p_activity: "📍 กิจกรรม",
+    tech_title: "🧠 สมองและความสามารถของพ่อหมู", tech_sub: "ระบบ AI ที่ทำงานบนเครื่องส่วนตัว 100% — ไม่มีข้อมูลส่วนตัวบนอินเทอร์เน็ต",
+    t1_t: "เครื่องยนต์อารมณ์", t1_d: "ความสุข × ความตื่นเต้น (Russell) · 27 อารมณ์ · กระจกสะท้อนอารมณ์ 70%",
+    t2_t: "ทามาก็อตจิมีชีวิต", t2_d: "พลังงาน · ความหิว · การนอน · XP · อารมณ์ — เปลี่ยนแบบเรียลไทม์",
+    t3_t: "บันทึกอัตโนมัติ", t3_d: "วิเคราะห์คำศัพท์ ไม่ใช้ LLM — ทำงานในเครื่อง ฟรี",
+    t4_t: "ระบบอัตโนมัติ", t4_d: "มื้ออาหาร · เช้า · กลางคืน · สติกเกอร์ · เตือนความจำ (cron ในเครื่อง)",
+    t5_t: "ปฏิทินอัจฉริยะ", t5_d: "อารมณ์ + อากาศ + อาหาร + วันหยุดไทย (Open-Meteo กรุงเทพ)",
+    t6_t: "สองภาษา", t6_d: "ไทย & อังกฤษ — แปลทั้งหมด",
+    t7_t: "เพลงและฟอนต์", t7_d: "เพลงเปิด 15 วิ · ฟอนต์ Peppa ทางการ",
+    t8_t: "ความปลอดภัย", t8_d: "เข้ารหัส AES-256 · ไม่มีข้อมูลส่วนตัวออนไลน์ · ไม่มีความลับในเว็บ",
+    t9_t: "ทำงานในเครื่อง 100%", t9_d: "AI รันบนเครื่องส่วนตัว ไม่ใช้คลาวด์",
+    t10_t: "เชื่อมต่อ", t10_d: "WhatsApp + Telegram · สติกเกอร์สร้างในเครื่อง",
     lock: "🔐 ข้อความทั้งหมดถูกเข้ารหัส (AES-256)",
     footer: "Papapig Intelligence System · ใช้ LM Studio ในเครื่อง · ไม่มีการแชร์ข้อมูลส่วนตัว",
     no_data: "ยังไม่มีข้อมูล — เริ่มบันทึกคืนนี้ 📔", no_meal: "ยังไม่มีข้อมูลมื้ออาหาร",
@@ -389,7 +430,7 @@ const TR = {
   },
   en: {
     login_title: "Papapig AI Daily Dashboard", login_btn: "Enter",
-    app_title: "Papapig AI — Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life",
+    app_title: "Papapig AI — Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life", tab_tech: "🧠 Tech",
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     p_energy: "⚡ Energy", p_hunger: "🍗 Hunger", p_sleep: "😴 Sleep",
@@ -397,6 +438,17 @@ const TR = {
     p_persona: "🎭 Persona", p_persona_sub: "Papa Pig — default",
     p_emotion: "💓 Emotion", p_last_meal: "🍽️ Last Meal",
     p_crons: "I love my job", p_activity: "📍 Recent Activity",
+    tech_title: "🧠 Papapig AI — brain & skills", tech_sub: "100% local AI — zero personal data online",
+    t1_t: "Emotion engine", t1_d: "pleasure × arousal (Russell) · 27 emotions · 70% mood mirror",
+    t2_t: "Living tamagotchi", t2_d: "energy · hunger · sleep · XP · mood — evolves in real time",
+    t3_t: "Automatic journal", t3_d: "word analysis, zero LLM — local & free",
+    t4_t: "Automations", t4_d: "meals · morning · bedtime · stickers · reminders (local cron jobs)",
+    t5_t: "Smart calendar", t5_d: "mood + weather + food + Thai holidays (Open-Meteo Bangkok)",
+    t6_t: "Bilingual", t6_d: "Thai & English — fully translated",
+    t7_t: "Music & fonts", t7_d: "15s login music · official Peppa fonts",
+    t8_t: "Security", t8_d: "AES-256 encryption · zero private data online · zero secrets in the site",
+    t9_t: "100% local", t9_d: "AI runs on a local machine, zero cloud",
+    t10_t: "Connected", t10_d: "WhatsApp + Telegram · stickers generated locally",
     lock: "🔐 All conversations are encrypted (AES-256)",
     footer: "Papapig Intelligence System · Local LM Studio · no private data shared",
     no_data: "no data yet — journal starts tonight 📔", no_meal: "no meal data yet",
@@ -507,11 +559,14 @@ if (sessionStorage.getItem("pp_auth") === "1") showApp();
 /* ═════════ Tabs ═════════ */
 document.getElementById("tab-joy").addEventListener("click", () => switchTab("joy"));
 document.getElementById("tab-papapig").addEventListener("click", () => switchTab("papapig"));
+document.getElementById("tab-tech").addEventListener("click", () => switchTab("tech"));
 function switchTab(which) {
   document.getElementById("view-joy").classList.toggle("hidden", which !== "joy");
   document.getElementById("view-papapig").classList.toggle("hidden", which !== "papapig");
+  document.getElementById("view-tech").classList.toggle("hidden", which !== "tech");
   document.getElementById("tab-joy").classList.toggle("active", which === "joy");
   document.getElementById("tab-papapig").classList.toggle("active", which === "papapig");
+  document.getElementById("tab-tech").classList.toggle("active", which === "tech");
 }
 
 /* ═════════ Lang switch ═════════ */
