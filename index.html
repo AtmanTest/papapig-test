@@ -174,6 +174,7 @@
   .lock { text-align:center; padding: 14px; color:#8a8590; font-size:12px;
           background:#fff; border-radius:18px; border:1px dashed #e5c9d5; }
   footer { text-align:center; font-size:11px; color:#b9b2bc; margin-top: 24px; }
+  .tagline { font-size:13px; color:#b06a85; font-style:italic; margin:6px auto 0; max-width:520px; line-height:1.5; }
 
   /* Vitrine techno */
   .tech-hero h3 { margin:0 0 6px; }
@@ -247,6 +248,7 @@
   <button id="music-btn" aria-label="Music">🎵</button>
   <div class="pig-uke-wrap"><img class="pig-uke" src="images/peppa-uke.png" alt=""></div>
   <h1 data-i18n="login_title">Papapig AI Daily Dashboard</h1>
+  <p class="tagline" data-i18n="login_tagline">หมูน้อยหนึ่งตัว สองชีวิต ความอบอุ่นไม่รู้จบ — ทุกความทรงจำอยู่กับคุณเสมอ</p>
   <form id="login-form">
     <input type="password" id="pwd" placeholder="🔒" autocomplete="off">
     <button type="submit" data-i18n="login_btn">เข้า</button>
@@ -403,7 +405,7 @@
 /* ═════════ i18n : thaï par défaut + anglais ═════════ */
 const TR = {
   th: {
-    login_title: "Papapig AI Daily Dashboard", login_btn: "เข้า",
+    login_title: "Papapig AI Daily Dashboard", login_tagline: "หมูน้อยหนึ่งตัว สองชีวิต ความอบอุ่นไม่รู้จบ — ทุกความทรงจำอยู่กับคุณเสมอ", login_btn: "เข้า",
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "👧 ชีวิตจอย", tab_papapig: "🐷 ชีวิตพ่อหมู", tab_tech: "🧠 เทคโนโลยี",
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
@@ -429,7 +431,7 @@ const TR = {
     logout: "ออกจากระบบ", close: "ปิด",
   },
   en: {
-    login_title: "Papapig AI Daily Dashboard", login_btn: "Enter",
+    login_title: "Papapig AI Daily Dashboard", login_tagline: "One pig, two lives, endless warmth — and every memory stays with you.", login_btn: "Enter",
     app_title: "Papapig AI — Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life", tab_tech: "🧠 Tech",
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
