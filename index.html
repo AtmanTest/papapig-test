@@ -174,7 +174,7 @@
   .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
   @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
   .card {
-    background: var(--card); border-radius: 18px; padding: 16px;
+    position: relative; background: var(--card); border-radius: 18px; padding: 16px;
     box-shadow: 0 2px 10px rgba(45,42,50,.06); border: 1px solid var(--line);
   }
   .card h3 { font-size: 12px; text-transform: uppercase; letter-spacing:1.2px;
@@ -405,6 +405,42 @@
   .rem-pick-ic { font-size:14px; }
   .rem-pick-lbl { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .rem-pick-ip { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+  /* Popover date/heure — style Apple : arrondi, translucide, sélection turquoise, bordure rose foncé */
+  .pick-pop {
+    position:absolute; z-index:60; margin-top:6px; min-width: 260px;
+    background: rgba(255,245,248,.86); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid #d6336c; border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(214,51,108,.22), 0 2px 8px rgba(0,0,0,.08);
+    padding: 10px; display:none;
+  }
+  .pick-pop.open { display:block; }
+  .pick-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .pick-title { font-size:13px; font-weight:800; color:#d6336c; letter-spacing:.2px; }
+  .pick-nav {
+    width:28px; height:28px; border-radius:50%; border:1px solid #f1a9c0; background:#fff;
+    color:#d6336c; font-size:16px; font-weight:700; cursor:pointer; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .pick-nav:hover { background:#ffe3ec; }
+  .pick-nav.pick-clear { font-size:11px; }
+  .pick-dow { display:grid; grid-template-columns: repeat(7, 1fr); gap:2px; margin-bottom:4px; }
+  .pick-dow span { text-align:center; font-size:10px; font-weight:800; color:#d4578a; padding:3px 0; }
+  .pick-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:2px; }
+  .pick-grid button {
+    border:none; background:transparent; border-radius:10px; padding:7px 0;
+    font: inherit; font-size:12.5px; font-weight:700; color:#333; cursor:pointer; text-align:center;
+  }
+  .pick-grid button:hover { background:#ffe3ec; }
+  .pick-grid button.other { color:#c9a3b4; font-weight:500; }
+  .pick-grid button.today { color:#d6336c; }
+  .pick-grid button.sel { background:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3), 0 3px 10px rgba(20,184,166,.4); }
+  .pick-time { display:grid; grid-template-columns: repeat(4, 1fr); gap:4px; max-height:180px; overflow-y:auto; }
+  .pick-time button {
+    border:1px solid #f1a9c0; background:#fff; border-radius:999px; padding:7px 0;
+    font: inherit; font-size:12px; font-weight:700; color:#333; cursor:pointer;
+  }
+  .pick-time button:hover { background:#ffe3ec; }
+  .pick-time button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
   .rem-urgent {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
     background: #fff5f8; font-size: 16px; cursor: pointer; transition: all .15s ease; flex:none;
@@ -684,6 +720,22 @@
           <input type="time" id="rem-time" class="rem-pick-ip" aria-label="Heure" tabindex="-1" />
           <button type="button" class="rem-urgent" id="rem-loc" aria-pressed="false" title="Location">📍</button>
           <button type="button" class="rem-urgent" id="rem-urgent" aria-pressed="false" title="Important">⚠️</button>
+        </div>
+        <div class="pick-pop" id="pick-date-pop" role="dialog" aria-label="Date picker">
+          <div class="pick-head">
+            <button type="button" class="pick-nav" id="pd-prev" aria-label="Previous month">‹</button>
+            <span class="pick-title" id="pd-title"></span>
+            <button type="button" class="pick-nav" id="pd-next" aria-label="Next month">›</button>
+          </div>
+          <div class="pick-dow" id="pd-dow"></div>
+          <div class="pick-grid" id="pd-grid"></div>
+        </div>
+        <div class="pick-pop" id="pick-time-pop" role="dialog" aria-label="Time picker">
+          <div class="pick-head">
+            <span class="pick-title" id="pt-title"></span>
+            <button type="button" class="pick-nav pick-clear" id="pt-clear" aria-label="Clear time">✕</button>
+          </div>
+          <div class="pick-time" id="pt-grid"></div>
         </div>
         <div class="rem-locinput hidden" id="rem-locinput">
           <input type="text" id="rem-locfield" data-i18n-ph="rem_loc_ph" placeholder="ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…" aria-label="Lieu" />
@@ -1296,8 +1348,96 @@ function remSetup() {
     try { el.showPicker(); }
     catch (e) { el.focus(); if (typeof el.click === "function") el.click(); }
   }
-  dateBtn.addEventListener("click", () => openPicker(dateEl));
-  timeBtn.addEventListener("click", () => openPicker(timeEl));
+  /* ── Picker custom (style Apple) : calendrier + heures ── */
+  const datePop = document.getElementById("pick-date-pop");
+  const timePop = document.getElementById("pick-time-pop");
+  const pdTitle = document.getElementById("pd-title");
+  const pdDow = document.getElementById("pd-dow");
+  const pdGrid = document.getElementById("pd-grid");
+  const ptTitle = document.getElementById("pt-title");
+  const ptGrid = document.getElementById("pt-grid");
+  let calYm = null; /* mois affiché YYYY-MM */
+  const DOW_LBL = { th: ["อา","จ","อ","พ","พฤ","ศ","ส"], en: ["Su","Mo","Tu","We","Th","Fr","Sa"] };
+  function calStartOf() {
+    const base = dateEl.value || bkkToday();
+    return (calYm || base).slice(0, 7);
+  }
+  function renderDatePop() {
+    const [y, m] = calStartOf().split("-").map(Number);
+    const first = new Date(Date.UTC(y, m - 1, 1));
+    const daysIn = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const lead = first.getUTCDay(); /* 0 = dimanche */
+    const dow = DOW_LBL[LANG === "th" ? "th" : "en"];
+    pdDow.innerHTML = dow.map(d => "<span>" + d + "</span>").join("");
+    pdTitle.textContent = new Date(Date.UTC(y, m - 1, 1))
+      .toLocaleDateString(LANG === "th" ? "th-TH" : "fr-FR", { month: "long", year: "numeric" });
+    let h = "";
+    for (let i = 0; i < lead; i++) h += "<button type='button' class='other' tabindex='-1'>&nbsp;</button>";
+    for (let d = 1; d <= daysIn; d++) {
+      const ds = y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+      let c = "";
+      if (ds === dateEl.value) c = " sel";
+      else if (ds === bkkToday()) c = " today";
+      h += "<button type='button' data-ds='" + ds + "' class='" + c + "'>" + d + "</button>";
+    }
+    pdGrid.innerHTML = h;
+    pdGrid.querySelectorAll("button[data-ds]").forEach(b => b.addEventListener("click", () => {
+      dateEl.value = b.dataset.ds;
+      dateEl.dispatchEvent(new Event("change"));
+      datePop.classList.remove("open");
+      fillLabels();
+    }));
+  }
+  function renderTimePop() {
+    ptTitle.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time";
+    const opts = [];
+    for (let h = 0; h < 24; h++) {
+      ["00", "30"].forEach(mm => opts.push(String(h).padStart(2, "0") + ":" + mm));
+    }
+    ptGrid.innerHTML = opts.map(t => {
+      const sel = timeEl.value === t ? " sel" : "";
+      return "<button type='button' data-t='" + t + "' class='" + sel + "'>" + t + "</button>";
+    }).join("");
+    ptGrid.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      timeEl.value = b.dataset.t;
+      timeEl.dispatchEvent(new Event("change"));
+      timePop.classList.remove("open");
+      fillLabels();
+    }));
+  }
+  function closePops() { datePop.classList.remove("open"); timePop.classList.remove("open"); }
+  dateBtn.addEventListener("click", () => {
+    timePop.classList.remove("open");
+    const was = datePop.classList.contains("open");
+    closePops();
+    if (!was) { calYm = dateEl.value || bkkToday(); renderDatePop(); datePop.classList.add("open"); }
+  });
+  timeBtn.addEventListener("click", () => {
+    datePop.classList.remove("open");
+    const was = timePop.classList.contains("open");
+    closePops();
+    if (!was) { renderTimePop(); timePop.classList.add("open"); }
+  });
+  document.getElementById("pd-prev").addEventListener("click", () => {
+    const [y, m] = calStartOf().split("-").map(Number);
+    calYm = (m === 1 ? (y - 1) + "-12" : y + "-" + String(m - 1).padStart(2, "0"));
+    renderDatePop();
+  });
+  document.getElementById("pd-next").addEventListener("click", () => {
+    const [y, m] = calStartOf().split("-").map(Number);
+    calYm = (m === 12 ? (y + 1) + "-01" : y + "-" + String(m + 1).padStart(2, "0"));
+    renderDatePop();
+  });
+  document.getElementById("pt-clear").addEventListener("click", () => {
+    timeEl.value = "";
+    timeEl.dispatchEvent(new Event("change"));
+    timePop.classList.remove("open");
+    fillLabels();
+  });
+  document.addEventListener("click", ev => {
+    if (!datePop.contains(ev.target) && !timePop.contains(ev.target) &&
+        !dateBtn.contains(ev.target) && !timeBtn.contains(ev.target)) closePops();
+  });
   const urgentBtn = document.getElementById("rem-urgent");
   const locBtn = document.getElementById("rem-loc");
   const tagBox = document.getElementById("rem-tags");
