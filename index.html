@@ -244,12 +244,13 @@
   .cal-overlay { position:fixed; inset:0; background:rgba(80,20,50,.18); z-index:59; opacity:0;
     pointer-events:none; transition:opacity .25s ease; }
   .cal-overlay.open { opacity:1; pointer-events:auto; }
-  .cal-panel { position:absolute; top:8px; bottom:8px; right:-348px; width:min(340px, 88vw); height:auto; z-index:60;
+  .cal-panel { position:absolute; top:8px; bottom:8px; right:0; width:min(340px, 88vw); height:auto; z-index:60;
     background:rgba(255,130,180,.16); backdrop-filter:blur(6px) saturate(1.4); -webkit-backdrop-filter:blur(6px) saturate(1.4);
     border-radius:20px; border:1px solid rgba(255,255,255,.6);
-    box-shadow:0 8px 32px rgba(214,60,130,.22); transition:right .25s ease; display:flex;
-    flex-direction:column; overflow:hidden; }
-  .cal-panel.open { right:0; }
+    box-shadow:0 8px 32px rgba(214,60,130,.22); transition:transform .25s ease, visibility .25s;
+    display:flex; flex-direction:column; overflow:hidden; visibility:hidden;
+    transform:translateX(calc(100% + 24px)); pointer-events:none; }
+  .cal-panel.open { transform:translateX(0); visibility:visible; pointer-events:auto; }
   .cal-panel-head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px;
     background:linear-gradient(135deg,#ff9ec2,#ff6b9d); color:#fff; }
   .cal-panel-head b { font-size:15px; text-shadow:0 1px 2px rgba(180,40,90,.3); }
@@ -1293,15 +1294,24 @@ document.body.appendChild(_calOverlay);
 const _calPanel = document.createElement("div");
 _calPanel.className = "cal-panel";
 _calPanel.innerHTML = '<div class="cal-panel-head"><b id="cal-panel-date"></b>' +
-  '<button class="cal-panel-close" aria-label="Close">✕</button></div>' +
+  '<button type="button" class="cal-panel-close" aria-label="Close">✕</button></div>' +
   '<div class="cal-panel-body" id="cal-panel-body"></div>';
 document.querySelector(".cal-card").appendChild(_calPanel);
 function calPanelClose() {
   _calPanel.classList.remove("open");
   _calOverlay.classList.remove("open");
 }
+/* Fermeture forcée au chargement — le panneau ne doit JAMAIS être ouvert par défaut */
+calPanelClose();
+/* Double sécurité croix : listener + onclick direct */
 _calPanel.querySelector(".cal-panel-close").addEventListener("click", e => { e.stopPropagation(); calPanelClose(); });
+_calPanel.querySelector(".cal-panel-close").onclick = e => { e.stopPropagation(); calPanelClose(); return false; };
+/* Fermeture par clic sur l'overlay (n'importe où hors panneau) */
 _calOverlay.addEventListener("click", calPanelClose);
+/* Fermeture par clic sur la tête du panneau (hors bouton croix) */
+_calPanel.querySelector(".cal-panel-head").addEventListener("click", e => {
+  if (!e.target.classList.contains("cal-panel-close")) calPanelClose();
+});
 document.addEventListener("keydown", e => { if (e.key === "Escape") calPanelClose(); });
 </script>
 </body>
