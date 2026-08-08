@@ -941,6 +941,7 @@ document.getElementById("lang-btn").addEventListener("click", () => {
   LANG = LANG === "th" ? "en" : "th";
   applyLang(); if (S) render(S);
   if (typeof remRender === "function") remRender();
+  if (typeof window.renderQuickRem === "function") { window.renderQuickRem(); window.renderTagsRem(); }
 });
 
 /* ═════════ Data ═════════ */
@@ -1332,6 +1333,8 @@ function remSetup() {
     }));
   }
   renderQuick();
+  window.renderQuickRem = renderQuick; /* re-rendu au switch langue */
+  window.renderTagsRem = renderTags;
   dateEl.addEventListener("change", renderTags);
   timeEl.addEventListener("change", () => { renderTags(); renderOffsets(); });
   urgentBtn.addEventListener("click", () => {
