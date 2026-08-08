@@ -474,8 +474,9 @@
   .rem-badge.prio { background:#ffe3ec; color:#d6336c; box-shadow:0 0 0 3px rgba(255,107,157,.25), 0 2px 8px rgba(255,107,157,.35); }
   .rem-badge.loc { background:#e6f2ff; color:#1a73e8; text-decoration:none; }
   .rem-hint { font-size: 11px; color:#e07020; margin: -4px 0 8px; line-height: 1.45; }
-  .rem-sync { font-size:10px; color:#8a8590; }
-  .rem-sync.failed { color:#d6455d; }
+  .rem-sync { font-size:10px; font-weight:800; color:#1a9e90; }
+  .rem-sync.pending { color:#8a8590; font-weight:600; }
+  .rem-sync.failed { color:#d6455d; font-weight:700; }
   .rem-undo {
     flex:none; border:1px solid var(--line); background: var(--card); color: var(--pink);
     border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
@@ -1215,7 +1216,7 @@ function remRender() {
     if (r.location) badges.push("<a class='rem-badge loc' href='" + String(r.location).replace(/"/g, "&quot;") + "' target='_blank' rel='noopener'>📍 " + (LANG === "th" ? "แผนที่" : "Map") + "</a>");
     const meta = [];
     if (r.date) meta.push((overdue ? "⚠️ " : "") + remFmtDate(r.date) + (r.start_time ? " " + remFmtTimeBkk(r.date, r.start_time) : ""));
-    if (!isDone) meta.push("<span class='rem-sync " + (remSyncState[r.id] === "failed" ? "failed" : "") + "'>" + remStatusText(r.id) + "</span>");
+    if (!isDone) meta.push("<span class='rem-sync " + (remSyncState[r.id] === "failed" ? "failed" : (remSyncState[r.id] === "pending" ? "pending" : "")) + "'>" + remStatusText(r.id) + "</span>");
     const undo = isDone ? "<button class='rem-undo' data-undo='" + r.id + "'>" + t("rem_undo") + "</button>" : "";
     return "<div class='rem-item" + (isDone ? " done" : "") + "' data-rid='" + r.id + "'>" +
       "<button class='rem-chk' data-done='" + r.id + "' aria-label='" + t("rem_done") + "'>" + chk + "</button>" +
