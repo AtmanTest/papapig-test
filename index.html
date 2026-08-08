@@ -1615,9 +1615,13 @@ function remSetup() {
   try { dateEl.value = bkkToday(); } catch (e) { dateEl.value = new Date().toISOString().slice(0, 10); }
   renderTags();
   renderOffsets();
+  let adding = false;
   const add = async () => {
+    if (adding) return; /* verrou : ignore les doubles Entrée/clics pendant la création */
     const txt = input.value.trim();
     if (!txt) { input.focus(); return; }
+    input.value = ""; /* vide IMMÉDIATEMENT : évite la concaténation si l'utilisateur retape */
+    adding = true;
     const time = timeEl.value || null;
     const date = dateEl.value || bkkToday();
     let payload = { title: txt, date, start_time: time };
@@ -1630,11 +1634,12 @@ function remSetup() {
       const created = await ReminderSyncService.createReminder(payload);
       const row = Array.isArray(created) ? created[0] : created;
       if (row && row.id) { REMINDERS.push(row); remSyncState[row.id] = "synced"; }
-      input.value = ""; timeEl.value = "";
+      timeEl.value = "";
       urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false");
       loc = null; locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false");
       renderTags(); renderOffsets(); remRender();
     } catch (e) { /* état local : marqué pending, retry au prochain load */ }
+    finally { adding = false; }
   };
   document.getElementById("rem-add-btn").addEventListener("click", add);
   input.addEventListener("keydown", e => { if (e.key === "Enter") add(); });
