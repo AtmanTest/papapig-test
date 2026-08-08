@@ -349,6 +349,68 @@
   }
   .meal .t { font-size: 10px; color:#8a8590; }
   .meal b { font-size: 13px; font-weight: 700; }
+  .rem-sub { font-size: 12px; color:#8a8590; margin-top:-6px; margin-bottom: 10px; }
+  .rem-add { display:flex; gap:8px; }
+  .rem-add input {
+    flex:1; min-width:0; padding: 11px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--soft); font-size: 14px;
+    color: var(--dark); outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .rem-add input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,107,157,.15); }
+  .rem-add-btn {
+    flex:none; width: 44px; border-radius: 999px; border: none;
+    background: var(--pink); color: #fff; font-size: 22px; font-weight: 800;
+    cursor: pointer; transition: transform .12s, opacity .12s;
+  }
+  .rem-add-btn:hover { transform: scale(1.06); }
+  .rem-add-btn:active { transform: scale(.94); }
+  .rem-add-btn:focus-visible { outline: 3px solid rgba(255,107,157,.4); outline-offset: 2px; }
+  .rem-datetime { display:flex; gap:8px; margin-top: 8px; }
+  .rem-datetime input {
+    flex:1; min-width:0; padding: 8px 12px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--soft); font-size: 13px; color: var(--dark);
+  }
+  .rem-list { margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
+  .rem-item {
+    display:flex; align-items:center; gap:10px; padding: 10px 12px;
+    background: var(--soft); border: 1px solid var(--line); border-radius: 14px;
+    transition: opacity .2s, transform .2s;
+  }
+  .rem-item.done { opacity: .55; }
+  .rem-item .rem-chk {
+    flex:none; width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid var(--pink); background: transparent; color: transparent;
+    font-size: 14px; line-height: 1; cursor: pointer; display:flex; align-items:center; justify-content:center;
+    transition: background .15s, color .15s;
+  }
+  .rem-item.done .rem-chk { background: var(--pink); color: #fff; }
+  .rem-item .rem-body { flex:1; min-width:0; }
+  .rem-item .rem-txt { font-size: 14px; font-weight: 700; word-break: break-word; }
+  .rem-item.done .rem-txt { text-decoration: line-through; }
+  .rem-item .rem-meta { font-size: 10.5px; color:#8a8590; margin-top: 2px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .rem-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:9.5px; font-weight:800; letter-spacing:.3px; }
+  .rem-badge.wa { background:#e6faf7; color:#1a9e90; }
+  .rem-badge.priv { background:#f3e8ff; color:#7a4fb8; }
+  .rem-badge.prio { background:#fde8ee; color:#c44a74; }
+  .rem-sync { font-size:10px; color:#8a8590; }
+  .rem-sync.failed { color:#d6455d; }
+  .rem-undo {
+    flex:none; border:1px solid var(--line); background: var(--card); color: var(--pink);
+    border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  .rem-empty { text-align:center; padding: 22px 10px; color:#8a8590; font-size:13px; }
+  .rem-empty button {
+    margin-top: 10px; border: none; background: var(--pink); color:#fff;
+    border-radius: 999px; padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .rem-actions { margin-top: 12px; text-align:center; }
+  .rem-recap {
+    width:100%; border: 1px solid var(--pink); background: transparent; color: var(--pink);
+    border-radius: 999px; padding: 10px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .rem-recap:hover { background: var(--pink); color:#fff; }
+  .rem-recap:disabled { opacity:.5; cursor:default; }
   .chip { display:inline-block; padding:3px 10px; border-radius:999px;
           font-size:11px; font-weight:700; }
   .chip.on { background:#e6faf7; color:#1a9e90; }
@@ -523,6 +585,22 @@
         <div class="meals" id="j-meals"></div>
       </div>
       <div class="card full">
+        <h3 data-i18n="rem_title">🔔 เตือนความจำ</h3>
+        <div class="rem-sub" data-i18n="rem_sub">ฉันช่วยจดให้เอง</div>
+        <div class="rem-add">
+          <input type="text" id="rem-input" data-i18n-ph="rem_ph" placeholder="เตือนฉันเรื่อง…" aria-label="Nouveau rappel" />
+          <button class="rem-add-btn" id="rem-add-btn" aria-label="Ajouter un rappel">+</button>
+        </div>
+        <div class="rem-datetime">
+          <input type="date" id="rem-date" aria-label="Date" />
+          <input type="time" id="rem-time" aria-label="Heure" />
+        </div>
+        <div class="rem-list" id="rem-list" aria-live="polite"></div>
+        <div class="rem-actions">
+          <button class="rem-recap" id="rem-recap" data-i18n="rem_recap">📲 ส่งสรุปวันนี้ทาง WhatsApp</button>
+        </div>
+      </div>
+      <div class="card full">
         <h3 data-i18n="joy_goal">🎯 เป้าหมาย</h3>
         <div class="big" style="font-size:22px" id="j-goal">—</div>
       </div>
@@ -631,6 +709,13 @@ const TR = {
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "ชีวิตจอย", tab_papapig: "ชีวิตพ่อหมู", tab_tech: "สมอง AI",
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
+    rem_title: "🔔 เตือนความจำ", rem_sub: "ฉันช่วยจดให้เอง",
+    rem_ph: "เตือนฉันเรื่อง…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp",
+    rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
+    rem_done: "เสร็จแล้ว", rem_undo: "ยกเลิก", rem_wa: "นำเข้าจาก WhatsApp",
+    rem_pending: "รอ", rem_todo: "ยังไม่ทำ", rem_progress: "กำลังทำ",
+    rem_priv: "🔒 ส่วนตัว", rem_prio_high: "สำคัญมาก", rem_prio_normal: "ปกติ",
+    rem_synced: "✓ sync", rem_syncing: "…ส่ง", rem_failed: "✗ ล้มเหลว",
     cal_today: "วันนี้", cal_month: "เดือน", cal_week: "สัปดาห์", cal_agenda: "กำหนดการ",
     p_energy: "⚡ พลังงาน", p_hunger: "🍗 ความหิว", p_sleep: "😴 การนอน",
     p_birth: "🎂 วันเกิด", p_cd: "🎂 ครบ 1 เดือนใน", p_cd_msg: "🎂 หวังว่าเธอจะทำเค้กก้อนใหญ่ให้หนูนะครับ",
@@ -658,6 +743,13 @@ const TR = {
     app_title: "Papapig AI — Real Intelligence", tab_joy: "Joy's Life", tab_papapig: "Papapig's Life", tab_tech: "Neural AI Brain",
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
+    rem_title: "🔔 Reminder", rem_sub: "I keep the thread for you.",
+    rem_ph: "Remind me to…", rem_recap: "📲 Send today's summary on WhatsApp",
+    rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
+    rem_done: "Done", rem_undo: "Undo", rem_wa: "Imported from WhatsApp",
+    rem_pending: "Pending", rem_todo: "To do", rem_progress: "In progress",
+    rem_priv: "🔒 Private", rem_prio_high: "High priority", rem_prio_normal: "Normal",
+    rem_synced: "✓ synced", rem_syncing: "…sending", rem_failed: "✗ failed",
     cal_today: "Today", cal_month: "Month", cal_week: "Week", cal_agenda: "Agenda",
     p_energy: "⚡ Energy", p_hunger: "🍗 Hunger", p_sleep: "😴 Sleep",
     p_birth: "🎂 BIRTHDAY", p_cd: "🎂 1st month in", p_cd_msg: "🎂 i hope she will make me a big cake",
@@ -756,6 +848,7 @@ function tryLogin() {
   }
 }
 document.getElementById("login-form").addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
+
 // Regard de Joy qui suit le curseur (parallax doux)
 window.addEventListener("mousemove", e => {
   const mx = (e.clientX / window.innerWidth - .5) * 26;
@@ -921,6 +1014,130 @@ function render(s) {
 /* ═════════ Calendrier v2 — mois/semaine/agenda + événements Supabase ═════════ */
 const SB_URL = "https://wlxtulibsipesxpwkhyz.supabase.co";
 const SB_ANON = "sb_publishable_0MkIaGDQs3G5oJuHaKMh1A_wWsrzn4G";
+/* ═════════ Reminder — section (avant Goal) ═════════ */
+const ReminderSyncService = {
+  base: SB_URL + "/rest/v1/events",
+  hdr: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json", Prefer: "return=representation" },
+  async _req(method, path, body) {
+    const r = await fetch(this.base + path, { method, headers: this.hdr, body: body ? JSON.stringify(body) : undefined });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.status === 204 ? null : r.json();
+  },
+  async fetchAll() {
+    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via&profile=eq.penguinpig&order=date.asc");
+    return Array.isArray(d) ? d : [];
+  },
+  createReminder(payload) {
+    return this._req("POST", "", Object.assign({
+      category: "perso", profile: "penguinpig", created_via: "site",
+      status: "todo", priority: "normal", is_private: false
+    }, payload));
+  },
+  completeReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "done" }); },
+  uncompleteReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "todo" }); }
+};
+let REMINDERS = [];
+const remSyncState = {}; // id → "synced" | "syncing" | "failed" | "pending"
+function remStatusText(id) {
+  const s = remSyncState[id];
+  if (s === "failed") return t("rem_failed");
+  if (s === "syncing") return t("rem_syncing");
+  if (s === "pending") return t("rem_pending");
+  return t("rem_synced");
+}
+function remFmtDate(d) {
+  if (!d) return "";
+  const dt = new Date(d + "T00:00:00");
+  if (isNaN(dt)) return d;
+  return dt.toLocaleDateString(LANG === "th" ? "th-TH" : "fr-FR", { day: "numeric", month: "short" });
+}
+function remRender() {
+  const list = document.getElementById("rem-list");
+  const T = LANG === "th";
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
+  if (!REMINDERS.length) {
+    list.innerHTML = "<div class='rem-empty'>" + t("rem_empty") +
+      "<br><button id='rem-empty-add'>" + t("rem_empty_add") + "</button></div>";
+    const b = document.getElementById("rem-empty-add");
+    if (b) b.addEventListener("click", () => document.getElementById("rem-input").focus());
+    return;
+  }
+  list.innerHTML = REMINDERS.map(r => {
+    const isDone = r.status === "done";
+    const overdue = !isDone && r.date && r.date < today;
+    const chk = isDone ? "✓" : "";
+    const badges = [];
+    if (r.created_via === "whatsapp") badges.push("<span class='rem-badge wa'>" + t("rem_wa") + "</span>");
+    if (r.is_private) badges.push("<span class='rem-badge priv'>" + t("rem_priv") + "</span>");
+    if (r.priority === "high") badges.push("<span class='rem-badge prio'>" + t("rem_prio_high") + "</span>");
+    const meta = [];
+    if (r.date) meta.push((overdue ? "⚠️ " : "") + remFmtDate(r.date) + (r.start_time ? " " + r.start_time.slice(0, 5) : ""));
+    if (!isDone) meta.push("<span class='rem-sync " + (remSyncState[r.id] === "failed" ? "failed" : "") + "'>" + remStatusText(r.id) + "</span>");
+    const undo = isDone ? "<button class='rem-undo' data-undo='" + r.id + "'>" + t("rem_undo") + "</button>" : "";
+    return "<div class='rem-item" + (isDone ? " done" : "") + "' data-rid='" + r.id + "'>" +
+      "<button class='rem-chk' data-done='" + r.id + "' aria-label='" + t("rem_done") + "'>" + chk + "</button>" +
+      "<div class='rem-body'><div class='rem-txt'>" + (r.is_private ? "🔒 " : "") + _tTxt(r.title) + "</div>" +
+      "<div class='rem-meta'>" + badges.join("") + meta.join(" · ") + "</div></div>" + undo + "</div>";
+  }).join("");
+  list.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", async () => {
+    const id = b.dataset.done;
+    const it = REMINDERS.find(x => x.id === id);
+    remSyncState[id] = "syncing"; remRender();
+    try { await ReminderSyncService.completeReminder(id); remSyncState[id] = "synced"; }
+    catch (e) { remSyncState[id] = "failed"; }
+    if (it) it.status = "done"; remRender();
+    setTimeout(() => { // anti-oubli : annulation possible pendant 6 s
+      remRender();
+    }, 0);
+  }));
+  list.querySelectorAll("[data-undo]").forEach(b => b.addEventListener("click", async () => {
+    const id = b.dataset.undo;
+    const it = REMINDERS.find(x => x.id === id);
+    remSyncState[id] = "syncing"; remRender();
+    try { await ReminderSyncService.uncompleteReminder(id); remSyncState[id] = "synced"; }
+    catch (e) { remSyncState[id] = "failed"; }
+    if (it) it.status = "todo"; remRender();
+  }));
+}
+async function remLoad() {
+  try { REMINDERS = await ReminderSyncService.fetchAll(); }
+  catch (e) { REMINDERS = []; }
+  remRender();
+}
+function remSetup() {
+  const input = document.getElementById("rem-input");
+  const add = async () => {
+    const txt = input.value.trim();
+    if (!txt) { input.focus(); return; }
+    const date = document.getElementById("rem-date").value || new Date().toISOString().slice(0, 10);
+    const time = document.getElementById("rem-time").value || null;
+    const payload = { title: txt, date, start_time: time };
+    try {
+      const created = await ReminderSyncService.createReminder(payload);
+      const row = Array.isArray(created) ? created[0] : created;
+      if (row && row.id) { REMINDERS.push(row); remSyncState[row.id] = "synced"; }
+      input.value = ""; document.getElementById("rem-time").value = "";
+      remRender();
+    } catch (e) { /* état local : marqué pending, retry au prochain load */ }
+  };
+  document.getElementById("rem-add-btn").addEventListener("click", add);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") add(); });
+  document.getElementById("rem-recap").addEventListener("click", async () => {
+    const btn = document.getElementById("rem-recap");
+    btn.disabled = true;
+    try {
+      const r = await fetch(SB_URL + "/rest/v1/rpc/request_wa_summary", {
+        method: "POST", headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json" }, body: "{}"
+      });
+      btn.textContent = r.ok ? (LANG === "th" ? "✅ ส่งแล้ว!" : "✅ Sent!") : (LANG === "th" ? "✗ ผิดพลาด" : "✗ Error");
+    } catch (e) { btn.textContent = LANG === "th" ? "✗ ผิดพลาด" : "✗ Error"; }
+    setTimeout(() => { btn.disabled = false; btn.textContent = t("rem_recap"); }, 3000);
+  });
+  remLoad();
+  setInterval(remLoad, 60000); // polling discret
+}
+document.addEventListener("DOMContentLoaded", remSetup);
 let CAL = { year: 0, month: 0, view: "month", sel: null, events: [], loading: true, inited: false };
 
 const CAT_COLOR = { perso: "c-perso", travail: "c-travail", sante: "c-sante", anniv: "c-anniv", autres: "c-autres" };
