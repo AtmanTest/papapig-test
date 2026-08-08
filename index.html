@@ -726,6 +726,14 @@ let S = null;
 let MEAL_PHOTOS = {};
 
 function t(key) { return TR[LANG][key] || key; }
+function fmtMealPhotoTime(ts) {
+  if (!ts) return "";
+  const d = new Date(ts * 1000);
+  const opts = { hour: "2-digit", minute: "2-digit", hour12: false };
+  const hh = d.toLocaleTimeString(LANG === "th" ? "th-TH" : "fr-FR",
+    { ...opts, timeZone: LANG === "th" ? "Asia/Bangkok" : "Europe/Paris" });
+  return LANG === "th" ? hh + " น." : hh;
+}
 function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.getElementById("lang-btn").textContent = LANG === "th" ? "EN" : "TH";
@@ -1206,13 +1214,19 @@ function calOpenDay(ds) {
   /* Repas (vraie donnée) + photo du jour intégrée en miniature 300px */
   const mealsRows = mealsDay.map(x =>
     row(x.emoji || "🍽️", x.word || (T ? "อาหาร" : "meal"), (T ? "กิน" : "ate") + " · " + x.at)).join("");
-  const mealPhotoBlock = MEAL_PHOTOS[ds]
-    ? "<div style='display:flex;justify-content:center;padding:6px 0 2px'>" +
-      "<img src='" + MEAL_PHOTOS[ds] + "' alt='meal photo' " +
+  const mp = MEAL_PHOTOS[ds] || null;
+  const mpUrl = mp ? (typeof mp === "string" ? mp : mp.url) : "";
+  const mpTs = mp && typeof mp === "object" ? mp.ts : 0;
+  const mpTime = mpTs ? fmtMealPhotoTime(mpTs) : "";
+  const mealPhotoBlock = mpUrl
+    ? "<div style='display:flex;justify-content:center;align-items:center;flex-direction:column;padding:6px 0 2px'>" +
+      "<img src='" + mpUrl + "' alt='meal photo' " +
       "style='width:300px;max-width:100%;height:auto;border-radius:14px;border:2px solid rgba(255,158,194,.5);" +
-      "cursor:zoom-in;object-fit:cover' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'></div>"
+      "cursor:zoom-in;object-fit:cover' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'>" +
+      (mpTime ? "<span style='font-size:11px;color:#8a8590;margin-top:4px'>📸 " + mpTime + (T ? " เวลากรุงเทพ" : " · Paris") + "</span>" : "") +
+      "</div>"
     : "";
-  if (mealsDay.length || MEAL_PHOTOS[ds]) {
+  if (mealsDay.length || mpUrl) {
     h += sec(T ? "อาหาร" : "Meals", mealsRows + mealPhotoBlock);
   }
   /* Météo (vraie donnée) */
@@ -1264,12 +1278,17 @@ function openDay(ds) {
   }
   /* Repas + photo du jour */
   if (mealsDay.length || MEAL_PHOTOS[ds]) {
+    const _mp = MEAL_PHOTOS[ds] || null;
+    const _mpUrl = _mp ? (typeof _mp === "string" ? _mp : _mp.url) : "";
+    const _mpTime = _mp && typeof _mp === "object" && _mp.ts ? fmtMealPhotoTime(_mp.ts) : "";
     body += "<div class='mrow'><div class='ico'>🍜</div><div><div class='lb'>" +
       (LANG === "th" ? "กิน" : "MEALS") + "</div><div class='vl'>" +
       mealsDay.map(x => x.emoji + " " + (x.word || "") + " <span style='font-size:11px;color:#8a8590'>" + x.at + "</span>").join(" · ") +
-      (MEAL_PHOTOS[ds] ? "<div style='margin-top:6px'><img src='" + MEAL_PHOTOS[ds] + "' alt='meal photo' " +
+      (_mpUrl ? "<div style='margin-top:6px;text-align:center'><img src='" + _mpUrl + "' alt='meal photo' " +
         "style='width:300px;max-width:100%;height:auto;border-radius:12px;border:2px solid rgba(255,158,194,.5);" +
-        "cursor:zoom-in' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'></div>" : "") +
+        "cursor:zoom-in' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'>" +
+        (_mpTime ? "<div style='font-size:11px;color:#8a8590;margin-top:4px'>📸 " + _mpTime + (LANG === "th" ? " เวลากรุงเทพ" : " · Paris") + "</div>" : "") +
+        "</div>" : "") +
       "</div></div></div>";
   }
   /* Météo */

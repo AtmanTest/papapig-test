@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08 23:35 Bangkok",
+  "generated_at": "2026-08-08 23:40 Bangkok",
   "joy": {
     "mood_today": null,
     "mood_note": "",
@@ -42,7 +42,10 @@
       }
     ],
     "meal_photos": {
-      "2026-08-08": "images/meals/2026-08-08.jpg"
+      "2026-08-08": {
+        "url": "images/meals/2026-08-08.jpg",
+        "ts": 1786206315
+      }
     },
     "energy": 70,
     "goal": "",
