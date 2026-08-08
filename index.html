@@ -157,6 +157,7 @@
     font-size: 14px; font-weight: 700; background: rgba(255,255,255,.18); color:#fff;
     min-height: 48px; touch-action: manipulation;
   }
+  .tab-ico { width:28px; height:28px; border-radius:50%; object-fit:cover; vertical-align:-7px; margin-right:6px; display:inline-block; }
   .tab.active { background: var(--cream); color: var(--dark); }
   main { max-width: 640px; margin: 0 auto; padding: 18px 14px 60px; }
   .joy-hero { text-align:center; margin: 0 0 16px; }
@@ -443,8 +444,8 @@
     <button class="btn" id="logout-btn" title="⏻">⏻</button>
   </div>
   <div class="tabs">
-    <button class="tab active" id="tab-joy" data-i18n="tab_joy">👧 ชีวิตจอย</button>
-    <button class="tab" id="tab-papapig" data-i18n="tab_papapig">🐷 ชีวิตพ่อหมู</button>
+    <button class="tab active" id="tab-joy"><img class="tab-ico" src="images/joy.jpg" alt=""><span data-i18n="tab_joy">ชีวิตจอย</span></button>
+    <button class="tab" id="tab-papapig"><img class="tab-ico" src="images/peppa-ai.jpg" alt=""><span data-i18n="tab_papapig">ชีวิตพ่อหมู</span></button>
     <button class="tab" id="tab-tech" data-i18n="tab_tech">🧠 เทคโนโลยี</button>
   </div>
 </header>
@@ -593,7 +594,7 @@
 const TR = {
   th: {
     login_btn: "เข้า", pwd_ph: "ใส่รหัสผ่านที่นี่",
-    app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "👧 ชีวิตจอย", tab_papapig: "🐷 ชีวิตพ่อหมู", tab_tech: "🧠 เทคโนโลยี",
+    app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "ชีวิตจอย", tab_papapig: "ชีวิตพ่อหมู", tab_tech: "🧠 เทคโนโลยี",
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     cal_today: "วันนี้", cal_month: "เดือน", cal_week: "สัปดาห์", cal_agenda: "กำหนดการ",
@@ -620,7 +621,7 @@ const TR = {
   },
   en: {
     login_btn: "Enter", pwd_ph: "enter your password here",
-    app_title: "Papapig AI — Real Intelligence", tab_joy: "👧 Joy's Life", tab_papapig: "🐷 Papapig's Life", tab_tech: "🧠 Tech",
+    app_title: "Papapig AI — Real Intelligence", tab_joy: "Joy's Life", tab_papapig: "Papapig's Life", tab_tech: "🧠 Tech",
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     cal_today: "Today", cal_month: "Month", cal_week: "Week", cal_agenda: "Agenda",
