@@ -82,33 +82,27 @@
   }
   #login p { color: rgba(255,255,255,.9); font-size: 13px; text-align:center; }
   #login form { display:flex; flex-direction:column; gap:12px; width: 100%; max-width: 300px; margin-top:24px; }
-  /* Effet Siri glow sur le champ mot de passe */
-  .siri-glow { position:relative; border-radius:999px; padding:2px; overflow:hidden; }
+  /* Siri Glow aurora — champ mot de passe (anneau extérieur uniquement) */
+  .siri-glow { position:relative; border-radius:999px; padding:2px; overflow:hidden;
+    box-shadow: 0 0 14px rgba(56,217,255,.28), 0 0 30px rgba(168,85,247,.18), 0 0 46px rgba(236,77,206,.12); }
   .siri-glow-bg { position:absolute; inset:-60%; z-index:0;
-    background: conic-gradient(from 0deg, #ff6b9d, #ffd166, #00d4ff, #b388ff, #ff9ec2, #ff6b9d);
-    animation: siri-rotate 3s linear infinite; }
+    background: conic-gradient(from 0deg,
+      #38D9FF, #5B8CFF, #6D5CFF, #A855F7, #EC4DCE, #FF5C70, #FFB84D, #38D9FF);
+    animation: siri-rotate 5s linear infinite; }
   @keyframes siri-rotate { to { transform: rotate(360deg); } }
   .siri-glow input { position:relative; z-index:1; width:100%; border:none;
     padding: 14px 18px; border-radius: 999px;
     font-size: 16px;
-    text-align:center; outline:none; background: #ffe3ec; color: #5a3345;
-    caret-color: #ff6b9d; box-shadow: inset 0 2px 6px rgba(255,107,157,.18);
+    text-align:center; outline:none; background: #1c1030; color: #fff;
+    caret-color: #38D9FF;
   }
-  #login input::placeholder { color: #c48ba2; }
+  #login input::placeholder { color: rgba(255,255,255,.55); }
   #login form button {
-    padding: 14px; border-radius: 999px; border: none;
+    padding: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.55);
     font-size: 16px;
-    font-weight: 800; background: #1c1030; color: #fff; cursor: pointer;
-    position: relative; z-index: 1; width: 100%;
-    box-shadow: none;
+    font-weight: 800; background: var(--pink); color: #fff; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(255,107,157,.45);
   }
-  /* Siri Glow aurora — bouton Enter (anneau extérieur uniquement) */
-  .siri-btn { position:relative; border-radius:999px; padding:2px; overflow:hidden;
-    box-shadow: 0 0 14px rgba(56,217,255,.28), 0 0 30px rgba(168,85,247,.18), 0 0 46px rgba(236,77,206,.12); }
-  .siri-btn-bg { position:absolute; inset:-60%; z-index:0;
-    background: conic-gradient(from 0deg,
-      #38D9FF, #5B8CFF, #6D5CFF, #A855F7, #EC4DCE, #FF5C70, #FFB84D, #38D9FF);
-    animation: siri-rotate 5s linear infinite; }
   #login form button:active { transform: scale(.97); }
   #login .err { color:#ffe066; font-size:12px; text-align:center; min-height:16px; }
 
@@ -422,7 +416,7 @@
   <div class="pig-uke-wrap"><span class="testi testi-left"></span><img class="pig-uke" src="images/peppa-uke.jpg" alt=""><span class="testi testi-right"></span></div>
   <form id="login-form">
     <div class="siri-glow"><div class="siri-glow-bg"></div><input type="password" id="pwd" placeholder="enter your password here" autocomplete="off"></div>
-    <div class="siri-btn"><div class="siri-btn-bg"></div><button type="submit" data-i18n="login_btn">เข้า</button></div>
+    <button type="submit" data-i18n="login_btn">เข้า</button>
   </form>
   <div class="err" id="login-err"></div>
   <div class="tech-showcase">
