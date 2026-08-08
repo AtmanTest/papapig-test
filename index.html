@@ -850,7 +850,7 @@ function render(s) {
     const el = document.createElement("div"); el.className = "meal";
     el.innerHTML = "<span>" + me.emoji + "</span>" +
       (me.word ? "<b>" + _tTxt(me.word) + "</b>" : "") +
-      "<span class='t'>" + me.date.slice(5) + " " + me.at + "</span>";
+      "<span class='t'>" + me.date.slice(5) + " " + (me.ts ? fmtMealPhotoTime(me.ts) : me.at) + "</span>";
     mWrap.appendChild(el);
   });
 
@@ -895,7 +895,7 @@ function render(s) {
   updateCake();
   if (!window._cakeTick) window._cakeTick = setInterval(updateCake, 1000);
   document.getElementById("p-last-meal").textContent = P.last_meal_emoji || "—";
-  document.getElementById("p-last-meal-at").textContent = P.last_meal_at || "";
+  document.getElementById("p-last-meal-at").textContent = P.last_meal_ts ? fmtMealPhotoTime(P.last_meal_ts) : (P.last_meal_at || "");
 
   /* Papapig — crons */
   const cWrap = document.getElementById("p-crons");
@@ -1213,7 +1213,8 @@ function calOpenDay(ds) {
   }
   /* Repas (vraie donnée) + photo du jour intégrée en miniature 300px */
   const mealsRows = mealsDay.map(x =>
-    row(x.emoji || "🍽️", x.word || (T ? "อาหาร" : "meal"), (T ? "กิน" : "ate") + " · " + x.at)).join("");
+    row(x.emoji || "🍽️", x.word || (T ? "อาหาร" : "meal"),
+      (T ? "กิน" : "ate") + " · " + (x.ts ? fmtMealPhotoTime(x.ts) : x.at))).join("");
   const mp = MEAL_PHOTOS[ds] || null;
   const mpUrl = mp ? (typeof mp === "string" ? mp : mp.url) : "";
   const mpTs = mp && typeof mp === "object" ? mp.ts : 0;
@@ -1283,7 +1284,8 @@ function openDay(ds) {
     const _mpTime = _mp && typeof _mp === "object" && _mp.ts ? fmtMealPhotoTime(_mp.ts) : "";
     body += "<div class='mrow'><div class='ico'>🍜</div><div><div class='lb'>" +
       (LANG === "th" ? "กิน" : "MEALS") + "</div><div class='vl'>" +
-      mealsDay.map(x => x.emoji + " " + (x.word || "") + " <span style='font-size:11px;color:#8a8590'>" + x.at + "</span>").join(" · ") +
+      mealsDay.map(x => x.emoji + " " + (x.word || "") + " <span style='font-size:11px;color:#8a8590'>" +
+        (x.ts ? fmtMealPhotoTime(x.ts) : x.at) + "</span>").join(" · ") +
       (_mpUrl ? "<div style='margin-top:6px;text-align:center'><img src='" + _mpUrl + "' alt='meal photo' " +
         "style='width:300px;max-width:100%;height:auto;border-radius:12px;border:2px solid rgba(255,158,194,.5);" +
         "cursor:zoom-in' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'>" +
