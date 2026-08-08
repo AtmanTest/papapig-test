@@ -270,6 +270,12 @@
   .cal-panel-head b { font-size:15px; text-shadow:0 1px 2px rgba(180,40,90,.3); }
   .cal-panel-close { background:rgba(255,255,255,.55); border:none; color:#d6336c; font-size:16px; font-weight:900;
     border-radius:50%; width:34px; height:34px; cursor:pointer; line-height:1; }
+  .cal-legend { display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:12px; padding:10px 12px;
+    background:rgba(255,140,180,.10); border:1px solid rgba(255,158,194,.35); border-radius:12px;
+    font-size:11px; color:#7a4a60; align-items:center; }
+  .cal-legend .lg { display:inline-flex; align-items:center; gap:5px; }
+  .cal-legend .lg i { width:8px; height:8px; border-radius:50%; display:inline-block; flex:none; }
+  .cal-legend .lg .w { font-size:11px; }
   .cal-panel-body .cal-ev-del { margin-left:auto; flex:none; width:28px; height:28px; border-radius:50%;
     border:none; background:rgba(214,51,108,.12); color:#d6336c; font-size:12px; font-weight:900; cursor:pointer; line-height:1; }
   .cal-panel-body .cal-ev-del:hover { background:#d6336c; color:#fff; }
@@ -506,6 +512,7 @@
           </div>
         </div>
         <div id="j-cal" role="grid" aria-label="Calendar"></div>
+        <div class="cal-legend" id="j-cal-legend"></div>
       </div>
       <div class="card full">
         <h3 data-i18n="joy_meals">🍜 กินอะไรมาบ้าง</h3>
@@ -983,6 +990,27 @@ function calBind() {
   }, { passive: true });
 }
 function calDs(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+function calLegend() {
+  const el = document.getElementById("j-cal-legend");
+  if (!el) return;
+  const T = LANG === "th";
+  const cats = [
+    ["c-perso", "🧡", T ? "ส่วนตัว" : "personal"],
+    ["c-travail", "💼", T ? "งาน" : "work"],
+    ["c-sante", "🩺", T ? "สุขภาพ" : "health"],
+    ["c-anniv", "🎂", T ? "วันเกิด" : "birthday"],
+    ["c-autres", "📌", T ? "อื่นๆ" : "other"],
+  ];
+  const lg = c => "<span class='lg'>" + c + "</span>";
+  el.innerHTML = lg("<i class='" + cats[0][0] + "'></i> " + cats[0][2]) +
+    cats.slice(1).map(c => lg("<i class='" + c[0] + "'></i> " + c[2])).join("") +
+    lg("<span class='w'>🌧️</span> " + (T ? "ฝน" : "rain")) +
+    lg("<span class='w'>⛅</span> " + (T ? "มีเมฆ" : "cloudy")) +
+    lg("<span class='w'>☀️</span> " + (T ? "แดด" : "sun")) +
+    lg("🎉 " + (T ? "วันหยุด" : "holiday")) +
+    lg("🌿 " + (T ? "วันพักผ่อน" : "rest day")) +
+    lg("<span style='display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff9f43'></span> " + (T ? "วันนี้" : "today"));
+}
 function calMove(dir) {
   const d = new Date(CAL.year, CAL.month + dir, 1);
   CAL.year = d.getFullYear(); CAL.month = d.getMonth();
@@ -1033,7 +1061,7 @@ function calRender() {
     const evs = calEventsOn(ds);
     const isToday = ds === todayDs;
     const isSun = new Date(ds).getDay() === 0;
-    let cls = mood ? "m" + mood.mood : (isSun ? "sun" : "day");
+    let cls = isSun ? "sun" : "day";
     if (extra === "other") cls += " other";
     if (isToday) cls += " today";
     if (CAL.sel === ds) cls += " sel";
@@ -1042,7 +1070,7 @@ function calRender() {
       evs.slice(0, 3).map((e, i) => "<i class='" + catOf(e.category) + (evs.length === 1 ? " only" : "") + "'></i>").join("") +
       (evs.length > 3 ? "<i class='dots-more' style='font-size:7px;font-weight:900;color:#c44a74'>+" + (evs.length - 3) + "</i>" : "") +
       "</span>" : "";
-    const wico = hasWeather && !mood ? "<span class='w'>" + (w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️")) + "</span>" : "";
+    const wico = hasWeather ? "<span class='w'>" + (w.pop >= 40 ? "🌧️" : (w.pop >= 15 ? "⛅" : "☀️")) + "</span>" : "";
     const holDot = hol(ds) ? "<span class='hol'></span>" : "";
     const badge = isSun ? "<span class='sunb'>" + (LANG === "th" ? "วันพักผ่อน 🌿" : "Rest 🌿") + "</span>" : "";
     const ari = "aria-label='" + ds + (evs.length ? " " + evs.length + " events" : "") + "'";
@@ -1079,6 +1107,7 @@ function calRender() {
     dv.addEventListener("click", click);
     dv.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); click(); } });
   });
+  calLegend();
 }
 
 function calRenderWeek() {
@@ -1099,7 +1128,7 @@ function calRenderWeek() {
     const evs = calEventsOn(ds);
     const mood = (S.joy.moods || []).find(x => x.date === ds);
     const isToday = ds === calDs(new Date());
-    let cls = mood ? "m" + mood.mood : (d.getDay() === 0 ? "sun" : "day");
+    let cls = d.getDay() === 0 ? "sun" : "day";
     if (isToday) cls += " today";
     if (CAL.sel === ds) cls += " sel";
     const dots = evs.length ? "<span class='dots'>" + evs.slice(0, 3).map((e, i) => "<i class='" + catOf(e.category) + "'></i>").join("") + "</span>" : "";
@@ -1111,6 +1140,7 @@ function calRenderWeek() {
   el.querySelectorAll(".d[data-ds]").forEach(dv => dv.addEventListener("click", () => {
     CAL.sel = dv.dataset.ds; calRenderWeek(); calOpenDay(CAL.sel);
   }));
+  calLegend();
 }
 
 function calRenderAgenda() {
@@ -1136,6 +1166,7 @@ function calRenderAgenda() {
   el.querySelectorAll(".ag-day").forEach(dv => dv.addEventListener("click", () => {
     CAL.sel = dv.dataset.ds; calOpenDay(CAL.sel);
   }));
+  calLegend();
 }
 
 /* Panneau latéral — vraies données du jour (humeur, repas, météo, fête) + événements réels */
