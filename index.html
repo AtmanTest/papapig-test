@@ -355,6 +355,35 @@
   #meal-zoom.open { display:flex; }
   #meal-zoom img { max-width:92vw; max-height:88vh; border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,.5); }
   .rem-sub { font-size: 12px; color:#8a8590; margin-top:-6px; margin-bottom: 10px; }
+  .rem-tags { display:flex; flex-wrap:wrap; gap:6px; min-height: 2px; margin-top: 8px; }
+  .rem-tag {
+    display:inline-flex; align-items:center; gap:5px; font-size: 12px;
+    padding: 4px 10px; border-radius: 999px; background: var(--pink); color:#fff;
+  }
+  .rem-tag button {
+    font: inherit; color:#fff; background: transparent; border: 0; cursor:pointer;
+    font-size: 12px; line-height: 1; padding: 0 2px; opacity:.85;
+  }
+  .rem-tag button:hover { opacity: 1; }
+  .rem-tag.urgent { background: #ff9500; }
+  .rem-quick { display:flex; flex-direction:column; gap:5px; margin-top: 8px; }
+  .rem-quick-row { display:flex; flex-wrap:wrap; gap:6px; }
+  .rem-quick-row button {
+    font: inherit; font-size: 12px; padding: 4px 11px; border-radius: 999px;
+    border: 1px solid #f1a9c0; background: #fff5f8; color: #c2185b; cursor: pointer; transition: all .15s ease;
+  }
+  .rem-quick-row button:hover { background: #ffe3ec; }
+  .rem-datetime { display:flex; gap:8px; margin-top: 10px; align-items:center; }
+  .rem-datetime input[type="date"], .rem-datetime input[type="time"] {
+    flex:1; min-width:0; padding: 8px 10px; border-radius: 999px;
+    border: 1px solid #f1a9c0; background: #fff; color:#333; font: inherit; font-size: 13px;
+  }
+  .rem-urgent {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
+    background: #fff5f8; font-size: 16px; cursor: pointer; transition: all .15s ease; flex:none;
+  }
+  .rem-urgent.on { background: #ff9500; border-color: #ff9500; }
+  .rem-urgent:focus-visible { outline: 3px solid rgba(255,149,0,.35); outline-offset: 1px; }
   .rem-offset { margin-top: 8px; }
   .rem-offset-lbl { font-size: 11px; color:#8a8590; margin-bottom: 6px; }
   .rem-offset-opts { display:flex; flex-wrap:wrap; gap:6px; }
@@ -380,12 +409,10 @@
   .rem-add-btn:hover { transform: scale(1.06); }
   .rem-add-btn:active { transform: scale(.94); }
   .rem-add-btn:focus-visible { outline: 3px solid rgba(255,107,157,.4); outline-offset: 2px; }
-  .rem-datetime { display:flex; gap:8px; margin-top: 8px; }
-  .rem-datetime input {
-    flex:1; min-width:0; padding: 8px 12px; border-radius: 999px;
-    border: 1px solid var(--line); background: var(--soft); font-size: 13px; color: var(--dark);
-  }
   .rem-list { margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
+  .rem-sec { font-size: 13px; font-weight: 700; color: var(--pink); margin: 6px 0 0; text-transform: uppercase; letter-spacing: .4px; }
+  .rem-sec-sub { font-size: 11px; font-weight: 600; color: #8a8590; margin: 4px 0 2px; }
+  .rem-sec-sub::before { content: "· "; }
   .rem-item {
     display:flex; align-items:center; gap:10px; padding: 10px 12px;
     background: var(--soft); border: 1px solid var(--line); border-radius: 14px;
@@ -606,9 +633,15 @@
           <input type="text" id="rem-input" data-i18n-ph="rem_ph" placeholder="เตือนฉันเรื่อง…" aria-label="Nouveau rappel" />
           <button class="rem-add-btn" id="rem-add-btn" aria-label="Ajouter un rappel">+</button>
         </div>
+        <div class="rem-tags" id="rem-tags" aria-live="polite"></div>
+        <div class="rem-quick">
+          <div class="rem-quick-row" id="rem-qdate"></div>
+          <div class="rem-quick-row" id="rem-qtime"></div>
+        </div>
         <div class="rem-datetime">
           <input type="date" id="rem-date" aria-label="Date" />
           <input type="time" id="rem-time" aria-label="Heure" />
+          <button type="button" class="rem-urgent" id="rem-urgent" aria-pressed="false" title="Urgent">🚩</button>
         </div>
         <div class="rem-offset">
           <div class="rem-offset-lbl" data-i18n="rem_off_lbl">🔔 เตือนล่วงหน้า</div>
@@ -731,6 +764,8 @@ const TR = {
     rem_title: "🔔 เตือนความจำ", rem_sub: "ฉันช่วยจดให้เอง",
     rem_ph: "เตือนฉันเรื่อง…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "🔔 เตือนล่วงหน้า",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
+    rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
+    rem_per_morning: "เช้า", rem_per_noon: "เที่ยง", rem_per_afternoon: "บ่าย", rem_per_evening: "เย็น", rem_per_night: "กลางคืน",
     rem_done: "เสร็จแล้ว", rem_undo: "ยกเลิก", rem_wa: "นำเข้าจาก WhatsApp",
     rem_pending: "รอ", rem_todo: "ยังไม่ทำ", rem_progress: "กำลังทำ",
     rem_priv: "🔒 ส่วนตัว", rem_prio_high: "สำคัญมาก", rem_prio_normal: "ปกติ",
@@ -765,6 +800,8 @@ const TR = {
     rem_title: "🔔 Reminder", rem_sub: "I keep the thread for you.",
     rem_ph: "Remind me to…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "🔔 Remind me before",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
+    rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
+    rem_per_morning: "Morning", rem_per_noon: "Noon", rem_per_afternoon: "Afternoon", rem_per_evening: "Evening", rem_per_night: "Night",
     rem_done: "Done", rem_undo: "Undo", rem_wa: "Imported from WhatsApp",
     rem_pending: "Pending", rem_todo: "To do", rem_progress: "In progress",
     rem_priv: "🔒 Private", rem_prio_high: "High priority", rem_prio_normal: "Normal",
@@ -1107,14 +1144,14 @@ function remRender() {
     if (b) b.addEventListener("click", () => document.getElementById("rem-input").focus());
     return;
   }
-  list.innerHTML = REMINDERS.map(r => {
+  function itemHtml(r) {
     const isDone = r.status === "done";
     const overdue = !isDone && r.date && r.date < today;
     const chk = isDone ? "✓" : "";
     const badges = [];
     if (r.created_via === "whatsapp") badges.push("<span class='rem-badge wa'>" + t("rem_wa") + "</span>");
     if (r.is_private) badges.push("<span class='rem-badge priv'>" + t("rem_priv") + "</span>");
-    if (r.priority === "high") badges.push("<span class='rem-badge prio'>" + t("rem_prio_high") + "</span>");
+    if (r.priority === "high" || r.priority === "urgent") badges.push("<span class='rem-badge prio'>" + (LANG === "th" ? "🚩 สำคัญ" : "🚩 Urgent") + "</span>");
     const meta = [];
     if (r.date) meta.push((overdue ? "⚠️ " : "") + remFmtDate(r.date) + (r.start_time ? " " + remFmtTimeBkk(r.date, r.start_time) : ""));
     if (!isDone) meta.push("<span class='rem-sync " + (remSyncState[r.id] === "failed" ? "failed" : "") + "'>" + remStatusText(r.id) + "</span>");
@@ -1123,7 +1160,43 @@ function remRender() {
       "<button class='rem-chk' data-done='" + r.id + "' aria-label='" + t("rem_done") + "'>" + chk + "</button>" +
       "<div class='rem-body'><div class='rem-txt'>" + (r.is_private ? "🔒 " : "") + _tTxt(r.title) + "</div>" +
       "<div class='rem-meta'>" + badges.join("") + meta.join(" · ") + "</div></div>" + undo + "</div>";
-  }).join("");
+  }
+  function periodOf(hm) {
+    const h = parseInt(String(hm).slice(0, 2), 10);
+    if (h < 5) return "night";
+    if (h < 11) return "morning";
+    if (h < 13) return "noon";
+    if (h < 18) return "afternoon";
+    if (h < 22) return "evening";
+    return "night";
+  }
+  const PER_ORDER = ["morning", "noon", "afternoon", "evening", "night"];
+  const PER_LBL = { morning: "rem_per_morning", noon: "rem_per_noon", afternoon: "rem_per_afternoon", evening: "rem_per_evening", night: "rem_per_night" };
+  const doneList = REMINDERS.filter(r => r.status === "done");
+  const openList = REMINDERS.filter(r => r.status !== "done");
+  const todayItems = openList.filter(r => r.date === today);
+  const futureItems = openList.filter(r => r.date !== today);
+  const html = [];
+  if (todayItems.length) {
+    const grouped = {};
+    todayItems.forEach(r => {
+      const p = r.start_time ? periodOf(r.start_time) : "night";
+      (grouped[p] = grouped[p] || []).push(r);
+    });
+    html.push("<div class='rem-sec'>" + t("rem_sec_today") + "</div>");
+    PER_ORDER.forEach(p => {
+      if (!grouped[p] || !grouped[p].length) return;
+      html.push("<div class='rem-sec-sub'>" + t(PER_LBL[p]) + "</div>");
+      html.push(grouped[p].map(itemHtml).join(""));
+    });
+  }
+  if (futureItems.length) {
+    html.push("<div class='rem-sec'>" + t("rem_sec_upcoming") + "</div>");
+    futureItems.sort((a, b) => (a.date + " " + (a.start_time || "")).localeCompare(b.date + " " + (b.start_time || "")));
+    html.push(futureItems.map(itemHtml).join(""));
+  }
+  if (doneList.length) html.push("<div class='rem-sec'>" + t("rem_done") + " (" + doneList.length + ")</div>" + doneList.map(itemHtml).join(""));
+  list.innerHTML = html.join("");
   list.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.done;
     const it = REMINDERS.find(x => x.id === id);
@@ -1153,6 +1226,31 @@ function remSetup() {
   const input = document.getElementById("rem-input");
   const dateEl = document.getElementById("rem-date");
   const timeEl = document.getElementById("rem-time");
+  const urgentBtn = document.getElementById("rem-urgent");
+  const tagBox = document.getElementById("rem-tags");
+  let urgent = false;
+  /* date du jour en BKK (référence backend) */
+  function bkkToday() {
+    try { return new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10).replace(/\//g, "-"); }
+    catch (e) { return new Date().toISOString().slice(0, 10); }
+  }
+  /* dates civiles en UTC pur (les dates sont stockées en BKK sans fuseau) */
+  function addDays(s, n) {
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d) + n * 86400000).toISOString().slice(0, 10);
+  }
+  function nextWeekend(s) {
+    const [y, m, d] = s.split("-").map(Number);
+    let dt = new Date(Date.UTC(y, m - 1, d));
+    while (dt.getUTCDay() !== 6) dt = new Date(dt.getTime() + 86400000);
+    return dt.toISOString().slice(0, 10);
+  }
+  function nextWeek(s) {
+    const [y, m, d] = s.split("-").map(Number);
+    let dt = new Date(Date.UTC(y, m - 1, d));
+    while (dt.getUTCDay() !== 1) dt = new Date(dt.getTime() + 86400000);
+    return new Date(dt.getTime() + 7 * 86400000).toISOString().slice(0, 10);
+  }
   /* Options de rappel (minutes avant l'événement) */
   const OFF_OPTS = [
     { m: 30,  l: "30 min" }, { m: 60,  l: "1 h" }, { m: 120, l: "2 h" }, { m: 180, l: "3 h" },
@@ -1160,7 +1258,6 @@ function remSetup() {
   ];
   const offsetSel = new Set([1440, 180]); // défaut : 1j + 3h
   function bkkFromInputs() {
-    /* retourne {ts, date, time} en BKK, ou null si heure absente/invalide */
     const t = timeEl.value, d = dateEl.value;
     if (!t) return null;
     try {
@@ -1175,11 +1272,8 @@ function remSetup() {
     const box = document.getElementById("rem-offset-opts");
     const b = bkkFromInputs();
     let maxM = null;
-    if (b) { /* événement dans <24h → n'afficher que des minutes/heures adaptées */
-      maxM = Math.floor((b.ts - Date.now()) / 60000); // minutes réelles restantes
-    }
+    if (b) { maxM = Math.floor((b.ts - Date.now()) / 60000); }
     const visible = OFF_OPTS.filter(o => !maxM || o.m < maxM - 5);
-    /* nettoyer la sélection des options devenues invisibles */
     [...offsetSel].forEach(m => { if (!visible.some(o => o.m === m)) offsetSel.delete(m); });
     if (!offsetSel.size) offsetSel.add(180);
     box.innerHTML = visible.map(o =>
@@ -1191,31 +1285,82 @@ function remSetup() {
       renderOffsets();
     }));
   }
-  dateEl.addEventListener("change", renderOffsets);
-  timeEl.addEventListener("change", renderOffsets);
+  /* ── Tags pills (comme l'app Reminders) ── */
+  function renderTags() {
+    const tags = [];
+    const d = dateEl.value;
+    const t = timeEl.value;
+    if (d) tags.push({ k: "date", label: "📅 " + d, cls: "" });
+    if (t) tags.push({ k: "time", label: "🕐 " + t, cls: "" });
+    if (urgent) tags.push({ k: "urgent", label: LANG === "th" ? "🚩 สำคัญ" : "🚩 Urgent", cls: "urgent" });
+    tagBox.innerHTML = tags.map(tg =>
+      "<span class='rem-tag " + tg.cls + "'>" + tg.label +
+      "<button type='button' data-rm='" + tg.k + "' aria-label='Remove'>✕</button></span>"
+    ).join("");
+    tagBox.querySelectorAll("[data-rm]").forEach(b => b.addEventListener("click", () => {
+      const k = b.dataset.rm;
+      if (k === "date") dateEl.value = "";
+      if (k === "time") timeEl.value = "";
+      if (k === "urgent") { urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false"); }
+      renderTags(); renderOffsets();
+    }));
+  }
+  function renderQuick() {
+    const qd = document.getElementById("rem-qdate");
+    const qt = document.getElementById("rem-qtime");
+    const today = bkkToday();
+    const qdDefs = [
+      { k: "today",   lbl: LANG === "th" ? "วันนี้" : "Aujourd'hui", v: today },
+      { k: "tomorrow",lbl: LANG === "th" ? "พรุ่งนี้" : "Demain", v: addDays(today, 1) },
+      { k: "weekend", lbl: LANG === "th" ? "สุดสัปดาห์" : "Week-end", v: nextWeekend(today) },
+      { k: "nextweek",lbl: LANG === "th" ? "สัปดาห์หน้า" : "Sem. prochaine", v: nextWeek(today) }
+    ];
+    qd.innerHTML = qdDefs.map(d => "<button type='button' data-d='" + d.v + "'>" + d.lbl + "</button>").join("");
+    qd.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      dateEl.value = b.dataset.d; renderTags(); renderOffsets();
+    }));
+    const qTime = [
+      { h: "09:00", lbl: LANG === "th" ? "เช้า" : "Matin" },
+      { h: "12:00", lbl: LANG === "th" ? "เที่ยง" : "Midi" },
+      { h: "15:00", lbl: LANG === "th" ? "บ่าย" : "Après-midi" },
+      { h: "18:00", lbl: LANG === "th" ? "เย็น" : "Soir" },
+      { h: "21:00", lbl: LANG === "th" ? "กลางคืน" : "Nuit" }
+    ];
+    qt.innerHTML = qTime.map(x => "<button type='button' data-t='" + x.h + "'>" + x.h + " · " + x.lbl + "</button>").join("");
+    qt.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      timeEl.value = b.dataset.t; renderTags(); renderOffsets();
+    }));
+  }
+  renderQuick();
+  dateEl.addEventListener("change", renderTags);
+  timeEl.addEventListener("change", () => { renderTags(); renderOffsets(); });
+  urgentBtn.addEventListener("click", () => {
+    urgent = !urgent;
+    urgentBtn.classList.toggle("on", urgent);
+    urgentBtn.setAttribute("aria-pressed", String(urgent));
+    renderTags();
+  });
+  /* date par défaut = aujourd'hui en BKK */
+  try { dateEl.value = bkkToday(); } catch (e) { dateEl.value = new Date().toISOString().slice(0, 10); }
+  renderTags();
   renderOffsets();
-  /* date par défaut = aujourd'hui en BKK (le backend raisonne en BKK) */
-  try {
-    dateEl.value = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10);
-  } catch (e) { dateEl.value = new Date().toISOString().slice(0, 10); }
   const add = async () => {
     const txt = input.value.trim();
     if (!txt) { input.focus(); return; }
     const time = timeEl.value || null;
-    const date = dateEl.value || new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10);
+    const date = dateEl.value || bkkToday();
     let payload = { title: txt, date, start_time: time };
-    /* Le backend (cron rappels) raisonne en heure Bangkok. L'utilisateur saisit
-       dans SON fuseau (navigateur). Conversion locale → BKK à la création. */
     const b = time ? bkkFromInputs() : null;
     if (b) payload = { title: txt, date: b.date, start_time: b.time };
     payload.remind_offsets = [...offsetSel].sort((a, z) => z - a);
+    if (urgent) payload.priority = "urgent";
     try {
       const created = await ReminderSyncService.createReminder(payload);
       const row = Array.isArray(created) ? created[0] : created;
       if (row && row.id) { REMINDERS.push(row); remSyncState[row.id] = "synced"; }
       input.value = ""; timeEl.value = "";
-      renderOffsets();
-      remRender();
+      urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false");
+      renderTags(); renderOffsets(); remRender();
     } catch (e) { /* état local : marqué pending, retry au prochain load */ }
   };
   document.getElementById("rem-add-btn").addEventListener("click", add);
