@@ -883,6 +883,7 @@ function switchTab(which) {
 document.getElementById("lang-btn").addEventListener("click", () => {
   LANG = LANG === "th" ? "en" : "th";
   applyLang(); if (S) render(S);
+  if (typeof remRender === "function") remRender();
 });
 
 /* ═════════ Data ═════════ */
@@ -945,6 +946,22 @@ function render(s) {
       (me.word ? "<b>" + _tTxt(me.word) + "</b>" : "") +
       "<span class='t'>" + me.date.slice(5) + " " + (me.ts ? fmtMealPhotoTime(me.ts) : me.at) + "</span>";
     mWrap.appendChild(el);
+  });
+  /* photo miniature du repas (si la journée en a une) — sous la liste */
+  Object.keys(MEAL_PHOTOS).sort().reverse().slice(0, 3).forEach(ds => {
+    const _mp = MEAL_PHOTOS[ds];
+    const _mpUrl = typeof _mp === "string" ? _mp : (_mp && _mp.url);
+    if (!_mpUrl) return;
+    const _mpTime = _mp && typeof _mp === "object" && _mp.ts ? fmtMealPhotoTime(_mp.ts) : "";
+    const div = document.createElement("div");
+    div.className = "meal";
+    div.innerHTML = "<span>📸</span><b>" + ds.slice(5).replace("-", "/") + "</b>" +
+      "<span style='text-align:right;flex:1'><img src='" + _mpUrl + "' alt='meal photo' " +
+      "style='width:60px;height:60px;object-fit:cover;border-radius:10px;border:2px solid rgba(255,158,194,.5);cursor:zoom-in' " +
+      "onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'>" +
+      (_mpTime ? "<div style='font-size:10px;color:#8a8590;margin-top:2px'>📸 " + _mpTime + (LANG === "th" ? " เวลากรุงเทพ" : " · Paris") + "</div>" : "") +
+      "</span>";
+    mWrap.appendChild(div);
   });
 
   /* Joy — goal */
@@ -1475,6 +1492,7 @@ function calOpenDay(ds) {
 
 function renderCal(moods) {
   if (!CAL.inited) { CAL.inited = true; calInit(); }
+  else calRender(); // re-rendu au changement de langue (mois, jours, légende)
 }
 
 function openDay(ds) {
