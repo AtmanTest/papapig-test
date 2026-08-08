@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09 05:13 Bangkok",
+  "generated_at": "2026-08-09 05:15 Bangkok",
   "joy": {
     "mood_today": null,
     "mood_note": "",
@@ -39,18 +39,6 @@
       }
     ],
     "meal_photos": {
-      "2026-08-04": {
-        "url": "images/meals/2026-08-04.jpg",
-        "ts": 1785862071
-      },
-      "2026-08-05": {
-        "url": "images/meals/2026-08-05.jpg",
-        "ts": 1785899787
-      },
-      "2026-08-06": {
-        "url": "images/meals/2026-08-06.jpg",
-        "ts": 1786028188
-      },
       "2026-08-07": {
         "url": "images/meals/2026-08-07.jpg",
         "ts": 1786085303
