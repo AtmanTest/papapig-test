@@ -1071,11 +1071,21 @@ function remFmtDate(d) {
   if (isNaN(dt)) return d;
   return dt.toLocaleDateString(LANG === "th" ? "th-TH" : "fr-FR", { day: "numeric", month: "short" });
 }
+/* Heure stockée en BKK → affichage : TH = brut BKK, EN = converti Paris */
+function remFmtTimeBkk(dateStr, timeStr) {
+  const hm = String(timeStr).slice(0, 5);
+  if (LANG === "th") return hm;
+  try {
+    const dt = new Date(dateStr + "T" + hm + ":00+07:00"); /* interprété en BKK */
+    if (isNaN(dt)) return hm;
+    return dt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris", hour12: false });
+  } catch (e) { return hm; }
+}
 function remRender() {
   const list = document.getElementById("rem-list");
   const T = LANG === "th";
   const now = new Date();
-  const today = now.toISOString().slice(0, 10);
+  const today = now.toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10).replace(/\//g, "-");
   if (!REMINDERS.length) {
     list.innerHTML = "<div class='rem-empty'>" + t("rem_empty") +
       "<br><button id='rem-empty-add'>" + t("rem_empty_add") + "</button></div>";
@@ -1092,7 +1102,7 @@ function remRender() {
     if (r.is_private) badges.push("<span class='rem-badge priv'>" + t("rem_priv") + "</span>");
     if (r.priority === "high") badges.push("<span class='rem-badge prio'>" + t("rem_prio_high") + "</span>");
     const meta = [];
-    if (r.date) meta.push((overdue ? "⚠️ " : "") + remFmtDate(r.date) + (r.start_time ? " " + r.start_time.slice(0, 5) : ""));
+    if (r.date) meta.push((overdue ? "⚠️ " : "") + remFmtDate(r.date) + (r.start_time ? " " + remFmtTimeBkk(r.date, r.start_time) : ""));
     if (!isDone) meta.push("<span class='rem-sync " + (remSyncState[r.id] === "failed" ? "failed" : "") + "'>" + remStatusText(r.id) + "</span>");
     const undo = isDone ? "<button class='rem-undo' data-undo='" + r.id + "'>" + t("rem_undo") + "</button>" : "";
     return "<div class='rem-item" + (isDone ? " done" : "") + "' data-rid='" + r.id + "'>" +
