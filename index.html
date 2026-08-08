@@ -384,6 +384,16 @@
   }
   .rem-urgent.on { background: #ff9500; border-color: #ff9500; }
   .rem-urgent:focus-visible { outline: 3px solid rgba(255,149,0,.35); outline-offset: 1px; }
+  .rem-locinput { display:flex; gap:6px; margin-top: 8px; }
+  .rem-locinput.hidden { display:none; }
+  .rem-locinput input {
+    flex:1; min-width:0; padding: 8px 12px; border-radius: 999px;
+    border: 1px solid #f1a9c0; background: #fff; font-size: 13px; color:#333; font: inherit;
+  }
+  .rem-loc-ok {
+    width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--pink);
+    color: #fff; font-size: 15px; cursor: pointer; flex:none;
+  }
   .rem-offset { margin-top: 8px; }
   .rem-offset-lbl { font-size: 11px; color:#8a8590; margin-bottom: 6px; }
   .rem-offset-opts { display:flex; flex-wrap:wrap; gap:6px; }
@@ -434,6 +444,8 @@
   .rem-badge.wa { background:#e6faf7; color:#1a9e90; }
   .rem-badge.priv { background:#f3e8ff; color:#7a4fb8; }
   .rem-badge.prio { background:#fde8ee; color:#c44a74; }
+  .rem-badge.loc { background:#e6f2ff; color:#1a73e8; text-decoration:none; }
+  .rem-hint { font-size: 11px; color:#e07020; margin: -4px 0 8px; line-height: 1.45; }
   .rem-sync { font-size:10px; color:#8a8590; }
   .rem-sync.failed { color:#d6455d; }
   .rem-undo {
@@ -629,6 +641,7 @@
       <div class="card full">
         <h3 data-i18n="rem_title">🔔 เตือนความจำ</h3>
         <div class="rem-sub" data-i18n="rem_sub">ฉันช่วยจดให้เอง</div>
+        <div class="rem-hint" data-i18n="rem_hint">เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕</div>
         <div class="rem-add">
           <input type="text" id="rem-input" data-i18n-ph="rem_ph" placeholder="เตือนฉันเรื่อง…" aria-label="Nouveau rappel" />
           <button class="rem-add-btn" id="rem-add-btn" aria-label="Ajouter un rappel">+</button>
@@ -641,7 +654,12 @@
         <div class="rem-datetime">
           <input type="date" id="rem-date" aria-label="Date" />
           <input type="time" id="rem-time" aria-label="Heure" />
+          <button type="button" class="rem-urgent" id="rem-loc" aria-pressed="false" title="Location">📍</button>
           <button type="button" class="rem-urgent" id="rem-urgent" aria-pressed="false" title="Urgent">🚩</button>
+        </div>
+        <div class="rem-locinput hidden" id="rem-locinput">
+          <input type="text" id="rem-locfield" data-i18n-ph="rem_loc_ph" placeholder="ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…" aria-label="Lieu" />
+          <button type="button" class="rem-loc-ok" id="rem-loc-ok">✓</button>
         </div>
         <div class="rem-offset">
           <div class="rem-offset-lbl" data-i18n="rem_off_lbl">🔔 เตือนล่วงหน้า</div>
@@ -762,6 +780,9 @@ const TR = {
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     rem_title: "🔔 เตือนความจำ", rem_sub: "ฉันช่วยจดให้เอง",
+    rem_hint: "เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕",
+    rem_loc_add: "📍 เพิ่มสถานที่", rem_loc_ok: "📍 เปิดแผนที่เพื่อเลือกสถานที่", rem_loc_err: "ไม่สามารถหาตำแหน่งได้ — เปิดลิงก์แผนที่เองได้",
+    rem_loc_ph: "ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…",
     rem_ph: "เตือนฉันเรื่อง…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "🔔 เตือนล่วงหน้า",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
@@ -798,6 +819,9 @@ const TR = {
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     rem_title: "🔔 Reminder", rem_sub: "I keep the thread for you.",
+    rem_hint: "Write what you want to be reminded of, pick a date & time, then tap + to send it to papapig's WhatsApp 💕",
+    rem_loc_add: "📍 Add a place", rem_loc_ok: "📍 Opening maps to pick a place", rem_loc_err: "Location unavailable — open the map link yourself",
+    rem_loc_ph: "Map link or address (optional)…",
     rem_ph: "Remind me to…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "🔔 Remind me before",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
@@ -1153,6 +1177,7 @@ function remRender() {
     if (r.created_via === "whatsapp") badges.push("<span class='rem-badge wa'>" + t("rem_wa") + "</span>");
     if (r.is_private) badges.push("<span class='rem-badge priv'>" + t("rem_priv") + "</span>");
     if (r.priority === "high" || r.priority === "urgent") badges.push("<span class='rem-badge prio'>" + (LANG === "th" ? "🚩 สำคัญ" : "🚩 Urgent") + "</span>");
+    if (r.location) badges.push("<a class='rem-badge loc' href='" + String(r.location).replace(/"/g, "&quot;") + "' target='_blank' rel='noopener'>📍 " + (LANG === "th" ? "แผนที่" : "Map") + "</a>");
     const meta = [];
     if (r.date) meta.push((overdue ? "⚠️ " : "") + remFmtDate(r.date) + (r.start_time ? " " + remFmtTimeBkk(r.date, r.start_time) : ""));
     if (!isDone) meta.push("<span class='rem-sync " + (remSyncState[r.id] === "failed" ? "failed" : "") + "'>" + remStatusText(r.id) + "</span>");
@@ -1228,8 +1253,10 @@ function remSetup() {
   const dateEl = document.getElementById("rem-date");
   const timeEl = document.getElementById("rem-time");
   const urgentBtn = document.getElementById("rem-urgent");
+  const locBtn = document.getElementById("rem-loc");
   const tagBox = document.getElementById("rem-tags");
   let urgent = false;
+  let loc = null; /* lien Google Maps facultatif */
   /* date du jour en BKK (référence backend) */
   function bkkToday() {
     try { return new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10).replace(/\//g, "-"); }
@@ -1293,6 +1320,7 @@ function remSetup() {
     const t = timeEl.value;
     if (d) tags.push({ k: "date", label: "📅 " + d, cls: "" });
     if (t) tags.push({ k: "time", label: "🕐 " + t, cls: "" });
+    if (loc) tags.push({ k: "loc", label: "📍 " + (LANG === "th" ? "สถานที่" : "Place"), cls: "" });
     if (urgent) tags.push({ k: "urgent", label: LANG === "th" ? "🚩 สำคัญ" : "🚩 Urgent", cls: "urgent" });
     tagBox.innerHTML = tags.map(tg =>
       "<span class='rem-tag " + tg.cls + "'>" + tg.label +
@@ -1302,6 +1330,7 @@ function remSetup() {
       const k = b.dataset.rm;
       if (k === "date") dateEl.value = "";
       if (k === "time") timeEl.value = "";
+      if (k === "loc") { loc = null; locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false"); }
       if (k === "urgent") { urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false"); }
       renderTags(); renderOffsets();
     }));
@@ -1343,6 +1372,34 @@ function remSetup() {
     urgentBtn.setAttribute("aria-pressed", String(urgent));
     renderTags();
   });
+  /* 📍 lieu facultatif : géoloc navigateur → lien Google Maps (ouvre l'app depuis le tel) */
+  const locInput = document.getElementById("rem-locinput");
+  const locField = document.getElementById("rem-locfield");
+  const locOk = document.getElementById("rem-loc-ok");
+  function showLocInput() { locInput.classList.remove("hidden"); locField.focus(); }
+  function hideLocInput() { locInput.classList.add("hidden"); locField.value = ""; }
+  locBtn.addEventListener("click", () => {
+    if (loc) { /* déjà défini → retirer */
+      loc = null; locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false");
+      hideLocInput(); renderTags(); return;
+    }
+    if (navigator.geolocation) {
+      locBtn.classList.add("on"); locBtn.setAttribute("aria-pressed", "true"); renderTags();
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        loc = "https://www.google.com/maps?q=" + latitude.toFixed(6) + "," + longitude.toFixed(6);
+        renderTags();
+      }, () => { locBtn.classList.remove("on"); showLocInput(); }, { enableHighAccuracy: false, timeout: 6000 });
+    } else { showLocInput(); }
+  });
+  locOk.addEventListener("click", () => {
+    const v = locField.value.trim();
+    if (!v) { hideLocInput(); return; }
+    loc = v.startsWith("http") ? v : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(v);
+    locBtn.classList.add("on"); locBtn.setAttribute("aria-pressed", "true");
+    hideLocInput(); renderTags();
+  });
+  locField.addEventListener("keydown", e => { if (e.key === "Enter") locOk.click(); });
   /* date par défaut = aujourd'hui en BKK */
   try { dateEl.value = bkkToday(); } catch (e) { dateEl.value = new Date().toISOString().slice(0, 10); }
   renderTags();
@@ -1357,12 +1414,14 @@ function remSetup() {
     if (b) payload = { title: txt, date: b.date, start_time: b.time };
     payload.remind_offsets = [...offsetSel].sort((a, z) => z - a);
     if (urgent) payload.priority = "urgent";
+    if (loc) payload.location = loc;
     try {
       const created = await ReminderSyncService.createReminder(payload);
       const row = Array.isArray(created) ? created[0] : created;
       if (row && row.id) { REMINDERS.push(row); remSyncState[row.id] = "synced"; }
       input.value = ""; timeEl.value = "";
       urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false");
+      loc = null; locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false");
       renderTags(); renderOffsets(); remRender();
     } catch (e) { /* état local : marqué pending, retry au prochain load */ }
   };
