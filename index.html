@@ -797,7 +797,7 @@ function renderMood(J) {
   const emo = MOOD_EMO[v] || "😐";
   const feel = (MOOD_FEEL[LANG] || MOOD_FEEL.en)[v] || "";
   document.getElementById("j-mood-today").textContent = emo + " " + feel;
-  document.getElementById("j-mood-note").textContent = e.summary || e.note || "";
+  document.getElementById("j-mood-note").textContent = (LANG === "en" ? (e.summary_en || e.summary) : (e.summary || e.summary_en)) || e.note || "";
   document.getElementById("j-mood-date").textContent = (i === 0 ? (LANG === "th" ? "วันนี้" : "today") + " · " : "") + e.date;
 }
 function bindMoodNav() {
@@ -1164,7 +1164,7 @@ function calOpenDay(ds) {
     const em = MOOD_EMO[m.mood] || "😐";
     const feel = (MOOD_FEEL[T ? "th" : "en"] || {})[m.mood] || "";
     h += sec(T ? "อารมณ์" : "Mood", row(em, MOODS[T ? "th" : "en"][m.mood] + (feel ? " — " + feel : ""),
-      m.note || m.summary || (T ? "อารมณ์ประจำวัน" : "daily mood")));
+      (T ? (m.summary || m.summary_en) : (m.summary_en || m.summary)) || m.note || (T ? "อารมณ์ประจำวัน" : "daily mood")));
   }
   /* Repas (vraie donnée) */
   if (mealsDay.length) {
@@ -1215,7 +1215,7 @@ function openDay(ds) {
     body += "<div class='mrow'><div class='ico'>" + em + "</div><div><div class='lb'>" +
       (LANG === "th" ? "อารมณ์" : "MOOD") + "</div><div class='vl'>" + MOODS[LANG][m.mood] +
       (feel ? " — " + feel : "") +
-      (m.note || m.summary ? "<br><span style='font-size:12px;color:#8a8590;font-weight:400'>" + (m.note || m.summary) + "</span>" : "") +
+      ((LANG === "en" ? (m.summary_en || m.summary) : (m.summary || m.summary_en)) || m.note ? "<br><span style='font-size:12px;color:#8a8590;font-weight:400'>" + ((LANG === "en" ? (m.summary_en || m.summary) : (m.summary || m.summary_en)) || m.note) + "</span>" : "") +
       "</div></div></div>";
   }
   /* Repas */
