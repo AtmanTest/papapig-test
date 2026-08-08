@@ -349,6 +349,11 @@
   }
   .meal .t { font-size: 10px; color:#8a8590; }
   .meal b { font-size: 13px; font-weight: 700; }
+  .meal .photo { width:52px; height:52px; object-fit:cover; border-radius:10px; border:2px solid rgba(255,158,194,.5); cursor:zoom-in; flex:none; }
+  .meal .photo-sm { width:52px; height:52px; object-fit:cover; border-radius:10px; border:2px solid rgba(255,158,194,.5); cursor:zoom-in; }
+  #meal-zoom { position:fixed; inset:0; z-index:999; background:rgba(20,10,20,.75); display:none; align-items:center; justify-content:center; cursor:zoom-out; }
+  #meal-zoom.open { display:flex; }
+  #meal-zoom img { max-width:92vw; max-height:88vh; border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,.5); }
   .rem-sub { font-size: 12px; color:#8a8590; margin-top:-6px; margin-bottom: 10px; }
   .rem-add { display:flex; gap:8px; }
   .rem-add input {
@@ -947,7 +952,7 @@ function render(s) {
       "<span class='t'>" + me.date.slice(5) + " " + (me.ts ? fmtMealPhotoTime(me.ts) : me.at) + "</span>";
     mWrap.appendChild(el);
   });
-  /* photo miniature du repas (si la journée en a une) — sous la liste */
+  /* photo miniature du repas (si la journée en a une) — même ligne que les autres cards */
   Object.keys(MEAL_PHOTOS).sort().reverse().slice(0, 3).forEach(ds => {
     const _mp = MEAL_PHOTOS[ds];
     const _mpUrl = typeof _mp === "string" ? _mp : (_mp && _mp.url);
@@ -955,12 +960,9 @@ function render(s) {
     const _mpTime = _mp && typeof _mp === "object" && _mp.ts ? fmtMealPhotoTime(_mp.ts) : "";
     const div = document.createElement("div");
     div.className = "meal";
-    div.innerHTML = "<span>📸</span><b>" + ds.slice(5).replace("-", "/") + "</b>" +
-      "<span style='text-align:right;flex:1'><img src='" + _mpUrl + "' alt='meal photo' " +
-      "style='width:60px;height:60px;object-fit:cover;border-radius:10px;border:2px solid rgba(255,158,194,.5);cursor:zoom-in' " +
-      "onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'>" +
-      (_mpTime ? "<div style='font-size:10px;color:#8a8590;margin-top:2px'>📸 " + _mpTime + (LANG === "th" ? " เวลากรุงเทพ" : " · Paris") + "</div>" : "") +
-      "</span>";
+    div.innerHTML = "<span>📸</span><span style='font-size:13px'>" + ds.slice(5).replace("-", "/") + "</span>" +
+      "<img class='photo' src='" + _mpUrl + "' alt='meal photo' style='margin-left:auto'>" +
+      "<span class='t'>📸 " + _mpTime + (LANG === "th" ? " เวลากรุงเทพ" : " · Paris") + "</span>";
     mWrap.appendChild(div);
   });
 
@@ -1455,9 +1457,8 @@ function calOpenDay(ds) {
   const mpTime = mpTs ? fmtMealPhotoTime(mpTs) : "";
   const mealPhotoBlock = mpUrl
     ? "<div style='display:flex;justify-content:center;align-items:center;flex-direction:column;padding:6px 0 2px'>" +
-      "<img src='" + mpUrl + "' alt='meal photo' " +
-      "style='width:300px;max-width:100%;height:auto;border-radius:14px;border:2px solid rgba(255,158,194,.5);" +
-      "cursor:zoom-in;object-fit:cover' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'>" +
+      "<img class='photo-sm' src='" + mpUrl + "' alt='meal photo' " +
+      "style='width:140px;height:140px;object-fit:cover;border-radius:12px'>" +
       (mpTime ? "<span style='font-size:11px;color:#8a8590;margin-top:4px'>📸 " + mpTime + (T ? " เวลากรุงเทพ" : " · Paris") + "</span>" : "") +
       "</div>"
     : "";
@@ -1521,9 +1522,8 @@ function openDay(ds) {
       (LANG === "th" ? "กิน" : "MEALS") + "</div><div class='vl'>" +
       mealsDay.map(x => x.emoji + " " + (x.word || "") + " <span style='font-size:11px;color:#8a8590'>" +
         (x.ts ? fmtMealPhotoTime(x.ts) : x.at) + "</span>").join(" · ") +
-      (_mpUrl ? "<div style='margin-top:6px;text-align:center'><img src='" + _mpUrl + "' alt='meal photo' " +
-        "style='width:300px;max-width:100%;height:auto;border-radius:12px;border:2px solid rgba(255,158,194,.5);" +
-        "cursor:zoom-in' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'>" +
+      (_mpUrl ? "<div style='margin-top:6px;text-align:center'><img class='photo-sm' src='" + _mpUrl + "' alt='meal photo' " +
+        "style='width:140px;height:140px;object-fit:cover;border-radius:12px'>" +
         (_mpTime ? "<div style='font-size:11px;color:#8a8590;margin-top:4px'>📸 " + _mpTime + (LANG === "th" ? " เวลากรุงเทพ" : " · Paris") + "</div>" : "") +
         "</div>" : "") +
       "</div></div></div>";
@@ -1700,6 +1700,27 @@ document.addEventListener("click", e => {
     calOpenDay(ds);
   }).catch(() => alert(LANG === "th" ? "ลบไม่สำเร็จ ลองอีกครั้ง" : "Delete failed, try again"));
 });
+</script>
+<div id="meal-zoom" role="dialog" aria-label="Photo"><img src="" alt=""></div>
+<script>
+  /* Zoom photo repas : clic → plein écran, re-clic → taille de base (toggle) */
+  (function () {
+    const z = document.getElementById("meal-zoom");
+    const img = z.querySelector("img");
+    z.addEventListener("click", () => { z.classList.remove("open"); img.src = ""; });
+    document.addEventListener("click", e => {
+      const t = e.target;
+      if (t && t.tagName === "IMG" && (t.classList.contains("photo") || t.classList.contains("photo-sm"))) {
+        e.preventDefault();
+        if (z.classList.contains("open") && img.src.split("?")[0] === t.src.split("?")[0]) {
+          z.classList.remove("open"); img.src = ""; return; // re-clic même photo → réduit
+        }
+        img.src = t.src.split("?")[0];
+        z.classList.add("open");
+      }
+    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && z.classList.contains("open")) { z.classList.remove("open"); img.src = ""; } });
+  })();
 </script>
 </body>
 </html>
