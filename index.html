@@ -391,6 +391,20 @@
     flex:1; min-width:0; padding: 8px 10px; border-radius: 999px;
     border: 1px solid #f1a9c0; background: #fff; color:#333; font: inherit; font-size: 13px;
   }
+  .rem-pick {
+    flex:1; min-width:0; display:flex; align-items:center; gap:6px;
+    padding: 8px 12px; border-radius: 999px;
+    border: 1px solid #f1a9c0; background: #fff; color:#c44a74;
+    font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: transform .12s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .rem-pick:active { transform: scale(.96); }
+  .rem-pick:hover { background:#fff5f8; }
+  .rem-pick.filled { background:#ffe3ec; border-color:#ffb3cc; color:#d6336c;
+    box-shadow:0 0 0 3px rgba(255,107,157,.18); }
+  .rem-pick-ic { font-size:14px; }
+  .rem-pick-lbl { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rem-pick-ip { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
   .rem-urgent {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
     background: #fff5f8; font-size: 16px; cursor: pointer; transition: all .15s ease; flex:none;
@@ -666,8 +680,14 @@
           <div class="rem-quick-row" id="rem-qtime"></div>
         </div>
         <div class="rem-datetime">
-          <input type="date" id="rem-date" aria-label="Date" />
-          <input type="time" id="rem-time" aria-label="Heure" />
+          <button type="button" class="rem-pick" id="rem-date-btn" aria-haspopup="dialog">
+            <span class="rem-pick-ic">📅</span><span class="rem-pick-lbl" id="rem-date-lbl"></span>
+          </button>
+          <input type="date" id="rem-date" class="rem-pick-ip" aria-label="Date" tabindex="-1" />
+          <button type="button" class="rem-pick" id="rem-time-btn" aria-haspopup="dialog">
+            <span class="rem-pick-ic">🕐</span><span class="rem-pick-lbl" id="rem-time-lbl"></span>
+          </button>
+          <input type="time" id="rem-time" class="rem-pick-ip" aria-label="Heure" tabindex="-1" />
           <button type="button" class="rem-urgent" id="rem-loc" aria-pressed="false" title="Location">📍</button>
           <button type="button" class="rem-urgent" id="rem-urgent" aria-pressed="false" title="Important">⚠️</button>
         </div>
@@ -797,6 +817,7 @@ const TR = {
     rem_hint: "เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕",
     rem_loc_add: "📍 เพิ่มสถานที่", rem_loc_ok: "📍 เปิดแผนที่เพื่อเลือกสถานที่", rem_loc_err: "ไม่สามารถหาตำแหน่งได้ — เปิดลิงก์แผนที่เองได้",
     rem_loc_ph: "ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…",
+    rem_pick_date: "เลือกวันที่", rem_pick_time: "เลือกเวลา",
     rem_ph: "เตือนฉันเรื่อง…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "🔔 เตือนล่วงหน้า",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
@@ -836,6 +857,7 @@ const TR = {
     rem_hint: "Write what you want to be reminded of, pick a date & time, then click + to send it to papapig's WhatsApp 💕",
     rem_loc_add: "📍 Add a place", rem_loc_ok: "📍 Opening maps to pick a place", rem_loc_err: "Location unavailable — open the map link yourself",
     rem_loc_ph: "Map link or address (optional)…",
+    rem_pick_date: "Choose a date", rem_pick_time: "Choose a time",
     rem_ph: "Remind me to…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "🔔 Remind me before",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
@@ -1275,6 +1297,16 @@ function remSetup() {
   const input = document.getElementById("rem-input");
   const dateEl = document.getElementById("rem-date");
   const timeEl = document.getElementById("rem-time");
+  const dateBtn = document.getElementById("rem-date-btn");
+  const timeBtn = document.getElementById("rem-time-btn");
+  const dateLbl = document.getElementById("rem-date-lbl");
+  const timeLbl = document.getElementById("rem-time-lbl");
+  function openPicker(el) {
+    try { el.showPicker(); }
+    catch (e) { el.focus(); if (typeof el.click === "function") el.click(); }
+  }
+  dateBtn.addEventListener("click", () => openPicker(dateEl));
+  timeBtn.addEventListener("click", () => openPicker(timeEl));
   const urgentBtn = document.getElementById("rem-urgent");
   const locBtn = document.getElementById("rem-loc");
   const tagBox = document.getElementById("rem-tags");
@@ -1372,7 +1404,17 @@ function remSetup() {
       if (k === "urgent") { urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false"); }
       renderTags(); renderOffsets();
     }));
+    if (typeof window.__fillLabels === "function") window.__fillLabels();
   }
+  /* Libellés Apple des sélecteurs date/heure */
+  const fillLabels = () => {
+    if (dateEl.value) { dateLbl.textContent = appleDate(dateEl.value); dateBtn.classList.add("filled"); }
+    else { dateLbl.textContent = LANG === "th" ? "เลือกวันที่" : "Choose a date"; dateBtn.classList.remove("filled"); }
+    if (timeEl.value) { timeLbl.textContent = appleTime(timeEl.value); timeBtn.classList.add("filled"); }
+    else { timeLbl.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time"; timeBtn.classList.remove("filled"); }
+  };
+  window.__fillLabels = fillLabels;
+  fillLabels();
   function renderQuick() {
     const qd = document.getElementById("rem-qdate");
     const qt = document.getElementById("rem-qtime");
