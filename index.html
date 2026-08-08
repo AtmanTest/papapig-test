@@ -1203,7 +1203,7 @@ const ReminderSyncService = {
     return r.status === 204 ? null : r.json();
   },
   async fetchAll() {
-    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via&profile=eq.penguinpig&order=date.asc");
+    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via,location&profile=eq.penguinpig&order=date.asc");
     return Array.isArray(d) ? d : [];
   },
   createReminder(payload) {
