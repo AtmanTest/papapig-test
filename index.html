@@ -1127,11 +1127,23 @@ async function remLoad() {
 }
 function remSetup() {
   const input = document.getElementById("rem-input");
+  const dateEl = document.getElementById("rem-date");
+  const timeEl = document.getElementById("rem-time");
+  /* date par défaut = aujourd'hui en BKK (le backend raisonne en BKK) */
+  try {
+    dateEl.value = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10);
+  } catch (e) { dateEl.value = new Date().toISOString().slice(0, 10); }
   const add = async () => {
     const txt = input.value.trim();
     if (!txt) { input.focus(); return; }
-    const date = document.getElementById("rem-date").value || new Date().toISOString().slice(0, 10);
-    const time = document.getElementById("rem-time").value || null;
+    const time = timeEl.value || null;
+    if (!time) { /* heure obligatoire : sans elle le cron n'enverra jamais */
+      timeEl.focus();
+      timeEl.style.outline = "3px solid #ff6b9d";
+      setTimeout(() => { timeEl.style.outline = ""; }, 1500);
+      return;
+    }
+    const date = dateEl.value || new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10);
     let payload = { title: txt, date, start_time: time };
     /* Le backend (cron rappels) raisonne en heure Bangkok. L'utilisateur saisit
        dans SON fuseau (navigateur). Conversion locale → BKK à la création. */
@@ -1149,7 +1161,7 @@ function remSetup() {
       const created = await ReminderSyncService.createReminder(payload);
       const row = Array.isArray(created) ? created[0] : created;
       if (row && row.id) { REMINDERS.push(row); remSyncState[row.id] = "synced"; }
-      input.value = ""; document.getElementById("rem-time").value = "";
+      input.value = ""; timeEl.value = "";
       remRender();
     } catch (e) { /* état local : marqué pending, retry au prochain load */ }
   };
