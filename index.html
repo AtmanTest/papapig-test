@@ -181,6 +181,10 @@
              color:#b06a86; margin-bottom: 10px; font-weight: 800; }
   .card .big { font-size: 34px; font-weight: 800; line-height:1.15; }
   .card .sub { font-size: 12px; color:#8a8590; margin-top:5px; }
+  .mood-nav { display:flex; align-items:center; gap:8px; }
+  .mood-nav .cal-nav { flex:none; }
+  .mood-main { flex:1; min-width:0; }
+  .mood-date { font-size:10.5px; opacity:.75; letter-spacing:.4px; }
   .full { grid-column: 1 / -1; }
   .bar { height: 10px; border-radius: 999px; background: #ffe3ec; overflow:hidden; margin-top: 10px; }
   .bar > div { height:100%; border-radius:999px;
@@ -218,11 +222,11 @@
   .cal .d.sun { background:#d9f2e6; color:#2e7d5b; }
   .cal .d .sunb { font-size: 8px; line-height: 1; margin-top: 1px; font-weight: 700; letter-spacing:.2px; }
   .cal .d.sun.other { background:#eef7f2; color:#8fbfa8; }
-  .cal .d.m1 { background:#ff5d6c; color:#fff; }
-  .cal .d.m2 { background:#ffa05c; color:#fff; }
+  .cal .d.m1 { background:#2ecc71; color:#fff; }
+  .cal .d.m2 { background:#9be89b; color:#1e6b1e; }
   .cal .d.m3 { background:#f7d154; color:#7a6420; }
-  .cal .d.m4 { background:#9be89b; color:#1e6b1e; }
-  .cal .d.m5 { background:#2ecc71; color:#fff; }
+  .cal .d.m4 { background:#ffa05c; color:#fff; }
+  .cal .d.m5 { background:#ff5d6c; color:#fff; }
   .cal .d.today { background:#ff9f43 !important; color:#fff !important;
                      animation: pulseRing 2s ease-in-out infinite; }
   .cal .d.today.sel { background:#ff6b9d !important; box-shadow:0 0 0 2px #fff, 0 0 0 4px #ff9f43; }
@@ -469,8 +473,15 @@
     <div class="grid">
       <div class="card">
         <h3 data-i18n="joy_mood_today">😊 อารมณ์วันนี้</h3>
-        <div class="big" id="j-mood-today">—</div>
-        <div class="sub" id="j-mood-note"></div>
+        <div class="mood-nav">
+          <button class="cal-nav" id="mood-prev" aria-label="Previous mood">◀</button>
+          <div class="mood-main">
+            <div class="big" id="j-mood-today">—</div>
+            <div class="sub" id="j-mood-note"></div>
+            <div class="sub mood-date" id="j-mood-date"></div>
+          </div>
+          <button class="cal-nav" id="mood-next" aria-label="Next mood">▶</button>
+        </div>
       </div>
       <div class="card">
         <h3 data-i18n="joy_energy">⚡ พลังงาน</h3>
@@ -661,8 +672,13 @@ const TR = {
 };
 let LANG = "th";
 const MOODS = {
-  th: {1:"แย่มาก 😭", 2:"ไม่ดี 😟", 3:"เฉยๆ 😐", 4:"ดี 🙂", 5:"สุดยอด 😍"},
-  en: {1:"awful 😭", 2:"bad 😟", 3:"ok 😐", 4:"good 🙂", 5:"amazing 😍"}
+  th: {1:"สุดยอด 😍", 2:"ดี 🙂", 3:"เฉยๆ 😐", 4:"ไม่ดี 😟", 5:"แย่มาก 😭"},
+  en: {1:"amazing 😍", 2:"good 🙂", 3:"ok 😐", 4:"bad 😟", 5:"awful 😭"}
+};
+const MOOD_EMO = {1:"😍", 2:"🙂", 3:"😐", 4:"😟", 5:"😭"};
+const MOOD_FEEL = {
+  th: {1:"มีความสุขมาก", 2:"อารมณ์ดี", 3:"เฉยๆ", 4:"หงุดหงิด", 5:"เศร้า/เหนื่อยมาก"},
+  en: {1:"very happy", 2:"in a good mood", 3:"neutral", 4:"down", 5:"very sad/tired"}
 };
 const EMOMAP = {
   th: {joie:"ดีใจ 😄", fatigue:"เหนื่อย 😩", stress:"เครียด 😮‍💨", tristesse:"เศร้า 😢",
@@ -765,13 +781,38 @@ function init() {
 }
 setInterval(() => { if (S) init(); }, 60000);
 
+/* ═════════ Mood du jour — historique navigable ← → ═════════ */
+let moodIdx = 0;
+function renderMood(J) {
+  const list = [...(J.moods || [])].sort((a, b) => a.date < b.date ? 1 : -1);
+  if (!list.length) {
+    document.getElementById("j-mood-today").textContent = "—";
+    document.getElementById("j-mood-note").textContent = "";
+    document.getElementById("j-mood-date").textContent = "";
+    return;
+  }
+  const i = Math.min(Math.max(moodIdx, 0), list.length - 1);
+  const e = list[i];
+  const v = e.mood;
+  const emo = MOOD_EMO[v] || "😐";
+  const feel = (MOOD_FEEL[LANG] || MOOD_FEEL.en)[v] || "";
+  document.getElementById("j-mood-today").textContent = emo + " " + feel;
+  document.getElementById("j-mood-note").textContent = e.summary || e.note || "";
+  document.getElementById("j-mood-date").textContent = (i === 0 ? (LANG === "th" ? "วันนี้" : "today") + " · " : "") + e.date;
+}
+function bindMoodNav() {
+  const prev = document.getElementById("mood-prev");
+  const next = document.getElementById("mood-next");
+  if (prev) prev.addEventListener("click", () => { moodIdx++; renderMood(S.joy); });
+  if (next) next.addEventListener("click", () => { moodIdx = Math.max(0, moodIdx - 1); renderMood(S.joy); });
+}
+document.addEventListener("DOMContentLoaded", bindMoodNav);
+
 function render(s) {
   const J = s.joy || {}, P = s.papapig || {};
 
-  /* Joy — mood du jour */
-  const m = J.mood_today;
-  document.getElementById("j-mood-today").textContent = m ? (MOODS[LANG][m] || m) : "—";
-  document.getElementById("j-mood-note").textContent = J.mood_note || "";
+  /* Joy — mood du jour (historique navigable ← →) */
+  renderMood(J);
 
   /* Joy — énergie */
   document.getElementById("j-energy").textContent = (J.energy ?? 70) + "%";
@@ -1118,10 +1159,12 @@ function calOpenDay(ds) {
     h += sec(T ? "วันหยุด" : "Rest day", row("🌿", T ? "วันพักผ่อน" : "Rest day", T ? "วันอาทิตย์ พักผ่อนสบายๆ" : "Sunday — relax"));
   }
 
-  /* Mood (vraie donnée) */
+  /* Mood (vraie donnée) — échelle 1-5 (1=meilleur, 5=pire) + émotion + résumé */
   if (m && m.mood) {
-    const em = ["😭","😟","😐","🙂","😍"][m.mood - 1];
-    h += sec(T ? "อารมณ์" : "Mood", row(em, MOODS[LANG][m.mood], m.note || (T ? "อารมณ์ประจำวัน" : "daily mood")));
+    const em = MOOD_EMO[m.mood] || "😐";
+    const feel = (MOOD_FEEL[T ? "th" : "en"] || {})[m.mood] || "";
+    h += sec(T ? "อารมณ์" : "Mood", row(em, MOODS[T ? "th" : "en"][m.mood] + (feel ? " — " + feel : ""),
+      m.note || m.summary || (T ? "อารมณ์ประจำวัน" : "daily mood")));
   }
   /* Repas (vraie donnée) */
   if (mealsDay.length) {
@@ -1165,12 +1208,14 @@ function openDay(ds) {
   document.getElementById("m-title").textContent = ds.slice(5);
   let body = "";
 
-  /* Mood */
+  /* Mood — échelle 1-5 (1=meilleur, 5=pire) + émotion + résumé */
   if (m && m.mood) {
-    const em = ["😭","😟","😐","🙂","😍"][m.mood - 1];
+    const em = MOOD_EMO[m.mood] || "😐";
+    const feel = (MOOD_FEEL[LANG] || {})[m.mood] || "";
     body += "<div class='mrow'><div class='ico'>" + em + "</div><div><div class='lb'>" +
       (LANG === "th" ? "อารมณ์" : "MOOD") + "</div><div class='vl'>" + MOODS[LANG][m.mood] +
-      (m.note ? "<br><span style='font-size:12px;color:#8a8590;font-weight:400'>" + m.note + "</span>" : "") +
+      (feel ? " — " + feel : "") +
+      (m.note || m.summary ? "<br><span style='font-size:12px;color:#8a8590;font-weight:400'>" + (m.note || m.summary) + "</span>" : "") +
       "</div></div></div>";
   }
   /* Repas */
