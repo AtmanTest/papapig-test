@@ -192,44 +192,52 @@
 
   /* Calendrier */
   .cal { width:100%; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
-  .cal th { font-size: 10px; color:#b06a86; padding-bottom: 4px; }
+  .cal th { font-size: 10px; color:#d4578a; padding-bottom: 4px; letter-spacing:.3px; }
   .cal-toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
   .cal-title { display:flex; align-items:center; gap:8px; }
-  .cal-year { font-weight:800; font-size:15px; color:#1d3f73; letter-spacing:.3px; white-space:nowrap; min-width:120px; text-align:center; }
+  .cal-year { font-weight:800; font-size:15px; color:#c23a6e; letter-spacing:.3px; white-space:nowrap; min-width:120px; text-align:center; }
   .cal-nav, .cal-today, .cal-v {
-    border:1px solid rgba(255,255,255,.55); background:#fff; color:#c44a74;
+    border:1px solid rgba(255,255,255,.7); background:rgba(255,255,255,.72); color:#c44a74;
     font-weight:800; border-radius:999px; cursor:pointer; min-height:40px; min-width:40px;
     font-size:15px; padding:6px 12px; transition: transform .15s, background .15s;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    box-shadow:0 2px 10px rgba(214,60,130,.14);
   }
   .cal-nav:active, .cal-today:active, .cal-v:active { transform: scale(.94); }
   .cal-today { font-size:12.5px; padding:8px 14px; }
   .cal-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .cal-views { display:flex; gap:4px; background:rgba(255,107,157,.12); border-radius:999px; padding:3px; }
-  .cal-v { border:none; background:transparent; color:#c44a74; font-size:12px; min-height:34px; min-width:auto; padding:6px 11px; }
-  .cal-v.active { background:#ff6b9d; color:#fff; box-shadow:0 2px 8px rgba(255,107,157,.4); }
+  .cal-views { display:flex; gap:4px; background:rgba(255,107,157,.14); border-radius:999px; padding:3px; }
+  .cal-v { border:none; background:transparent; color:#c44a74; font-size:12px; min-height:34px; min-width:auto; padding:6px 11px; box-shadow:none; }
+  .cal-v.active { background:#ff6b9d; color:#fff; box-shadow:0 2px 10px rgba(255,107,157,.5); }
   .cal td { text-align:center; font-size: 13px; font-weight: 700; }
   .cal .d {
     display:flex; flex-direction:column; align-items:center; justify-content:center; height: 46px;
-    border-radius: 10px; background: #fbeadd; color:#a8886e;
+    border-radius: 14px; background:rgba(255,214,229,.65); color:#c2185b;
     font-family:"PeppaBold", -apple-system, sans-serif; font-weight:900;
     position:relative; outline:none; cursor:default;
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.55);
+    box-shadow:0 1px 6px rgba(214,60,130,.08), inset 0 1px 0 rgba(255,255,255,.6);
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
   }
-  .cal .d.other { background:#f6f0ea; color:#c9b8a8; opacity:.75; }
-  .cal .d.sel { background:#ff6b9d !important; color:#fff !important; box-shadow:0 0 0 2px #fff, 0 0 0 4px #ff6b9d; }
+  .cal .d.other { background:rgba(246,230,238,.45); color:#d8a8c0; opacity:.85; border-color:transparent; box-shadow:none; }
+  .cal .d.sel { background:linear-gradient(135deg,#ff8ab3,#ff4d8d) !important; color:#fff !important;
+    box-shadow:0 0 0 2px #fff, 0 4px 14px rgba(255,77,141,.5); border-color:transparent; }
   .cal .d:focus-visible { box-shadow:0 0 0 3px #ff6b9d; }
   .cal .d.clickable { cursor:pointer; }
+  .cal .d.clickable:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(255,107,157,.28); }
   .cal .d.clickable:active { transform: scale(.93); }
-  .cal .d.sun { background:#d9f2e6; color:#2e7d5b; }
+  .cal .d.sun { background:rgba(228,247,238,.72); color:#1f8a5f; }
   .cal .d .sunb { font-size: 8px; line-height: 1; margin-top: 1px; font-weight: 700; letter-spacing:.2px; }
-  .cal .d.sun.other { background:#eef7f2; color:#8fbfa8; }
+  .cal .d.sun.other { background:rgba(240,248,244,.5); color:#9fc9b2; }
   .cal .d.m1 { background:#2ecc71; color:#fff; }
   .cal .d.m2 { background:#9be89b; color:#1e6b1e; }
   .cal .d.m3 { background:#f7d154; color:#7a6420; }
   .cal .d.m4 { background:#d63384; color:#fff; }
   .cal .d.m5 { background:#ff5d6c; color:#fff; }
-  .cal .d.today { background:#ff9f43 !important; color:#fff !important;
+  .cal .d.today { background:linear-gradient(135deg,#ff9f43,#ff6b9d) !important; color:#fff !important;
                      animation: pulseRing 2s ease-in-out infinite; }
-  .cal .d.today.sel { background:#ff6b9d !important; box-shadow:0 0 0 2px #fff, 0 0 0 4px #ff9f43; }
+  .cal .d.today.sel { background:linear-gradient(135deg,#ff8ab3,#ff4d8d) !important; box-shadow:0 0 0 2px #fff, 0 4px 14px rgba(255,77,141,.5); }
   @keyframes pulseRing {
     0%, 100% { box-shadow: 0 0 0 2px rgba(255,255,255,.95); }
     50%      { box-shadow: 0 0 0 5px rgba(255,255,255,0); }
@@ -369,7 +377,8 @@
     font-size: 12px; line-height: 1; padding: 0 2px; opacity:.85;
   }
   .rem-tag button:hover { opacity: 1; }
-  .rem-tag.urgent { background: #ff9500; }
+  .rem-tag.urgent { background:#ffe3ec; color:#d6336c; border-color:#ffb3cc; }
+  .rem-tag.urgent::before { content:"⚠️ "; }
   .rem-quick { display:flex; flex-direction:column; gap:5px; margin-top: 8px; }
   .rem-quick-row { display:flex; flex-wrap:wrap; gap:6px; }
   .rem-quick-row button {
@@ -386,8 +395,9 @@
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
     background: #fff5f8; font-size: 16px; cursor: pointer; transition: all .15s ease; flex:none;
   }
-  .rem-urgent.on { background: #ff9500; border-color: #ff9500; }
-  .rem-urgent:focus-visible { outline: 3px solid rgba(255,149,0,.35); outline-offset: 1px; }
+  .rem-urgent.on { background: #ff6b9d; border-color: #ff6b9d;
+    box-shadow: 0 0 0 4px rgba(255,107,157,.25), 0 3px 12px rgba(255,107,157,.5); transform: scale(1.05); }
+  .rem-urgent:focus-visible { outline: 3px solid rgba(255,107,157,.35); outline-offset: 1px; }
   .rem-locinput { display:flex; gap:6px; margin-top: 8px; }
   .rem-locinput.hidden { display:none; }
   .rem-locinput input {
@@ -447,7 +457,7 @@
   .rem-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:9.5px; font-weight:800; letter-spacing:.3px; }
   .rem-badge.wa { background:#e6faf7; color:#1a9e90; }
   .rem-badge.priv { background:#f3e8ff; color:#7a4fb8; }
-  .rem-badge.prio { background:#fde8ee; color:#c44a74; }
+  .rem-badge.prio { background:#ffe3ec; color:#d6336c; box-shadow:0 0 0 3px rgba(255,107,157,.25), 0 2px 8px rgba(255,107,157,.35); }
   .rem-badge.loc { background:#e6f2ff; color:#1a73e8; text-decoration:none; }
   .rem-hint { font-size: 11px; color:#e07020; margin: -4px 0 8px; line-height: 1.45; }
   .rem-sync { font-size:10px; color:#8a8590; }
@@ -659,7 +669,7 @@
           <input type="date" id="rem-date" aria-label="Date" />
           <input type="time" id="rem-time" aria-label="Heure" />
           <button type="button" class="rem-urgent" id="rem-loc" aria-pressed="false" title="Location">📍</button>
-          <button type="button" class="rem-urgent" id="rem-urgent" aria-pressed="false" title="Urgent">🚩</button>
+          <button type="button" class="rem-urgent" id="rem-urgent" aria-pressed="false" title="Important">⚠️</button>
         </div>
         <div class="rem-locinput hidden" id="rem-locinput">
           <input type="text" id="rem-locfield" data-i18n-ph="rem_loc_ph" placeholder="ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…" aria-label="Lieu" />
@@ -1153,7 +1163,12 @@ function remFmtDate(d) {
   if (!d) return "";
   const dt = new Date(d + "T00:00:00");
   if (isNaN(dt)) return d;
-  return dt.toLocaleDateString(LANG === "th" ? "th-TH" : "fr-FR", { day: "numeric", month: "short" });
+  const today = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10).replace(/\//g, "-");
+  if (d === today) return LANG === "th" ? "วันนี้" : "Today";
+  const tmrw = new Date(Date.UTC(+today.slice(0,4), +today.slice(5,7)-1, +today.slice(8,10)) + 86400000).toISOString().slice(0,10);
+  if (d === tmrw) return LANG === "th" ? "พรุ่งนี้" : "Tomorrow";
+  if (LANG === "th") return dt.toLocaleDateString("th-TH", { weekday: "short", day: "numeric", month: "short" });
+  return dt.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
 }
 /* Heure stockée en BKK → affichage : TH = brut BKK, EN = converti Paris */
 function remFmtTimeBkk(dateStr, timeStr) {
@@ -1184,7 +1199,7 @@ function remRender() {
     const badges = [];
     if (r.created_via === "whatsapp") badges.push("<span class='rem-badge wa'>" + t("rem_wa") + "</span>");
     if (r.is_private) badges.push("<span class='rem-badge priv'>" + t("rem_priv") + "</span>");
-    if (r.priority === "high" || r.priority === "urgent") badges.push("<span class='rem-badge prio'>" + (LANG === "th" ? "🚩 สำคัญ" : "🚩 Urgent") + "</span>");
+    if (r.priority === "high" || r.priority === "urgent") badges.push("<span class='rem-badge prio'>⚠️ " + (LANG === "th" ? "สำคัญ" : "Urgent") + "</span>");
     if (r.location) badges.push("<a class='rem-badge loc' href='" + String(r.location).replace(/"/g, "&quot;") + "' target='_blank' rel='noopener'>📍 " + (LANG === "th" ? "แผนที่" : "Map") + "</a>");
     const meta = [];
     if (r.date) meta.push((overdue ? "⚠️ " : "") + remFmtDate(r.date) + (r.start_time ? " " + remFmtTimeBkk(r.date, r.start_time) : ""));
@@ -1321,15 +1336,30 @@ function remSetup() {
       renderOffsets();
     }));
   }
+  /* Formatage Apple Reminders : Aujourd'hui / Demain / nom court du jour */
+  function appleDate(s) {
+    if (!s) return "";
+    const today = bkkToday();
+    if (s === today) return LANG === "th" ? "วันนี้" : "Today";
+    if (s === addDays(today, 1)) return LANG === "th" ? "พรุ่งนี้" : "Tomorrow";
+    const dt = new Date(s + "T00:00:00");
+    if (isNaN(dt)) return s;
+    if (LANG === "th") return dt.toLocaleDateString("th-TH", { weekday: "short", day: "numeric", month: "short" });
+    return dt.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+  }
+  function appleTime(t) {
+    const hm = String(t || "").slice(0, 5);
+    return hm || "";
+  }
   /* ── Tags pills (comme l'app Reminders) ── */
   function renderTags() {
     const tags = [];
     const d = dateEl.value;
     const t = timeEl.value;
-    if (d) tags.push({ k: "date", label: "📅 " + d, cls: "" });
-    if (t) tags.push({ k: "time", label: "🕐 " + t, cls: "" });
+    if (d) tags.push({ k: "date", label: "📅 " + appleDate(d), cls: "" });
+    if (t) tags.push({ k: "time", label: "🕐 " + appleTime(t), cls: "" });
     if (loc) tags.push({ k: "loc", label: "📍 " + (LANG === "th" ? "สถานที่" : "Place"), cls: "" });
-    if (urgent) tags.push({ k: "urgent", label: LANG === "th" ? "🚩 สำคัญ" : "🚩 Urgent", cls: "urgent" });
+    if (urgent) tags.push({ k: "urgent", label: LANG === "th" ? "สำคัญ" : "Urgent", cls: "urgent" });
     tagBox.innerHTML = tags.map(tg =>
       "<span class='rem-tag " + tg.cls + "'>" + tg.label +
       "<button type='button' data-rm='" + tg.k + "' aria-label='Remove'>✕</button></span>"
@@ -1773,7 +1803,7 @@ function calOpenDay(ds) {
       "<div class='row'>" +
         "<span class='ico'>" + catIcon(e.category) + "</span>" +
         "<div class='tx'>" + e.title + (e.created_via === "telegram" ? " ✈️" : "") +
-          "<small>" + catName(e.category, LANG) + (e.start_time ? " · " + e.start_time + (e.end_time ? "–" + e.end_time : "") : "") + "</small>" +
+          "<small>" + catName(e.category, LANG) + (e.start_time ? " · " + remFmtTimeBkk(e.date, e.start_time) + (e.end_time ? "–" + remFmtTimeBkk(e.date, e.end_time) : "") : "") + "</small>" +
         "</div>" +
         "<button type='button' class='cal-ev-del' data-id='" + e.id + "' data-date='" + ds + "' title='" +
         (T ? "ลบเหตุการณ์นี้" : "delete this event") + "'>✕</button>" +
