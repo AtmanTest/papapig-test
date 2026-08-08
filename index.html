@@ -1045,7 +1045,9 @@ function render(s) {
     div.className = "meal";
     div.innerHTML = "<span>📸</span><span style='font-size:13px'>" + ds.slice(5).replace("-", "/") + "</span>" +
       "<img class='photo' src='" + _mpUrl + "' alt='meal photo' style='margin-left:auto'>" +
-      "<span class='t'>📸 " + _mpTime + (LANG === "th" ? " เวลากรุงเทพ" : " · Paris") + "</span>";
+      "<span class='t'>📸 " + _mpTime + (LANG === "th" ? " เวลากรุงเทพ" : " · Paris") + "</span>" +
+      "<button type='button' class='cal-ev-del meal-del' data-date='" + ds + "' title='" +
+      (LANG === "th" ? "ลบรูปนี้" : "remove this photo") + "'>✕</button>";
     mWrap.appendChild(div);
   });
 
@@ -1992,16 +1994,22 @@ document.addEventListener("click", e => {
   }).catch(() => alert(LANG === "th" ? "ลบไม่สำเร็จ ลองอีกครั้ง" : "Delete failed, try again"));
 });
 /* Suppression d'un repas détecté à tort (bouton ✕ sur les pills 🍜) — table hidden_meals */
+/* Suppression d'une photo repas (bouton ✕ sur les 📸) — table hidden_meal_photos */
 document.addEventListener("click", e => {
   const btn = e.target.closest(".meal-del");
   if (!btn) return;
   e.stopPropagation();
   const ts = btn.dataset.ts;
-  if (!ts || !window.confirm(LANG === "th" ? "ลบรายการนี้?" : "Remove this item?")) return;
-  fetch(SB_URL + "/rest/v1/hidden_meals", {
+  const ds = btn.dataset.date;
+  if (!ts && !ds) return;
+  if (!window.confirm(LANG === "th" ? "ลบรายการนี้?" : "Remove this item?")) return;
+  let url = "", body = null;
+  if (ts) { url = SB_URL + "/rest/v1/hidden_meals"; body = JSON.stringify({ meal_ts: parseInt(ts, 10) }); }
+  else { url = SB_URL + "/rest/v1/hidden_meal_photos"; body = JSON.stringify({ photo_date: ds }); }
+  fetch(url, {
     method: "POST",
     headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json", Prefer: "return=minimal" },
-    body: JSON.stringify({ meal_ts: parseInt(ts, 10) })
+    body: body
   }).then(r => {
     if (!r.ok) throw new Error("http " + r.status);
     const card = btn.closest(".meal");
