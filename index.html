@@ -1132,7 +1132,19 @@ function remSetup() {
     if (!txt) { input.focus(); return; }
     const date = document.getElementById("rem-date").value || new Date().toISOString().slice(0, 10);
     const time = document.getElementById("rem-time").value || null;
-    const payload = { title: txt, date, start_time: time };
+    let payload = { title: txt, date, start_time: time };
+    /* Le backend (cron rappels) raisonne en heure Bangkok. L'utilisateur saisit
+       dans SON fuseau (navigateur). Conversion locale → BKK à la création. */
+    if (time) {
+      try {
+        const loc = new Date(date + "T" + time);
+        if (!isNaN(loc.getTime())) {
+          const bkk = loc.toLocaleString("sv-SE", { timeZone: "Asia/Bangkok", hour12: false });
+          const [bd, bt] = bkk.split(" ");
+          payload = { title: txt, date: bd.replace(/\//g, "-"), start_time: bt.slice(0, 5) };
+        }
+      } catch (e) { /* garde la saisie brute */ }
+    }
     try {
       const created = await ReminderSyncService.createReminder(payload);
       const row = Array.isArray(created) ? created[0] : created;
