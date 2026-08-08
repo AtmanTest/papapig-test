@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09 04:30 Bangkok",
+  "generated_at": "2026-08-09 04:57 Bangkok",
   "joy": {
     "mood_today": null,
     "mood_note": "",
@@ -46,6 +46,22 @@
       }
     ],
     "meal_photos": {
+      "2026-08-04": {
+        "url": "images/meals/2026-08-04.jpg",
+        "ts": 1785880070
+      },
+      "2026-08-05": {
+        "url": "images/meals/2026-08-05.jpg",
+        "ts": 1785917786
+      },
+      "2026-08-06": {
+        "url": "images/meals/2026-08-06.jpg",
+        "ts": 1786046187
+      },
+      "2026-08-07": {
+        "url": "images/meals/2026-08-07.jpg",
+        "ts": 1786103302
+      },
       "2026-08-08": {
         "url": "images/meals/2026-08-08.jpg",
         "ts": 1786206315
