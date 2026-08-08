@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09 05:00 Bangkok",
+  "generated_at": "2026-08-09 05:13 Bangkok",
   "joy": {
     "mood_today": null,
     "mood_note": "",
@@ -16,13 +16,6 @@
       }
     ],
     "meals": [
-      {
-        "emoji": "🍽️",
-        "at": "12:35",
-        "date": "2026-08-08",
-        "word": "กิน",
-        "ts": 1786167327
-      },
       {
         "emoji": "☕",
         "at": "23:13",
@@ -82,8 +75,8 @@
     "valence": 0.3,
     "activation": 0.5,
     "emotion": "joie",
-    "last_meal_emoji": "🍽️",
-    "last_meal_at": "12:35",
+    "last_meal_emoji": "☕",
+    "last_meal_at": "23:13",
     "crons": [
       {
         "name": "papapig-news",
@@ -124,7 +117,7 @@
         "d": "08-06 22:10"
       }
     ],
-    "last_meal_ts": 1786167327
+    "last_meal_ts": 1786119212
   },
   "holidays": {
     "2026-01-01": {

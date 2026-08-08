@@ -349,6 +349,10 @@
   }
   .meal .t { font-size: 10px; color:#8a8590; }
   .meal b { font-size: 13px; font-weight: 700; }
+  .meal .meal-del { margin-left:auto; flex:none; width:24px; height:24px; border-radius:50%;
+    border:none; background:rgba(214,51,108,.12); color:#d6336c; font-size:11px; font-weight:900;
+    cursor:pointer; line-height:1; }
+  .meal .meal-del:hover { background:#d6336c; color:#fff; }
   .meal .photo { width:52px; height:52px; object-fit:cover; border-radius:10px; border:2px solid rgba(255,158,194,.5); cursor:zoom-in; flex:none; }
   .meal .photo-sm { width:52px; height:52px; object-fit:cover; border-radius:10px; border:2px solid rgba(255,158,194,.5); cursor:zoom-in; }
   #meal-zoom { position:fixed; inset:0; z-index:999; background:rgba(20,10,20,.75); display:none; align-items:center; justify-content:center; cursor:zoom-out; }
@@ -1026,7 +1030,9 @@ function render(s) {
     const el = document.createElement("div"); el.className = "meal";
     el.innerHTML = "<span>" + me.emoji + "</span>" +
       (me.word ? "<b>" + _tTxt(me.word) + "</b>" : "") +
-      "<span class='t'>" + me.date.slice(5) + " " + (me.ts ? fmtMealPhotoTime(me.ts) : me.at) + "</span>";
+      "<span class='t'>" + me.date.slice(5) + " " + (me.ts ? fmtMealPhotoTime(me.ts) : me.at) + "</span>" +
+      (me.ts ? "<button type='button' class='cal-ev-del meal-del' data-ts='" + me.ts + "' title='" +
+        (LANG === "th" ? "ลบรายการนี้" : "remove this item") + "'>✕</button>" : "");
     mWrap.appendChild(el);
   });
   /* photo miniature du repas (si la journée en a une) — même ligne que les autres cards */
@@ -1983,6 +1989,23 @@ document.addEventListener("click", e => {
     CAL.events = CAL.events.filter(x => x.id !== id);
     calRender();
     calOpenDay(ds);
+  }).catch(() => alert(LANG === "th" ? "ลบไม่สำเร็จ ลองอีกครั้ง" : "Delete failed, try again"));
+});
+/* Suppression d'un repas détecté à tort (bouton ✕ sur les pills 🍜) — table hidden_meals */
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".meal-del");
+  if (!btn) return;
+  e.stopPropagation();
+  const ts = btn.dataset.ts;
+  if (!ts || !window.confirm(LANG === "th" ? "ลบรายการนี้?" : "Remove this item?")) return;
+  fetch(SB_URL + "/rest/v1/hidden_meals", {
+    method: "POST",
+    headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json", Prefer: "return=minimal" },
+    body: JSON.stringify({ meal_ts: parseInt(ts, 10) })
+  }).then(r => {
+    if (!r.ok) throw new Error("http " + r.status);
+    const card = btn.closest(".meal");
+    if (card) card.remove();
   }).catch(() => alert(LANG === "th" ? "ลบไม่สำเร็จ ลองอีกครั้ง" : "Delete failed, try again"));
 });
 </script>
