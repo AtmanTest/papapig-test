@@ -82,7 +82,7 @@
   }
   #login p { color: rgba(255,255,255,.9); font-size: 13px; text-align:center; }
   #login form { display:flex; flex-direction:column; gap:12px; width: 100%; max-width: 300px; margin-top:24px; }
-  /* Siri Glow aurora — champ mot de passe (anneau extérieur uniquement) */
+  /* Siri Glow aurora — champ mot de passe (aura au bord uniquement, intérieur intact) */
   .siri-glow { position:relative; border-radius:999px; padding:2px; overflow:hidden;
     box-shadow: 0 0 14px rgba(56,217,255,.28), 0 0 30px rgba(168,85,247,.18), 0 0 46px rgba(236,77,206,.12); }
   .siri-glow-bg { position:absolute; inset:-60%; z-index:0;
@@ -93,10 +93,10 @@
   .siri-glow input { position:relative; z-index:1; width:100%; border:none;
     padding: 14px 18px; border-radius: 999px;
     font-size: 16px;
-    text-align:center; outline:none; background: #1c1030; color: #fff;
-    caret-color: #38D9FF;
+    text-align:center; outline:none; background: #ffe3ec; color: #5a3345;
+    caret-color: #ff6b9d; box-shadow: inset 0 2px 6px rgba(255,107,157,.18);
   }
-  #login input::placeholder { color: rgba(255,255,255,.55); }
+  #login input::placeholder { color: #c48ba2; }
   #login form button {
     padding: 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.55);
     font-size: 16px;
