@@ -486,13 +486,6 @@
     border-radius: 999px; padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer;
   }
   .rem-actions { margin-top: 12px; text-align:center; }
-  .rem-recap {
-    width:100%; border: 1px solid var(--pink); background: transparent; color: var(--pink);
-    border-radius: 999px; padding: 10px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
-    transition: background .15s, color .15s;
-  }
-  .rem-recap:hover { background: var(--pink); color:#fff; }
-  .rem-recap:disabled { opacity:.5; cursor:default; }
   .chip { display:inline-block; padding:3px 10px; border-radius:999px;
           font-size:11px; font-weight:700; }
   .chip.on { background:#e6faf7; color:#1a9e90; }
@@ -700,9 +693,6 @@
           <div class="rem-offset-opts" id="rem-offset-opts"></div>
         </div>
         <div class="rem-list" id="rem-list" aria-live="polite"></div>
-        <div class="rem-actions">
-          <button class="rem-recap" id="rem-recap" data-i18n="rem_recap">📲 ส่งสรุปวันนี้ทาง WhatsApp</button>
-        </div>
       </div>
       <div class="card full">
         <h3 data-i18n="joy_goal">🎯 เป้าหมาย</h3>
@@ -1507,17 +1497,6 @@ function remSetup() {
   };
   document.getElementById("rem-add-btn").addEventListener("click", add);
   input.addEventListener("keydown", e => { if (e.key === "Enter") add(); });
-  document.getElementById("rem-recap").addEventListener("click", async () => {
-    const btn = document.getElementById("rem-recap");
-    btn.disabled = true;
-    try {
-      const r = await fetch(SB_URL + "/rest/v1/rpc/request_wa_summary", {
-        method: "POST", headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json" }, body: "{}"
-      });
-      btn.textContent = r.ok ? (LANG === "th" ? "✅ ส่งแล้ว!" : "✅ Sent!") : (LANG === "th" ? "✗ ผิดพลาด" : "✗ Error");
-    } catch (e) { btn.textContent = LANG === "th" ? "✗ ผิดพลาด" : "✗ Error"; }
-    setTimeout(() => { btn.disabled = false; btn.textContent = t("rem_recap"); }, 3000);
-  });
   remLoad();
   setInterval(remLoad, 60000); // polling discret
 }
