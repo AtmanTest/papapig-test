@@ -270,10 +270,14 @@
   .cal-panel-head b { font-size:15px; text-shadow:0 1px 2px rgba(180,40,90,.3); }
   .cal-panel-close { background:rgba(255,255,255,.55); border:none; color:#d6336c; font-size:16px; font-weight:900;
     border-radius:50%; width:34px; height:34px; cursor:pointer; line-height:1; }
-  .cal-legend { display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:12px; padding:10px 12px;
-    background:rgba(255,140,180,.10); border:1px solid rgba(255,158,194,.35); border-radius:12px;
+  .cal-legend { display:flex; flex-wrap:wrap; gap:6px 8px; margin-top:12px; padding:10px 12px;
+    background:rgba(255,140,180,.08); border:1px solid rgba(255,158,194,.30); border-radius:14px;
     font-size:11px; color:#7a4a60; align-items:center; }
-  .cal-legend .lg { display:inline-flex; align-items:center; gap:5px; }
+  .cal-legend .lg-title { width:100%; font-weight:700; font-size:10px; letter-spacing:.8px;
+    text-transform:uppercase; color:#d6336c; margin-bottom:2px; }
+  .cal-legend .lg { display:inline-flex; align-items:center; gap:5px; padding:4px 9px;
+    background:rgba(255,255,255,.55); border:1px solid rgba(255,158,194,.35); border-radius:20px;
+    backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
   .cal-legend .lg i { width:8px; height:8px; border-radius:50%; display:inline-block; flex:none; }
   .cal-legend .lg .w { font-size:11px; }
   .cal-panel-body .cal-ev-del { margin-left:auto; flex:none; width:28px; height:28px; border-radius:50%;
@@ -1002,7 +1006,8 @@ function calLegend() {
     ["c-autres", "📌", T ? "อื่นๆ" : "other"],
   ];
   const lg = c => "<span class='lg'>" + c + "</span>";
-  el.innerHTML = lg("<i class='" + cats[0][0] + "'></i> " + cats[0][2]) +
+  el.innerHTML = "<span class='lg-title'>" + (T ? "🔑 คำอธิบายสัญลักษณ์" : "🔑 Legend") + "</span>" +
+    lg("<i class='" + cats[0][0] + "'></i> " + cats[0][2]) +
     cats.slice(1).map(c => lg("<i class='" + c[0] + "'></i> " + c[2])).join("") +
     lg("<span class='w'>🌧️</span> " + (T ? "ฝน" : "rain")) +
     lg("<span class='w'>⛅</span> " + (T ? "มีเมฆ" : "cloudy")) +
