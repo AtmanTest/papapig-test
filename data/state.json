@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08 22:48 Bangkok",
+  "generated_at": "2026-08-08 22:55 Bangkok",
   "joy": {
     "mood_today": null,
     "mood_note": "",
@@ -41,6 +41,9 @@
         "word": "ชา"
       }
     ],
+    "meal_photos": {
+      "2026-08-08": "images/meals/2026-08-08.jpg"
+    },
     "energy": 70,
     "goal": "",
     "streak": 0,
@@ -49,7 +52,7 @@
   "papapig": {
     "persona": "papapig",
     "energy": 85,
-    "hunger": 81,
+    "hunger": 82,
     "sleep": 60,
     "xp": 125,
     "level": 2,

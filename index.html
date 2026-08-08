@@ -723,6 +723,7 @@ function _tTxt(s) { return LANG === "en" ? (TR_EN_TEXT[s] || s) : s; }
 
 /* ═════════ État ═════════ */
 let S = null;
+let MEAL_PHOTOS = {};
 
 function t(key) { return TR[LANG][key] || key; }
 function applyLang() {
@@ -787,7 +788,7 @@ document.getElementById("lang-btn").addEventListener("click", () => {
 function init() {
   applyLang();
   fetch("data/state.json?cb=" + Date.now())
-    .then(r => r.json()).then(s => { S = s; render(s); })
+    .then(r => r.json()).then(s => { S = s; MEAL_PHOTOS = (s.joy && s.joy.meal_photos) || {}; render(s); })
     .catch(() => setTimeout(init, 15000));
 }
 setInterval(() => { if (S) init(); }, 60000);
@@ -1206,6 +1207,14 @@ function calOpenDay(ds) {
   if (mealsDay.length) {
     h += sec(T ? "อาหาร" : "Meals", mealsDay.map(x =>
       row(x.emoji || "🍽️", x.word || (T ? "อาหาร" : "meal"), (T ? "กิน" : "ate") + " · " + x.at)).join(""));
+  }
+  /* Photo du repas du jour (images/meals/YYYY-MM-DD.jpg si existante) */
+  if (MEAL_PHOTOS[ds]) {
+    h += sec(T ? "ภาพอาหาร" : "Meal photo",
+      "<div style='display:flex;justify-content:center;padding:4px 0'>" +
+      "<img src='" + MEAL_PHOTOS[ds] + "' alt='meal photo' " +
+      "style='max-width:220px;max-height:220px;border-radius:14px;border:2px solid rgba(255,158,194,.5);" +
+      "cursor:zoom-in;object-fit:cover' onclick='window.open(this.src.split(\"?\")[0], \"_blank\")'></div>");
   }
   /* Météo (vraie donnée) */
   if (w && w.tmax !== undefined && w.tmax !== null) {
