@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08 10:30 Bangkok",
+  "generated_at": "2026-08-08 11:00 Bangkok",
   "joy": {
     "mood_today": 2,
     "mood_note": "ฉันเหนื่อยมากเลย",
@@ -12,6 +12,12 @@
       }
     ],
     "meals": [
+      {
+        "emoji": "🍽️",
+        "at": "12:35",
+        "date": "2026-08-08",
+        "word": "กิน"
+      },
       {
         "emoji": "☕",
         "at": "23:13",
@@ -38,15 +44,15 @@
   "papapig": {
     "persona": "papapig",
     "energy": 85,
-    "hunger": 87,
+    "hunger": 10,
     "sleep": 60,
     "xp": 125,
     "level": 2,
     "valence": 0.3,
     "activation": 0.5,
     "emotion": "joie",
-    "last_meal_emoji": "☕",
-    "last_meal_at": "23:13",
+    "last_meal_emoji": "🍽️",
+    "last_meal_at": "12:35",
     "crons": [
       {
         "name": "papapig-news",
