@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08 22:55 Bangkok",
+  "generated_at": "2026-08-08 22:56 Bangkok",
   "joy": {
     "mood_today": null,
     "mood_note": "",
@@ -41,9 +41,7 @@
         "word": "ชา"
       }
     ],
-    "meal_photos": {
-      "2026-08-08": "images/meals/2026-08-08.jpg"
-    },
+    "meal_photos": {},
     "energy": 70,
     "goal": "",
     "streak": 0,
