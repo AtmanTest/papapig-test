@@ -3,7 +3,17 @@
   "joy": {
     "mood_today": null,
     "mood_note": "",
-    "moods": [],
+    "moods": [
+      {
+        "date": "2026-08-07",
+        "mood": 4,
+        "mood_am": null,
+        "mood_pm": 4,
+        "note": "ฉันเหนื่อยมากเลย",
+        "summary": "",
+        "axe": "นอนเร็วขึ้น 💤"
+      }
+    ],
     "meals": [
       {
         "emoji": "🍽️",
@@ -32,7 +42,8 @@
     ],
     "energy": 70,
     "goal": "",
-    "streak": 0
+    "streak": 0,
+    "mood_summary": ""
   },
   "papapig": {
     "persona": "papapig",
