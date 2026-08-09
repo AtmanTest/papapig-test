@@ -225,7 +225,8 @@
     box-shadow:0 0 0 2px #fff, 0 4px 14px rgba(255,77,141,.5); border-color:transparent; }
   .cal .d:focus-visible { box-shadow:0 0 0 3px #ff6b9d; }
   .cal .d.clickable { cursor:pointer; }
-  .cal .d.clickable:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(255,107,157,.28); }
+  .cal .d.clickable:hover { background:#ffc2d6 !important; color:#c2185b !important;
+    transform:translateY(-1px); box-shadow:0 4px 14px rgba(255,77,141,.35); }
   .cal .d.clickable:active { transform: scale(.93); }
   .cal .d.sun { background:rgba(228,247,238,.72); color:#1f8a5f; }
   .cal .d .sunb { font-size: 8px; line-height: 1; margin-top: 1px; font-weight: 700; letter-spacing:.2px; }
@@ -387,6 +388,9 @@
   }
   .rem-quick-row button:hover { background: #ffe3ec; }
   .rem-datetime { display:flex; gap:8px; margin-top: 10px; align-items:center; }
+  .pick-wrap { position:relative; flex:1; min-width:0; }
+  .pick-wrap .rem-pick { width:100%; }
+  .pick-wrap .pick-pop { left:0; right:auto; }
   .rem-datetime input[type="date"], .rem-datetime input[type="time"] {
     flex:1; min-width:0; padding: 8px 10px; border-radius: 999px;
     border: 1px solid #f1a9c0; background: #fff; color:#333; font: inherit; font-size: 13px;
@@ -400,8 +404,6 @@
   }
   .rem-pick:active { transform: scale(.96); }
   .rem-pick:hover { background:#fff5f8; }
-  .rem-pick.filled { background:#ffe3ec; border-color:#ffb3cc; color:#d6336c;
-    box-shadow:0 0 0 3px rgba(255,107,157,.18); }
   .rem-pick-ic { font-size:14px; }
   .rem-pick-lbl { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .rem-pick-ip { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
@@ -441,6 +443,17 @@
   }
   .pick-time button:hover { background:#ffe3ec; }
   .pick-time button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
+  /* Sélecteur heure précise : rangée heures + rangée minutes */
+  .pick-ttl { text-align:center; font-size:26px; font-weight:800; color:#d6336c;
+    font-variant-numeric: tabular-nums; padding:2px 0 8px; letter-spacing:1px; }
+  .pick-hours, .pick-mins { display:grid; grid-template-columns: repeat(6, 1fr); gap:4px; margin-bottom:6px; }
+  .pick-mins { grid-template-columns: repeat(10, 1fr); }
+  .pick-hours button, .pick-mins button {
+    border:1px solid #f1a9c0; background:#fff; border-radius:999px; padding:7px 0;
+    font: inherit; font-size:13px; font-weight:700; color:#333; cursor:pointer; text-align:center;
+  }
+  .pick-hours button:hover, .pick-mins button:hover { background:#ffe3ec; }
+  .pick-hours button.sel, .pick-mins button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
   .rem-urgent {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
     background: #fff5f8; font-size: 16px; cursor: pointer; transition: all .15s ease; flex:none;
@@ -477,12 +490,13 @@
   .rem-add input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,107,157,.15); }
   .rem-add-btn {
     flex:none; width: 44px; border-radius: 999px; border: none;
-    background: var(--pink); color: #fff; font-size: 22px; font-weight: 800;
-    cursor: pointer; transition: transform .12s, opacity .12s;
+    background: #0a84ff; color: #fff; font-size: 22px; font-weight: 800;
+    cursor: pointer; transition: transform .12s, box-shadow .15s, background .15s;
+    box-shadow: 0 0 0 4px rgba(10,132,255,.25), 0 3px 12px rgba(10,132,255,.45);
   }
-  .rem-add-btn:hover { transform: scale(1.06); }
+  .rem-add-btn:hover { transform: scale(1.06); box-shadow: 0 0 0 5px rgba(10,132,255,.32), 0 4px 16px rgba(10,132,255,.55); }
   .rem-add-btn:active { transform: scale(.94); }
-  .rem-add-btn:focus-visible { outline: 3px solid rgba(255,107,157,.4); outline-offset: 2px; }
+  .rem-add-btn:focus-visible { outline: 3px solid rgba(10,132,255,.4); outline-offset: 2px; }
   .rem-list { margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
   .rem-sec { font-size: 13px; font-weight: 700; color: var(--pink); margin: 6px 0 0; text-transform: uppercase; letter-spacing: .4px; }
   .rem-sec-sub { font-size: 11px; font-weight: 600; color: #8a8590; margin: 4px 0 2px; }
@@ -710,32 +724,38 @@
           <div class="rem-quick-row" id="rem-qtime"></div>
         </div>
         <div class="rem-datetime">
-          <button type="button" class="rem-pick" id="rem-date-btn" aria-haspopup="dialog">
-            <span class="rem-pick-ic">📅</span><span class="rem-pick-lbl" id="rem-date-lbl"></span>
-          </button>
-          <input type="date" id="rem-date" class="rem-pick-ip" aria-label="Date" tabindex="-1" />
-          <button type="button" class="rem-pick" id="rem-time-btn" aria-haspopup="dialog">
-            <span class="rem-pick-ic">🕐</span><span class="rem-pick-lbl" id="rem-time-lbl"></span>
-          </button>
-          <input type="time" id="rem-time" class="rem-pick-ip" aria-label="Heure" tabindex="-1" />
+          <div class="pick-wrap">
+            <button type="button" class="rem-pick" id="rem-date-btn" aria-haspopup="dialog">
+              <span class="rem-pick-ic">📅</span><span class="rem-pick-lbl" id="rem-date-lbl"></span>
+            </button>
+            <input type="date" id="rem-date" class="rem-pick-ip" aria-label="Date" tabindex="-1" />
+            <div class="pick-pop" id="pick-date-pop" role="dialog" aria-label="Date picker">
+              <div class="pick-head">
+                <button type="button" class="pick-nav" id="pd-prev" aria-label="Previous month">‹</button>
+                <span class="pick-title" id="pd-title"></span>
+                <button type="button" class="pick-nav" id="pd-next" aria-label="Next month">›</button>
+              </div>
+              <div class="pick-dow" id="pd-dow"></div>
+              <div class="pick-grid" id="pd-grid"></div>
+            </div>
+          </div>
+          <div class="pick-wrap">
+            <button type="button" class="rem-pick" id="rem-time-btn" aria-haspopup="dialog">
+              <span class="rem-pick-ic">🕐</span><span class="rem-pick-lbl" id="rem-time-lbl"></span>
+            </button>
+            <input type="time" id="rem-time" class="rem-pick-ip" aria-label="Heure" tabindex="-1" />
+            <div class="pick-pop" id="pick-time-pop" role="dialog" aria-label="Time picker">
+              <div class="pick-head">
+                <span class="pick-title" id="pt-title"></span>
+                <button type="button" class="pick-nav pick-clear" id="pt-clear" aria-label="Clear time">✕</button>
+              </div>
+              <div class="pick-ttl" id="pt-value">--:--</div>
+              <div class="pick-hours" id="pt-hours"></div>
+              <div class="pick-mins" id="pt-mins"></div>
+            </div>
+          </div>
           <button type="button" class="rem-urgent" id="rem-loc" aria-pressed="false" title="Location">📍</button>
           <button type="button" class="rem-urgent" id="rem-urgent" aria-pressed="false" title="Important">⚠️</button>
-        </div>
-        <div class="pick-pop" id="pick-date-pop" role="dialog" aria-label="Date picker">
-          <div class="pick-head">
-            <button type="button" class="pick-nav" id="pd-prev" aria-label="Previous month">‹</button>
-            <span class="pick-title" id="pd-title"></span>
-            <button type="button" class="pick-nav" id="pd-next" aria-label="Next month">›</button>
-          </div>
-          <div class="pick-dow" id="pd-dow"></div>
-          <div class="pick-grid" id="pd-grid"></div>
-        </div>
-        <div class="pick-pop" id="pick-time-pop" role="dialog" aria-label="Time picker">
-          <div class="pick-head">
-            <span class="pick-title" id="pt-title"></span>
-            <button type="button" class="pick-nav pick-clear" id="pt-clear" aria-label="Clear time">✕</button>
-          </div>
-          <div class="pick-time" id="pt-grid"></div>
         </div>
         <div class="rem-locinput hidden" id="rem-locinput">
           <input type="text" id="rem-locfield" data-i18n-ph="rem_loc_ph" placeholder="ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…" aria-label="Lieu" />
@@ -860,7 +880,7 @@ const TR = {
     rem_hint: "เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕",
     rem_loc_add: "📍 เพิ่มสถานที่", rem_loc_ok: "📍 เปิดแผนที่เพื่อเลือกสถานที่", rem_loc_err: "ไม่สามารถหาตำแหน่งได้ — เปิดลิงก์แผนที่เองได้",
     rem_loc_ph: "ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…",
-    rem_pick_date: "เลือกวันที่", rem_pick_time: "เลือกเวลา",
+    rem_pick_date: "เพิ่มวันที่", rem_pick_time: "เลือกเวลา",
     rem_ph: "เตือนฉันเรื่อง…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "🔔 เตือนล่วงหน้า",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
@@ -900,7 +920,7 @@ const TR = {
     rem_hint: "Write what you want to be reminded of, pick a date & time, then click + to send it to papapig's WhatsApp 💕",
     rem_loc_add: "📍 Add a place", rem_loc_ok: "📍 Opening maps to pick a place", rem_loc_err: "Location unavailable — open the map link yourself",
     rem_loc_ph: "Map link or address (optional)…",
-    rem_pick_date: "Choose a date", rem_pick_time: "Choose a time",
+    rem_pick_date: "Add a date", rem_pick_time: "Choose a time",
     rem_ph: "Remind me to…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "🔔 Remind me before",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
@@ -1044,7 +1064,7 @@ document.getElementById("lang-btn").addEventListener("click", () => {
   LANG = LANG === "th" ? "en" : "th";
   applyLang(); if (S) render(S);
   if (typeof remRender === "function") remRender();
-  if (typeof window.renderQuickRem === "function") { window.renderQuickRem(); window.renderTagsRem(); }
+  if (typeof window.__fillLabels === "function") { window.__fillLabels(); window.renderQuickRem(); window.renderTagsRem(); }
 });
 
 /* ═════════ Data ═════════ */
@@ -1355,7 +1375,6 @@ function remSetup() {
   const pdDow = document.getElementById("pd-dow");
   const pdGrid = document.getElementById("pd-grid");
   const ptTitle = document.getElementById("pt-title");
-  const ptGrid = document.getElementById("pt-grid");
   let calYm = null; /* mois affiché YYYY-MM */
   const DOW_LBL = { th: ["อา","จ","อ","พ","พฤ","ศ","ส"], en: ["Su","Mo","Tu","We","Th","Fr","Sa"] };
   function calStartOf() {
@@ -1388,22 +1407,47 @@ function remSetup() {
       fillLabels();
     }));
   }
+  const ptValue = document.getElementById("pt-value");
+  const ptHours = document.getElementById("pt-hours");
+  const ptMins = document.getElementById("pt-mins");
+  let tSelH = null, tSelM = null;
   function renderTimePop() {
     ptTitle.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time";
-    const opts = [];
-    for (let h = 0; h < 24; h++) {
-      ["00", "30"].forEach(mm => opts.push(String(h).padStart(2, "0") + ":" + mm));
-    }
-    ptGrid.innerHTML = opts.map(t => {
-      const sel = timeEl.value === t ? " sel" : "";
-      return "<button type='button' data-t='" + t + "' class='" + sel + "'>" + t + "</button>";
-    }).join("");
-    ptGrid.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
-      timeEl.value = b.dataset.t;
-      timeEl.dispatchEvent(new Event("change"));
-      timePop.classList.remove("open");
-      fillLabels();
+    const [curH, curM] = (timeEl.value || "--:--").split(":");
+    tSelH = curH !== "--" ? curH : null;
+    tSelM = curM !== undefined && curM !== "--" ? curM : null;
+    const hours = [];
+    for (let h = 0; h < 24; h++) hours.push(String(h).padStart(2, "0"));
+    const mins = [];
+    for (let m = 0; m < 60; m++) mins.push(String(m).padStart(2, "0"));
+    ptHours.innerHTML = hours.map(h =>
+      "<button type='button' data-v='" + h + "' class='" + (tSelH === h ? "sel" : "") + "'>" + h + "</button>"
+    ).join("");
+    ptMins.innerHTML = mins.map(m =>
+      "<button type='button' data-v='" + m + "' class='" + (tSelM === m ? "sel" : "") + "'>" + m + "</button>"
+    ).join("");
+    updatePtValue();
+    ptHours.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      tSelH = b.dataset.v;
+      ptHours.querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+      updatePtValue();
+      if (tSelM) commitTime();
     }));
+    ptMins.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      tSelM = b.dataset.v;
+      ptMins.querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+      updatePtValue();
+      if (tSelH) commitTime();
+    }));
+  }
+  function updatePtValue() {
+    ptValue.textContent = (tSelH || "--") + ":" + (tSelM || "--");
+  }
+  function commitTime() {
+    timeEl.value = tSelH + ":" + tSelM;
+    timeEl.dispatchEvent(new Event("change"));
+    timePop.classList.remove("open");
+    fillLabels();
   }
   function closePops() { datePop.classList.remove("open"); timePop.classList.remove("open"); }
   dateBtn.addEventListener("click", () => {
@@ -1540,7 +1584,7 @@ function remSetup() {
   /* Libellés Apple des sélecteurs date/heure */
   const fillLabels = () => {
     if (dateEl.value) { dateLbl.textContent = appleDate(dateEl.value); dateBtn.classList.add("filled"); }
-    else { dateLbl.textContent = LANG === "th" ? "เลือกวันที่" : "Choose a date"; dateBtn.classList.remove("filled"); }
+    else { dateLbl.textContent = LANG === "th" ? "เพิ่มวันที่" : "Add a date"; dateBtn.classList.remove("filled"); }
     if (timeEl.value) { timeLbl.textContent = appleTime(timeEl.value); timeBtn.classList.add("filled"); }
     else { timeLbl.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time"; timeBtn.classList.remove("filled"); }
   };
@@ -1583,25 +1627,32 @@ function remSetup() {
     urgentBtn.setAttribute("aria-pressed", String(urgent));
     renderTags();
   });
-  /* 📍 lieu facultatif : géoloc navigateur → lien Google Maps (ouvre l'app depuis le tel) */
+  /* 📍 lieu facultatif : champ immédiat + géoloc parallèle → reverse geocoding Nominatim (adresse réelle) */
   const locInput = document.getElementById("rem-locinput");
   const locField = document.getElementById("rem-locfield");
   const locOk = document.getElementById("rem-loc-ok");
   function showLocInput() { locInput.classList.remove("hidden"); locField.focus(); }
   function hideLocInput() { locInput.classList.add("hidden"); locField.value = ""; }
+  function locBtnOn() { locBtn.classList.add("on"); locBtn.setAttribute("aria-pressed", "true"); renderTags(); }
+  function locBtnOff() { locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false"); }
   locBtn.addEventListener("click", () => {
     if (loc) { /* déjà défini → retirer */
-      loc = null; locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false");
-      hideLocInput(); renderTags(); return;
+      loc = null; locBtnOff(); hideLocInput(); renderTags(); return;
     }
+    showLocInput(); /* champ affiché IMMÉDIATEMENT (plus d'attente) */
     if (navigator.geolocation) {
-      locBtn.classList.add("on"); locBtn.setAttribute("aria-pressed", "true"); renderTags();
-      navigator.geolocation.getCurrentPosition(pos => {
+      navigator.geolocation.getCurrentPosition(async pos => {
         const { latitude, longitude } = pos.coords;
-        loc = "https://www.google.com/maps?q=" + latitude.toFixed(6) + "," + longitude.toFixed(6);
-        renderTags();
-      }, () => { locBtn.classList.remove("on"); showLocInput(); }, { enableHighAccuracy: false, timeout: 6000 });
-    } else { showLocInput(); }
+        /* reverse geocoding → adresse réelle dans le champ */
+        try {
+          const r = await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+            latitude + "&lon=" + longitude + "&zoom=18", { headers: { "Accept": "application/json" } });
+          const j = await r.json();
+          const addr = j && j.display_name ? j.display_name.split(",").slice(0, 3).join(",") : "";
+          if (addr && !locField.value.trim()) locField.value = addr;
+        } catch (e) { /* pas d'adresse → champ libre */ }
+      }, () => {}, { enableHighAccuracy: false, timeout: 8000 });
+    }
   });
   locOk.addEventListener("click", () => {
     const v = locField.value.trim();
@@ -1611,8 +1662,9 @@ function remSetup() {
     hideLocInput(); renderTags();
   });
   locField.addEventListener("keydown", e => { if (e.key === "Enter") locOk.click(); });
-  /* date par défaut = aujourd'hui en BKK */
-  try { dateEl.value = bkkToday(); } catch (e) { dateEl.value = new Date().toISOString().slice(0, 10); }
+  /* date par défaut = vide → le label affiche « เพิ่มวันที่ » / « Add a date »
+     (à la création, add() utilisera bkkToday() si vide) */
+  dateEl.value = "";
   renderTags();
   renderOffsets();
   let adding = false;
