@@ -523,7 +523,8 @@
   }
   .rem-offset-opts button.on { background: var(--pink); color: #fff; font-weight: 600; }
   .rem-offset-opts button:focus-visible { outline: 3px solid rgba(255,107,157,.35); outline-offset: 1px; }
-  .rem-add { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .rem-add { display:flex; flex-wrap:wrap; gap:8px; }
+  .rem-add-bottom { display:flex; justify-content:flex-end; margin-top:10px; }
   .rem-add input {
     flex:1 1 100%; min-width:0; padding: 11px 14px; border-radius: 999px;
     border: 1px solid var(--line); background: var(--soft); font-size: 14px;
@@ -800,9 +801,6 @@
         <div class="rem-add">
           <input type="text" id="rem-input" data-i18n-ph="rem_ph" placeholder="เตือนฉันเรื่อง…" aria-label="Nouveau rappel" />
           <textarea id="rem-body" rows="2" data-i18n-ph="rem_body_ph" placeholder="รายละเอียด (ไม่บังคับ)…" aria-label="Corps du rappel"></textarea>
-          <button class="rem-add-btn" id="rem-add-btn" aria-label="Validate">
-            <span class="rem-add-ic">✓</span><span class="rem-add-txt" data-i18n="rem_validate">ยืนยัน</span>
-          </button>
         </div>
         <div class="rem-added" id="rem-added" aria-live="polite">
           <span class="rem-added-txt" id="rem-added-txt"></span>
@@ -868,6 +866,11 @@
         <div class="rem-offset">
           <div class="rem-offset-lbl" data-i18n="rem_off_lbl">🔔 เตือนล่วงหน้า</div>
           <div class="rem-offset-opts" id="rem-offset-opts"></div>
+        </div>
+        <div class="rem-add-bottom">
+          <button class="rem-add-btn" id="rem-add-btn" aria-label="Validate">
+            <span class="rem-add-ic">✓</span><span class="rem-add-txt" data-i18n="rem_validate">ยืนยัน</span>
+          </button>
         </div>
         <div class="rem-list" id="rem-list" aria-live="polite"></div>
       </div>
