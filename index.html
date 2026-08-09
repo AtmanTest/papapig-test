@@ -15,6 +15,7 @@
     --bg-soft: #fff5f8; --line2: #f6e3ea; --rose: #5a3345; --accent: #c2185b;
     --input-bg: #ffffff; --txt-1: #333333;
   }
+  html { zoom: 0.8; }
   body.dark {
     --cream: #17141a; --dark: #f2e8ee; --card: #221d26; --soft: #2a2230; --line: #3a2f3d;
     --pink: #ff9ec2; --teal: #4fd6c9;
@@ -485,7 +486,14 @@
     box-shadow: 0 0 0 1px rgba(255,255,255,.5), 0 4px 14px rgba(214,51,108,.45);
     color:#fff; font-size:30px; font-weight:800; line-height:1;
     font-variant-numeric:tabular-nums; letter-spacing:.5px;
+    cursor:pointer; -webkit-user-select:none; user-select:none; touch-action:manipulation;
   }
+  .stepper-val input {
+    width:100%; height:100%; border:none; background:transparent; outline:none;
+    color:#fff; font: inherit; font-size:30px; font-weight:800; text-align:center;
+    caret-color:#fff; -webkit-user-select:text; user-select:text;
+  }
+  .stepper-val:active { transform: scale(.97); }
   .stepper-unit { font-size:10px; font-weight:700; color:var(--txt-2, #8a8590); text-transform:uppercase; letter-spacing:.8px; margin-top:2px; }
   .pick-nav.pick-ok { background:#14b8a6; border-color:#14b8a6; color:#fff; font-size:14px; }
   .rem-urgent {
@@ -1558,6 +1566,31 @@ function remSetup() {
       ptMVal.textContent = tSelM;
     }
   }
+  // saisie manuelle : clic sur la valeur → input 2 chiffres, Enter/blur valide
+  function makeEditable(el, kind) {
+    el.addEventListener("click", () => {
+      if (el.querySelector("input")) return;
+      const inp = document.createElement("input");
+      inp.type = "text"; inp.inputMode = "numeric"; inp.maxLength = 2;
+      inp.value = el.textContent;
+      el.textContent = "";
+      el.appendChild(inp);
+      inp.focus(); inp.select();
+      const done = () => {
+        let v = parseInt(inp.value, 10);
+        if (isNaN(v)) v = 0;
+        if (kind === "h") { v = ((v % 24) + 24) % 24; tSelH = String(v).padStart(2, "0"); ptHVal.textContent = tSelH; }
+        else { v = ((v % 60) + 60) % 60; tSelM = String(v).padStart(2, "0"); ptMVal.textContent = tSelM; }
+      };
+      inp.addEventListener("keydown", e => {
+        if (e.key === "Enter") { done(); inp.blur(); }
+        if (e.key === "Escape") { inp.blur(); }
+      });
+      inp.addEventListener("blur", () => { done(); el.textContent = kind === "h" ? tSelH : tSelM; });
+    });
+  }
+  makeEditable(ptHVal, "h");
+  makeEditable(ptMVal, "m");
   document.getElementById("pt-h-up").addEventListener("click", () => step("h", 1));
   document.getElementById("pt-h-dn").addEventListener("click", () => step("h", -1));
   document.getElementById("pt-m-up").addEventListener("click", () => step("m", 1));
