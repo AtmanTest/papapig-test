@@ -398,13 +398,6 @@
   .rem-tag button:hover { opacity: 1; }
   .rem-tag.urgent { background:#ffe3ec; color:#d6336c; border-color:#ffb3cc; }
   .rem-tag.urgent::before { content:"⚠️ "; }
-  .rem-quick { display:flex; flex-direction:column; gap:5px; margin-top: 8px; }
-  .rem-quick-row { display:flex; flex-wrap:wrap; gap:6px; }
-  .rem-quick-row button {
-    font: inherit; font-size: 12px; padding: 4px 11px; border-radius: 999px;
-    border: 1px solid #f1a9c0; background: #fff5f8; color: #c2185b; cursor: pointer; transition: all .15s ease;
-  }
-  .rem-quick-row button:hover { background: #ffe3ec; }
   .rem-datetime { display:flex; gap:8px; margin-top: 10px; align-items:center; }
   .pick-wrap { position:relative; flex:1; min-width:0; }
   .pick-wrap .rem-pick { width:100%; }
@@ -840,10 +833,6 @@
           <img src="images/check-rose.png" alt="✓" class="rem-added-ic" />
         </div>
         <div class="rem-tags" id="rem-tags" aria-live="polite"></div>
-        <div class="rem-quick">
-          <div class="rem-quick-row" id="rem-qdate"></div>
-          <div class="rem-quick-row" id="rem-qtime"></div>
-        </div>
         <div class="rem-datetime">
           <div class="pick-wrap">
             <button type="button" class="rem-pick" id="rem-date-btn" aria-haspopup="dialog">
@@ -1812,32 +1801,7 @@ function remSetup() {
   };
   window.__fillLabels = fillLabels;
   fillLabels();
-  function renderQuick() {
-    const qd = document.getElementById("rem-qdate");
-    const qt = document.getElementById("rem-qtime");
-    const today = bkkToday();
-    const qdDefs = [
-      { k: "today",   lbl: LANG === "th" ? "วันนี้" : "Today", v: today },
-      { k: "tomorrow",lbl: LANG === "th" ? "พรุ่งนี้" : "Tomorrow", v: addDays(today, 1) },
-      { k: "weekend", lbl: LANG === "th" ? "สุดสัปดาห์" : "Weekend", v: nextWeekend(today) },
-      { k: "nextweek",lbl: LANG === "th" ? "สัปดาห์หน้า" : "Next week", v: nextWeek(today) }
-    ];
-    qd.innerHTML = qdDefs.map(d => "<button type='button' data-d='" + d.v + "'>" + d.lbl + "</button>").join("");
-    qd.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
-      dateEl.value = b.dataset.d; renderTags(); renderOffsets();
-    }));
-    const qTime = [
-      { h: "09:00", lbl: LANG === "th" ? "เช้า" : "Morning" },
-      { h: "12:00", lbl: LANG === "th" ? "เที่ยง" : "Noon" },
-      { h: "15:00", lbl: LANG === "th" ? "บ่าย" : "Afternoon" },
-      { h: "18:00", lbl: LANG === "th" ? "เย็น" : "Evening" },
-      { h: "21:00", lbl: LANG === "th" ? "กลางคืน" : "Night" }
-    ];
-    qt.innerHTML = qTime.map(x => "<button type='button' data-t='" + x.h + "'>" + x.h + " · " + x.lbl + "</button>").join("");
-    qt.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
-      timeEl.value = b.dataset.t; renderTags(); renderOffsets();
-    }));
-  }
+  function renderQuick() { /* boutons rapides supprimés */ }
   renderQuick();
   window.renderQuickRem = renderQuick; /* re-rendu au switch langue */
   window.renderTagsRem = renderTags;
