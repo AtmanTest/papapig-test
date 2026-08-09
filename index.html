@@ -588,6 +588,22 @@
     background: var(--soft); border: 1px solid var(--line); border-radius: 14px;
     transition: opacity .2s, transform .2s;
   }
+  .rem-item.validating {
+    border-color: #16a34a !important;
+    box-shadow: 0 0 0 2px rgba(22,163,74,.9), 0 0 18px rgba(22,163,74,.65);
+  }
+  .rem-valid {
+    flex:none; font-size:15px; font-weight:800; color:#16a34a; white-space:nowrap;
+    letter-spacing:.4px; text-shadow: 0 0 12px rgba(22,163,74,.45);
+    animation: remValidInOut 2.4s ease forwards;
+  }
+  @keyframes remValidInOut {
+    0% { opacity:0; transform:scale(.7); }
+    12% { opacity:1; transform:scale(1.05); }
+    22% { transform:scale(1); }
+    78% { opacity:1; }
+    100% { opacity:0; transform:scale(1); }
+  }
   .rem-item.done { opacity: .55; }
   .rem-item .rem-chk {
     flex:none; width: 26px; height: 26px; border-radius: 50%;
@@ -1486,13 +1502,18 @@ function remRender() {
   list.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.done;
     const it = REMINDERS.find(x => x.id === id);
-    remSyncState[id] = "syncing"; remRender();
+    const card = b.closest(".rem-item");
+    if (card && !card.classList.contains("validating")) {
+      card.classList.add("validating");
+      const msg = document.createElement("span");
+      msg.className = "rem-valid";
+      msg.textContent = (LANG === "th" ? "ยืนยันแล้ว" : "VALIDATE") + " 👏 !";
+      card.appendChild(msg);
+    }
     try { await ReminderSyncService.completeReminder(id); remSyncState[id] = "synced"; }
     catch (e) { remSyncState[id] = "failed"; }
-    if (it) it.status = "done"; remRender();
-    setTimeout(() => { // anti-oubli : annulation possible pendant 6 s
-      remRender();
-    }, 0);
+    if (it) it.status = "done";
+    setTimeout(() => remRender(), 2400); // laisse l'animation VALIDATE se jouer
   }));
   list.querySelectorAll("[data-undo]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.undo;
