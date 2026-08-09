@@ -577,7 +577,8 @@
   .rem-card.flash { animation: remCardFlash .45s ease-in-out 2; }
   .rem-list { margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
   .rem-sec { font-size: 13px; font-weight: 700; color: var(--pink); margin: 6px 0 0; text-transform: uppercase; letter-spacing: .4px; }
-  .rem-sec-done { cursor:pointer; user-select:none; display:flex; align-items:center; gap:6px; }
+  .rem-done-gif { display:block; width:70%; max-width:224px; height:auto; margin:8px auto 2px; border-radius:14px; }
+  .rem-sec-done { cursor:pointer; user-select:none; display:flex; align-items:center; gap:6px; color:#14532d; }
   .rem-sec-done:hover { opacity:.75; }
   .rem-done-chev { font-size:10px; opacity:.7; }
   .rem-sec-sub { font-size: 11px; font-weight: 600; color: #8a8590; margin: 4px 0 2px; }
@@ -1472,6 +1473,7 @@ function remRender() {
     html.push(futureItems.map(itemHtml).join(""));
   }
   if (doneList.length) {
+    html.push("<img class='rem-done-gif' src='images/done-peppa.gif' alt='' aria-hidden='true'>");
     html.push("<div class='rem-sec rem-sec-done' data-done-toggle>"
       + t("rem_done") + " (" + doneList.length + ") <span class='rem-done-chev'>" + (doneHidden ? "▶" : "▼") + "</span></div>");
     if (!doneHidden) html.push(doneList.map(itemHtml).join(""));
