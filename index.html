@@ -412,23 +412,25 @@
   .rem-pick-ic { font-size:14px; }
   .rem-pick-lbl { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .rem-pick-ip { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
-  /* Popover date/heure — style Apple : arrondi, translucide, sélection turquoise, bordure rose foncé */
+  /* Popover date/heure — glass rose : très transparent, blur fort */
   .pick-pop {
     position:absolute; z-index:60; margin-top:6px; min-width: 260px;
-    background: rgba(255,245,248,.86); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border: 1.5px solid #d6336c; border-radius: 18px;
-    box-shadow: 0 12px 32px rgba(214,51,108,.22), 0 2px 8px rgba(0,0,0,.08);
+    background: linear-gradient(135deg, rgba(255,214,229,.42), rgba(255,232,240,.36));
+    backdrop-filter: blur(22px) saturate(1.5); -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    border: 1.5px solid rgba(214,51,108,.55); border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(214,51,108,.22), 0 2px 8px rgba(0,0,0,.08), inset 0 0 0 1px rgba(255,255,255,.35);
     padding: 10px; display:none;
   }
   .pick-pop.open { display:block; }
   .pick-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
   .pick-title { font-size:13px; font-weight:800; color:#d6336c; letter-spacing:.2px; }
   .pick-nav {
-    width:28px; height:28px; border-radius:50%; border:1px solid #f1a9c0; background:#fff;
+    width:28px; height:28px; border-radius:50%; border:1px solid rgba(214,51,108,.4);
+    background: rgba(255,255,255,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     color:#d6336c; font-size:16px; font-weight:700; cursor:pointer; line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
-  .pick-nav:hover { background:#ffe3ec; }
+  .pick-nav:hover { background: rgba(255,227,236,.8); }
   .pick-nav.pick-clear { font-size:11px; }
   .pick-dow { display:grid; grid-template-columns: repeat(7, 1fr); gap:2px; margin-bottom:4px; }
   .pick-dow span { text-align:center; font-size:10px; font-weight:800; color:#d4578a; padding:3px 0; }
@@ -443,10 +445,12 @@
   .pick-grid button.sel { background:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3), 0 3px 10px rgba(20,184,166,.4); }
   .pick-time { display:grid; grid-template-columns: repeat(4, 1fr); gap:4px; max-height:180px; overflow-y:auto; }
   .pick-time button {
-    border:1px solid #f1a9c0; background:#fff; border-radius:999px; padding:7px 0;
+    border:1px solid rgba(214,51,108,.3); background: rgba(255,255,255,.5);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border-radius:999px; padding:7px 0;
     font: inherit; font-size:12px; font-weight:700; color:#333; cursor:pointer;
   }
-  .pick-time button:hover { background:#ffe3ec; }
+  .pick-time button:hover { background: rgba(255,227,236,.75); }
   .pick-time button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
   /* Sélecteur heure précise : rangée heures + rangée minutes */
   .pick-ttl { text-align:center; font-size:26px; font-weight:800; color:#d6336c;
@@ -454,10 +458,12 @@
   .pick-hours, .pick-mins { display:grid; grid-template-columns: repeat(6, 1fr); gap:4px; margin-bottom:6px; }
   .pick-mins { grid-template-columns: repeat(10, 1fr); }
   .pick-hours button, .pick-mins button {
-    border:1px solid #f1a9c0; background:#fff; border-radius:999px; padding:7px 0;
+    border:1px solid rgba(214,51,108,.3); background: rgba(255,255,255,.5);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border-radius:999px; padding:7px 0;
     font: inherit; font-size:13px; font-weight:700; color:#333; cursor:pointer; text-align:center;
   }
-  .pick-hours button:hover, .pick-mins button:hover { background:#ffe3ec; }
+  .pick-hours button:hover, .pick-mins button:hover { background: rgba(255,227,236,.75); }
   .pick-hours button.sel, .pick-mins button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
   .rem-urgent {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
