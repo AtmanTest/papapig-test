@@ -452,10 +452,10 @@
   .pick-grid button.other { background: rgba(214,51,108,.10); color: rgba(255,255,255,.65); font-weight:600; text-shadow:none; }
   .pick-grid button.today { background: rgba(255,107,157,.55); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.55); }
   .pick-grid button.sel { background:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3), 0 3px 10px rgba(20,184,166,.4); }
-  /* ── Popup toujours centré plein écran (jamais coupé, tous viewports) ── */
+  /* ── Popup ancré juste sous son champ (date / heure) ── */
   #pick-time-pop, #pick-date-pop {
-    position: fixed; left:50%; top:50%; transform:translate(-50%,-50%);
-    width: min(320px, calc(100vw - 32px)); max-width:none; margin:0;
+    position: absolute; left:0; right:auto; top:100%; margin-top:6px;
+    width: min(320px, calc(100vw - 32px)); max-width: none;
     box-shadow: 0 24px 60px rgba(214,51,108,.35), 0 4px 16px rgba(0,0,0,.25);
   }
   #pick-time-pop .stepper-box { padding: 6px 2px; }
