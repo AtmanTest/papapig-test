@@ -1404,7 +1404,7 @@ function remRender() {
   const T = LANG === "th";
   const now = new Date();
   const today = now.toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10).replace(/\//g, "-");
-  let doneHidden = window.__doneHidden || false;
+  let doneHidden = localStorage.getItem("papapig-rem-done-hidden") === "1";
   if (!REMINDERS.length) {
     list.innerHTML = "<div class='rem-empty'>" + t("rem_empty") +
       "<br><button id='rem-empty-add'>" + t("rem_empty_add") + "</button></div>";
@@ -1471,7 +1471,7 @@ function remRender() {
   }
   list.innerHTML = html.join("");
   const doneToggle = list.querySelector("[data-done-toggle]");
-  if (doneToggle) doneToggle.addEventListener("click", () => { doneHidden = !doneHidden; window.__doneHidden = doneHidden; remRender(); });
+  if (doneToggle) doneToggle.addEventListener("click", () => { doneHidden = !doneHidden; localStorage.setItem("papapig-rem-done-hidden", doneHidden ? "1" : "0"); remRender(); });
   list.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.done;
     const it = REMINDERS.find(x => x.id === id);
