@@ -523,6 +523,10 @@
   }
   .rem-offset-opts button.on { background: var(--pink); color: #fff; font-weight: 600; }
   .rem-offset-opts button:focus-visible { outline: 3px solid rgba(255,107,157,.35); outline-offset: 1px; }
+  .rem-inf-lbl { display:flex; align-items:center; gap:7px; margin-top:9px; font-size:12px; color:#8a8590; cursor:pointer; user-select:none; }
+  .rem-inf-lbl input { width:16px; height:16px; accent-color: var(--pink); cursor:pointer; }
+  .rem-inf-lbl input:checked + .rem-inf-txt { color:#d6336c; font-weight:700; }
+  .rem-inf-lbl:hover { color:#c2185b; }
   .rem-add { display:flex; flex-wrap:wrap; gap:8px; }
   .rem-add input {
     flex:1 1 100%; min-width:0; padding: 11px 14px; border-radius: 999px;
@@ -629,7 +633,8 @@
   .rem-badge.wa { background:#e6faf7; color:#1a9e90; }
   .rem-badge.priv { background:#f3e8ff; color:#7a4fb8; }
   .rem-badge.prio { background:#ffe3ec; color:#d6336c; box-shadow:0 0 0 3px rgba(255,107,157,.25), 0 2px 8px rgba(255,107,157,.35); }
-  .rem-badge.loc { background:#e6f2ff; color:#1a73e8; text-decoration:none; }
+  .rem-badge.loc { background:#e8f0ff; color:#2563eb; text-decoration:none; }
+  .rem-badge.inf { background:#f1ebff; color:#7a4fd0; }
   .rem-hint { font-size: 11px; color:#e07020; margin: -4px 0 8px; line-height: 1.45; }
   .rem-hint-val { font-weight: 800; color:#e07020; }
   .rem-sync { font-size:10px; font-weight:800; color:#1a9e90; }
@@ -893,6 +898,10 @@
               <span class="rem-add-ic">✓</span><span class="rem-add-txt" data-i18n="rem_validate">ยืนยัน</span>
             </button>
           </div>
+          <label class="rem-inf-lbl" for="rem-inf">
+            <input type="checkbox" id="rem-inf" />
+            <span class="rem-inf-txt" data-i18n="rem_inf_lbl">♾️ เตือนแบบไม่มีวันสิ้นสุด (ทุกวัน)</span>
+          </label>
         </div>
         <div class="rem-list" id="rem-list" aria-live="polite"></div>
       </div>
@@ -1012,6 +1021,7 @@ const TR = {
     rem_pick_date: "เพิ่มวันที่", rem_pick_time: "เลือกเวลาเตือน",
     rem_validate: "ยืนยัน",
     rem_ph: "เตือนฉันเรื่อง…", rem_body_ph: "รายละเอียด (ไม่บังคับ)…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "➕ เพิ่มการเตือนอื่นเพิ่มเติมถ้าต้องการ",
+    rem_inf_lbl: "♾️ เตือนแบบไม่มีวันสิ้นสุด (ทุกวัน)",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
     rem_per_morning: "เช้า", rem_per_noon: "เที่ยง", rem_per_afternoon: "บ่าย", rem_per_evening: "เย็น", rem_per_night: "กลางคืน",
@@ -1053,6 +1063,7 @@ const TR = {
     rem_pick_date: "Add a date", rem_pick_time: "Choose a remind time",
     rem_validate: "Done !",
     rem_ph: "Put a title to your reminder", rem_body_ph: "Details (optional)…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "➕ Add other reminders if needed",
+    rem_inf_lbl: "♾️ Endless reminder (every day)",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
     rem_per_morning: "Morning", rem_per_noon: "Noon", rem_per_afternoon: "Afternoon", rem_per_evening: "Evening", rem_per_night: "Night",
@@ -1396,7 +1407,7 @@ const ReminderSyncService = {
     return r.status === 204 ? null : r.json();
   },
   async fetchAll() {
-    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via,location,note&profile=eq.penguinpig&order=date.asc");
+    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via,location,note,remind_offsets&profile=eq.penguinpig&order=date.asc");
     return Array.isArray(d) ? d : [];
   },
   createReminder(payload) {
@@ -1406,7 +1417,8 @@ const ReminderSyncService = {
     }, payload));
   },
   completeReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "done" }); },
-  uncompleteReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "todo" }); }
+  uncompleteReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "todo" }); },
+  deleteReminder(id) { return this._req("DELETE", "?id=eq." + id); }
 };
 let REMINDERS = [];
 const remSyncState = {}; // id → "synced" | "syncing" | "failed" | "pending"
@@ -1456,6 +1468,7 @@ function remRender() {
     const overdue = !isDone && r.date && r.date < today;
     const chk = isDone ? "✓" : "";
     const badges = [];
+    if (isInf(r)) badges.push("<span class='rem-badge inf'>♾️ " + (LANG === "th" ? "ทุกวัน" : "daily") + "</span>");
     if (r.created_via === "whatsapp") badges.push("<span class='rem-badge wa'>" + t("rem_wa") + "</span>");
     if (r.is_private) badges.push("<span class='rem-badge priv'>" + t("rem_priv") + "</span>");
     if (r.priority === "high" || r.priority === "urgent") badges.push("<span class='rem-badge prio'>⚠️ " + (LANG === "th" ? "สำคัญ" : "Urgent") + "</span>");
@@ -1470,6 +1483,7 @@ function remRender() {
       (r.note ? "<div class='rem-note'>📝 " + _tTxt(r.note) + "</div>" : "") +
       "<div class='rem-meta'>" + badges.join("") + meta.join(" · ") + "</div></div>" + undo + "</div>";
   }
+  function isInf(r) { return Array.isArray(r.remind_offsets) && r.remind_offsets.some(o => String(o).toLowerCase() === "inf"); }
   function periodOf(hm) {
     const h = parseInt(String(hm).slice(0, 2), 10);
     if (h < 5) return "night";
@@ -1722,10 +1736,9 @@ function remSetup() {
   }
   /* Options de rappel (minutes avant l'événement) */
   const OFF_OPTS = [
-    { m: 30,  l: "30 min" }, { m: 60,  l: "1 h" }, { m: 120, l: "2 h" }, { m: 180, l: "3 h" },
-    { m: 360, l: "6 h" },    { m: 720, l: "12 h" }, { m: 1440, l: "1 j" }, { m: 2880, l: "2 j" }
+    { m: 5,   l: "5 min" }, { m: 15,  l: "15 min" }, { m: 60,  l: "1 h" }, { m: 1440, l: "1 j" }
   ];
-  const offsetSel = new Set([1440, 180]); // défaut : 1j + 3h
+  const offsetSel = new Set([1440]); // défaut : 1 j
   function bkkFromInputs() {
     const t = timeEl.value, d = dateEl.value;
     if (!t) return null;
@@ -1868,7 +1881,10 @@ function remSetup() {
     const b = time ? bkkFromInputs() : null;
     if (b) payload = { title: txt, date: b.date, start_time: b.time };
     if (bodyTxt) payload.note = bodyTxt;
-    payload.remind_offsets = [...offsetSel].sort((a, z) => z - a);
+    const infEl = document.getElementById("rem-inf");
+    const infOn = infEl ? infEl.checked : false;
+    payload.remind_offsets = infOn ? ["inf"] : [...offsetSel].sort((a, z) => z - a);
+    if (infOn && infEl) infEl.checked = false;
     if (urgent) payload.priority = "urgent";
     /* lieu : committe le champ ouvert si l'utilisateur a tapé sans cliquer ✓ / Entrée */
     if (!loc && locField && !locField.classList.contains("hidden")) {
