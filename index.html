@@ -542,18 +542,7 @@
   .rem-badge.prio { background:#ffe3ec; color:#d6336c; box-shadow:0 0 0 3px rgba(255,107,157,.25), 0 2px 8px rgba(255,107,157,.35); }
   .rem-badge.loc { background:#e6f2ff; color:#1a73e8; text-decoration:none; }
   .rem-hint { font-size: 11px; color:#e07020; margin: -4px 0 8px; line-height: 1.45; }
-  .rem-hint-btn { display:inline-flex; align-items:center; gap:3px; vertical-align:-2px;
-    padding: 1px 6px 1px 1px; border-radius:999px; margin: 0 2px;
-    background: linear-gradient(135deg, rgba(144,217,250,.85), rgba(104,196,244,.8));
-    border: 1px solid rgba(144,217,250,.9);
-    box-shadow: 0 1px 4px rgba(104,196,244,.45); }
-  .rem-hint-btn .rem-hint-btn-ic { width:14px; height:14px; border-radius:50%;
-    display:inline-flex; align-items:center; justify-content:center;
-    background: radial-gradient(circle at 32% 28%, #b9ecff 0%, #7ecdf7 45%, #4db3ec 100%);
-    color:#fff; font-size:9px; font-weight:900; line-height:1;
-    border:1px solid rgba(255,255,255,.9); }
-  .rem-hint-btn .rem-hint-btn-txt { font-size:10px; font-weight:800; color:#fff; letter-spacing:.3px;
-    text-transform:uppercase; text-shadow:0 1px 2px rgba(20,100,160,.4); }
+  .rem-hint-val { font-weight: 800; color:#e07020; }
   .rem-sync { font-size:10px; font-weight:800; color:#1a9e90; }
   .rem-sync.pending { color:#8a8590; font-weight:600; }
   .rem-sync.failed { color:#d6455d; font-weight:700; }
@@ -1048,12 +1037,12 @@ function applyLang() {
   const pwd = document.getElementById("pwd");
   if (pwd) pwd.placeholder = t("pwd_ph");
   document.title = t("app_title");
-  /* miniature du bouton valider dans le hint rappels */
+  /* mot valider en orange gras dans le hint rappels */
   const rh = document.querySelector(".rem-hint");
   if (rh) {
     const v = t("rem_validate");
     rh.innerHTML = t("rem_hint").replace("+",
-      "<span class='rem-hint-btn'><span class='rem-hint-btn-ic'>✓</span><span class='rem-hint-btn-txt'>" + v + "</span></span>");
+      "<span class='rem-hint-val'>" + v + "</span>");
   }
 }
 
