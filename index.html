@@ -179,6 +179,11 @@
   }
   .card h3 { font-size: 12px; text-transform: uppercase; letter-spacing:1.2px;
              color:#b06a86; margin-bottom: 10px; font-weight: 800; }
+  .rem-card { border: 1.5px solid #f3a8c4; box-shadow: 0 3px 14px rgba(255,107,157,.14); }
+  .rem-card .rem-title { font-size: 15px; font-weight: 900; letter-spacing: .6px;
+             color: #d6336c; margin-bottom: 4px;
+             background: linear-gradient(135deg, #d6336c, #ff6b9d); -webkit-background-clip: text;
+             background-clip: text; -webkit-text-fill-color: transparent; }
   .card .big { font-size: 34px; font-weight: 800; line-height:1.15; }
   .card .sub { font-size: 12px; color:#8a8590; margin-top:5px; }
   .mood-nav { display:flex; align-items:center; gap:8px; }
@@ -513,7 +518,8 @@
     font-size: 14px; line-height: 1; cursor: pointer; display:flex; align-items:center; justify-content:center;
     transition: background .15s, color .15s;
   }
-  .rem-item.done .rem-chk { background: var(--pink); color: #fff; }
+  .rem-item.done .rem-chk { background: #1f8a5f; color: #fff;
+    border-color: #1f8a5f; box-shadow: 0 0 0 3px rgba(31,138,95,.25); }
   .rem-item .rem-body { flex:1; min-width:0; }
   .rem-item .rem-txt { font-size: 14px; font-weight: 700; word-break: break-word; }
   .rem-item.done .rem-txt { text-decoration: line-through; }
@@ -524,6 +530,10 @@
   .rem-badge.prio { background:#ffe3ec; color:#d6336c; box-shadow:0 0 0 3px rgba(255,107,157,.25), 0 2px 8px rgba(255,107,157,.35); }
   .rem-badge.loc { background:#e6f2ff; color:#1a73e8; text-decoration:none; }
   .rem-hint { font-size: 11px; color:#e07020; margin: -4px 0 8px; line-height: 1.45; }
+  .rem-hint-plus { display:inline-flex; align-items:center; justify-content:center;
+    width:16px; height:16px; border-radius:50%; background:#90d9fa; color:#fff;
+    font-size:11px; font-weight:800; line-height:1; vertical-align:-2px; margin:0 2px;
+    box-shadow: 0 0 0 2px rgba(144,217,250,.35); }
   .rem-sync { font-size:10px; font-weight:800; color:#1a9e90; }
   .rem-sync.pending { color:#8a8590; font-weight:600; }
   .rem-sync.failed { color:#d6455d; font-weight:700; }
@@ -710,8 +720,8 @@
         <h3 data-i18n="joy_meals">🍜 กินอะไรมาบ้าง</h3>
         <div class="meals" id="j-meals"></div>
       </div>
-      <div class="card full">
-        <h3 data-i18n="rem_title">🔔 เตือนความจำ</h3>
+      <div class="card full rem-card">
+        <h3 class="rem-title" data-i18n="rem_title">🔔 เตือนความจำ</h3>
         <div class="rem-sub" data-i18n="rem_sub">ฉันช่วยจดให้เอง</div>
         <div class="rem-hint" data-i18n="rem_hint">เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕</div>
         <div class="rem-add">
@@ -1014,6 +1024,9 @@ function applyLang() {
   const pwd = document.getElementById("pwd");
   if (pwd) pwd.placeholder = t("pwd_ph");
   document.title = t("app_title");
+  /* miniature du rond + dans le hint rappels */
+  const rh = document.querySelector(".rem-hint");
+  if (rh) rh.innerHTML = t("rem_hint").replace("+", "<span class='rem-hint-plus' aria-hidden='true'>+</span>");
 }
 
 /* ═════════ Login ═════════ */
