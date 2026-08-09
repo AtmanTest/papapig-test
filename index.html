@@ -457,7 +457,7 @@
     width: min(320px, calc(100vw - 32px)); max-width:none; margin:0;
     box-shadow: 0 24px 60px rgba(214,51,108,.35), 0 4px 16px rgba(0,0,0,.25);
   }
-  #pick-time-pop .wheel { height: 140px; }
+  #pick-time-pop .stepper-box { padding: 6px 2px; }
   .pick-time { display:grid; grid-template-columns: repeat(4, 1fr); gap:4px; max-height:180px; overflow-y:auto; }
   .pick-time button {
     border:1px solid rgba(214,51,108,.3); background: rgba(255,255,255,.5);
@@ -467,30 +467,26 @@
   }
   .pick-time button:hover { background: rgba(255,227,236,.75); }
   .pick-time button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
-  /* Roue style alarme Apple : heures | minutes, sélection centrale */
-  .wheel-box { position:relative; display:flex; gap:8px; padding:6px 0; }
-  .wheel {
-    flex:1; height:150px; overflow-y:auto; scroll-snap-type:y mandatory;
-    -webkit-overflow-scrolling:touch; text-align:center;
-    scrollbar-width:none; -ms-overflow-style:none;
-    background: rgba(255,255,255,.14); border-radius:16px;
-    border: 1px solid rgba(255,255,255,.28);
-    mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%);
+  /* Stepper ▲▼ : chiffre sélectionné TOUJOURS visible, blanc gras sur rose opaque */
+  .stepper-box { display:flex; gap:12px; padding:10px 4px; justify-content:center; }
+  .stepper { display:flex; flex-direction:column; align-items:center; gap:2px; flex:1; max-width:120px; }
+  .stepper-btn {
+    width:52px; height:40px; border-radius:12px; border:1px solid rgba(214,51,108,.35);
+    background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,214,229,.45));
+    color:#d6336c; font-size:17px; line-height:1; cursor:pointer;
+    -webkit-user-select:none; user-select:none; touch-action:manipulation;
+    transition: transform .08s, background .15s;
   }
-  .wheel::-webkit-scrollbar { display:none; }
-  .wheel-opt {
-    height:38px; line-height:38px; scroll-snap-align:center;
-    font-size:17px; font-weight:600; color:var(--dark); cursor:pointer;
-    font-variant-numeric:tabular-nums; user-select:none; white-space:nowrap;
+  .stepper-btn:active { transform: scale(.93); background: rgba(255,107,157,.35); }
+  .stepper-val {
+    width:100%; height:56px; border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, rgba(214,51,108,.95), rgba(255,107,157,.9));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.5), 0 4px 14px rgba(214,51,108,.45);
+    color:#fff; font-size:30px; font-weight:800; line-height:1;
+    font-variant-numeric:tabular-nums; letter-spacing:.5px;
   }
-  .wheel-opt.sel { color:#fff !important; font-weight:800 !important; opacity:1 !important; text-shadow: 0 0 1px rgba(214,51,108,.9); }
-  .wheel-sel {
-    position:absolute; left:8px; right:8px; top:50%; height:38px; transform:translateY(-50%);
-    background: linear-gradient(135deg, rgba(214,51,108,.92), rgba(255,107,157,.85));
-    border-radius:12px; pointer-events:none;
-    box-shadow: 0 0 0 1px rgba(255,255,255,.45), 0 4px 14px rgba(214,51,108,.5);
-  }
+  .stepper-unit { font-size:10px; font-weight:700; color:var(--txt-2, #8a8590); text-transform:uppercase; letter-spacing:.8px; margin-top:2px; }
   .pick-nav.pick-ok { background:#14b8a6; border-color:#14b8a6; color:#fff; font-size:14px; }
   .rem-urgent {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
@@ -835,10 +831,19 @@
                   <button type="button" class="pick-nav pick-clear" id="pt-clear" aria-label="Clear time">✕</button>
                 </span>
               </div>
-              <div class="wheel-box">
-                <div class="wheel" id="pt-hours" aria-label="Hours"></div>
-                <div class="wheel" id="pt-mins" aria-label="Minutes"></div>
-                <div class="wheel-sel" aria-hidden="true"></div>
+              <div class="stepper-box">
+                <div class="stepper">
+                  <button type="button" class="stepper-btn" id="pt-h-up" aria-label="Hour up">▲</button>
+                  <div class="stepper-val" id="pt-h-val">12</div>
+                  <button type="button" class="stepper-btn" id="pt-h-dn" aria-label="Hour down">▼</button>
+                  <div class="stepper-unit">h</div>
+                </div>
+                <div class="stepper">
+                  <button type="button" class="stepper-btn" id="pt-m-up" aria-label="Minute up">▲</button>
+                  <div class="stepper-val" id="pt-m-val">00</div>
+                  <button type="button" class="stepper-btn" id="pt-m-dn" aria-label="Minute down">▼</button>
+                  <div class="stepper-unit">min</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1523,19 +1528,9 @@ function remSetup() {
       fillLabels();
     }));
   }
-  const ptHours = document.getElementById("pt-hours");
-  const ptMins = document.getElementById("pt-mins");
+  const ptHVal = document.getElementById("pt-h-val");
+  const ptMVal = document.getElementById("pt-m-val");
   let tSelH = null, tSelM = null;
-  const WHEEL_H = 38;
-  function wheelScrollTo(w, val) {
-    w.scrollTop = Math.max(0, val * WHEEL_H);
-  }
-  function wheelCurrent(w) {
-    return Math.min(Math.max(Math.round(w.scrollTop / WHEEL_H), 0), w.children.length - 1);
-  }
-  function wheelSel(w, idx) {
-    [...w.children].forEach((c, i) => c.classList.toggle("sel", i === idx));
-  }
   function commitTime() {
     timeEl.value = tSelH + ":" + tSelM;
     timeEl.dispatchEvent(new Event("change"));
@@ -1545,69 +1540,28 @@ function remSetup() {
   function renderTimePop() {
     ptTitle.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time";
     const [curH, curM] = (timeEl.value || "--:--").split(":");
-    tSelH = curH !== "--" ? curH : null;
-    tSelM = curM !== undefined && curM !== "--" ? curM : null;
-    ptHours.innerHTML = "";
-    ptMins.innerHTML = "";
-    for (let h = 0; h < 24; h++) {
-      const b = document.createElement("div");
-      b.className = "wheel-opt"; b.textContent = String(h).padStart(2, "0");
-      ptHours.appendChild(b);
-    }
-    for (let m = 0; m < 60; m++) {
-      const b = document.createElement("div");
-      b.className = "wheel-opt"; b.textContent = String(m).padStart(2, "0");
-      ptMins.appendChild(b);
-    }
-    // padding haut/bas pour que la 1re et la dernière valeur puissent se centrer
-    ptHours.style.paddingTop = ptHours.style.paddingBottom = (140 - WHEEL_H) / 2 + "px";
-    ptMins.style.paddingTop = ptMins.style.paddingBottom = (140 - WHEEL_H) / 2 + "px";
-    const hi = tSelH !== null ? parseInt(tSelH, 10) : 12;
-    const mi = tSelM !== null ? parseInt(tSelM, 10) : 0;
-    // scroll APRÈS ouverture (display:block) sinon scrollTop reste à 0
-    setTimeout(() => {
-      wheelScrollTo(ptHours, hi);
-      wheelScrollTo(ptMins, mi);
-      requestAnimationFrame(() => {
-        const h0 = wheelCurrent(ptHours), m0 = wheelCurrent(ptMins);
-        tSelH = String(h0).padStart(2, "0"); tSelM = String(m0).padStart(2, "0");
-        wheelSel(ptHours, h0); wheelSel(ptMins, m0);
-      });
-    }, 30);
-    // (re)démarre les tickers de synchro continue sur les 2 roues
-    requestAnimationFrame(() => { ptHours._tick && ptHours._tick(); ptMins._tick && ptMins._tick(); });
+    tSelH = curH !== "--" ? String(parseInt(curH, 10) || 0).padStart(2, "0") : "12";
+    tSelM = curM !== undefined && curM !== "--" ? String(parseInt(curM, 10) || 0).padStart(2, "0") : "00";
+    ptHVal.textContent = tSelH;
+    ptMVal.textContent = tSelM;
   }
-  function wireWheel(w, kind) {
-    // au scroll : on met à jour la sélection, on NE ferme PAS (validation par ✓)
-    w.addEventListener("scroll", () => {
-      const i = wheelCurrent(w);
-      wheelSel(w, i);
-      if (kind === "h") tSelH = String(i).padStart(2, "0");
-      else tSelM = String(i).padStart(2, "0");
-    }, { passive: true });
-    // ticker continu : re-snap + re-sel tant que le popup est ouvert
-    // (l'inertie mobile laisse scrollTop hors grille → chiffre central sans .sel)
-    w._tick = () => {
-      const j = wheelCurrent(w);
-      if (Math.abs(w.scrollTop - j * WHEEL_H) > 1) w.scrollTop = j * WHEEL_H;
-      wheelSel(w, j);
-      if (kind === "h") tSelH = String(j).padStart(2, "0");
-      else tSelM = String(j).padStart(2, "0");
-      if (timePop.classList.contains("open")) requestAnimationFrame(w._tick);
-    };
-    // clic sur une valeur : scroll doux vers elle, on ne ferme pas
-    w.addEventListener("click", e => {
-      const c = e.target.closest(".wheel-opt");
-      if (!c) return;
-      const i = [...w.children].indexOf(c);
-      wheelScrollTo(w, i);
-      if (kind === "h") tSelH = String(i).padStart(2, "0");
-      else tSelM = String(i).padStart(2, "0");
-      wheelSel(w, i);
-    });
+  function step(kind, delta) {
+    if (kind === "h") {
+      let v = (parseInt(tSelH, 10) || 0) + delta;
+      v = (v + 24) % 24;
+      tSelH = String(v).padStart(2, "0");
+      ptHVal.textContent = tSelH;
+    } else {
+      let v = (parseInt(tSelM, 10) || 0) + delta;
+      v = (v + 60) % 60;
+      tSelM = String(v).padStart(2, "0");
+      ptMVal.textContent = tSelM;
+    }
   }
-  wireWheel(ptHours, "h");
-  wireWheel(ptMins, "m");
+  document.getElementById("pt-h-up").addEventListener("click", () => step("h", 1));
+  document.getElementById("pt-h-dn").addEventListener("click", () => step("h", -1));
+  document.getElementById("pt-m-up").addEventListener("click", () => step("m", 1));
+  document.getElementById("pt-m-dn").addEventListener("click", () => step("m", -1));
   // ✓ OK : valide et ferme
   document.getElementById("pt-ok").addEventListener("click", () => {
     if (tSelH !== null && tSelM !== null) commitTime();
