@@ -576,6 +576,9 @@
   .rem-card.flash { animation: remCardFlash .45s ease-in-out 2; }
   .rem-list { margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
   .rem-sec { font-size: 13px; font-weight: 700; color: var(--pink); margin: 6px 0 0; text-transform: uppercase; letter-spacing: .4px; }
+  .rem-sec-done { cursor:pointer; user-select:none; display:flex; align-items:center; gap:6px; }
+  .rem-sec-done:hover { opacity:.75; }
+  .rem-done-chev { font-size:10px; opacity:.7; }
   .rem-sec-sub { font-size: 11px; font-weight: 600; color: #8a8590; margin: 4px 0 2px; }
   .rem-sec-sub::before { content: "· "; }
   .rem-item {
@@ -1398,6 +1401,7 @@ function remRender() {
   const T = LANG === "th";
   const now = new Date();
   const today = now.toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10).replace(/\//g, "-");
+  let doneHidden = window.__doneHidden || false;
   if (!REMINDERS.length) {
     list.innerHTML = "<div class='rem-empty'>" + t("rem_empty") +
       "<br><button id='rem-empty-add'>" + t("rem_empty_add") + "</button></div>";
@@ -1457,8 +1461,14 @@ function remRender() {
     futureItems.sort((a, b) => (a.date + " " + (a.start_time || "")).localeCompare(b.date + " " + (b.start_time || "")));
     html.push(futureItems.map(itemHtml).join(""));
   }
-  if (doneList.length) html.push("<div class='rem-sec'>" + t("rem_done") + " (" + doneList.length + ")</div>" + doneList.map(itemHtml).join(""));
+  if (doneList.length) {
+    html.push("<div class='rem-sec rem-sec-done' data-done-toggle>"
+      + t("rem_done") + " (" + doneList.length + ") <span class='rem-done-chev'>" + (doneHidden ? "▶" : "▼") + "</span></div>");
+    if (!doneHidden) html.push(doneList.map(itemHtml).join(""));
+  }
   list.innerHTML = html.join("");
+  const doneToggle = list.querySelector("[data-done-toggle]");
+  if (doneToggle) doneToggle.addEventListener("click", () => { doneHidden = !doneHidden; window.__doneHidden = doneHidden; remRender(); });
   list.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.done;
     const it = REMINDERS.find(x => x.id === id);
