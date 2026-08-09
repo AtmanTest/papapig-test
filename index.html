@@ -114,6 +114,8 @@
     box-shadow: 0 4px 16px rgba(255,107,157,.45);
   }
   #login form button:active { transform: scale(.97); }
+  #login .rem-pwd { display:flex; align-items:center; gap:8px; color:rgba(255,255,255,.92); font-size:12.5px; font-weight:600; cursor:pointer; user-select:none; align-self:center; }
+  #login .rem-pwd input { width:16px; height:16px; accent-color:#ff6b9d; cursor:pointer; }
   #login .err { color:#ffe066; font-size:12px; text-align:center; min-height:16px; }
 
   /* Vitrine tech sous le bouton Enter */
@@ -729,6 +731,7 @@
   <div class="pig-uke-wrap"><span class="testi testi-left"></span><img class="pig-uke" src="images/peppa-uke.jpg" alt=""><span class="testi testi-right"></span></div>
   <form id="login-form">
     <div class="siri-glow"><div class="siri-glow-bg"></div><input type="password" id="pwd" placeholder="enter your password here" autocomplete="off"></div>
+    <label class="rem-pwd"><input type="checkbox" id="rem-pwd"> <span data-i18n="rem_pwd">🔒 Remember me</span></label>
     <button type="submit" data-i18n="login_btn">เข้า</button>
   </form>
   <div class="err" id="login-err"></div>
@@ -1003,7 +1006,7 @@
 /* ═════════ i18n : thaï par défaut + anglais ═════════ */
 const TR = {
   th: {
-    login_btn: "เข้า", pwd_ph: "ใส่รหัสผ่านที่นี่",
+    login_btn: "เข้า", pwd_ph: "ใส่รหัสผ่านที่นี่", rem_pwd: "🔒 จำรหัสผ่าน",
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "ชีวิตจอย", tab_papapig: "ชีวิตพ่อหมู", tab_tech: "สมอง AI",
     joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
@@ -1044,7 +1047,7 @@ const TR = {
     logout: "ออกจากระบบ", close: "ปิด",
   },
   en: {
-    login_btn: "Enter", pwd_ph: "enter your password here",
+    login_btn: "Enter", pwd_ph: "enter your password here", rem_pwd: "🔒 Remember me",
     app_title: "Papapig AI — Real Intelligence", tab_joy: "Joy's Life", tab_papapig: "Papapig's Life", tab_tech: "Neural AI Brain",
     joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
@@ -1158,10 +1161,13 @@ function applyLang() {
 
 /* ═════════ Login ═════════ */
 const PASSWORD = "smoothie";
+const PWD_KEY = (location.pathname.indexOf("superpig") >= 0 ? "superpig" : "papapig") + "_pwd";
 function tryLogin() {
   const v = document.getElementById("pwd").value.trim().toLowerCase();
   if (v === PASSWORD) {
     sessionStorage.setItem("pp_auth", "1");
+    if (document.getElementById("rem-pwd").checked) localStorage.setItem(PWD_KEY, v);
+    else localStorage.removeItem(PWD_KEY);
     showApp();
   } else {
     document.getElementById("login-err").textContent = LANG === "th" ? "รหัสผิด ❌" : "wrong password ❌";
@@ -1177,7 +1183,9 @@ window.addEventListener("mousemove", e => {
   document.documentElement.style.setProperty("--my", my.toFixed(1) + "px");
 }, { passive: true });
 document.getElementById("logout-btn").addEventListener("click", () => {
-  sessionStorage.removeItem("pp_auth"); location.reload();
+  sessionStorage.removeItem("pp_auth");
+  localStorage.removeItem(PWD_KEY);
+  location.reload();
 });
 function showApp() {
   document.getElementById("login").classList.add("hidden");
@@ -1185,6 +1193,14 @@ function showApp() {
   init();
 }
 if (sessionStorage.getItem("pp_auth") === "1") showApp();
+else {
+  const savedPwd = localStorage.getItem(PWD_KEY);
+  if (savedPwd) {
+    document.getElementById("pwd").value = savedPwd;
+    document.getElementById("rem-pwd").checked = true;
+    tryLogin(); // auto-login silencieux
+  }
+}
 
 /* ═════════ Tabs ═════════ */
 document.getElementById("tab-joy").addEventListener("click", () => switchTab("joy"));
