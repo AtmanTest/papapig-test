@@ -12,14 +12,6 @@
   :root {
     --pink: #ff6b9d; --teal: #2ec4b6; --cream: #fff8f0; --dark: #2d2a32;
     --card: #ffffff; --soft: #fdf0f4; --line: #ffe3ec;
-    --bg-soft: #fff5f8; --line2: #f6e3ea; --rose: #5a3345; --accent: #c2185b;
-    --input-bg: #ffffff; --txt-1: #333333;
-  }
-  body.dark {
-    --cream: #17141a; --dark: #f2e8ee; --card: #221d26; --soft: #2a2230; --line: #3a2f3d;
-    --pink: #ff9ec2; --teal: #4fd6c9;
-    --bg-soft: #1f1a24; --line2: #3a2f3d; --rose: #ffd9e8; --accent: #ff9ec2;
-    --input-bg: #2a2230; --txt-1: #f2e8ee;
   }
   @font-face { font-family:"PeppaBold"; src:url('fonts/PeppaBold.woff2') format('woff2'); font-display:swap; }
   @font-face { font-family:"ButteredToast"; src:url('fonts/ButteredToast.woff2') format('woff2'); font-display:swap; }
@@ -337,18 +329,20 @@
   .cal-agenda .ag-date { font-weight:900; color:#c44a74; font-size:13px; min-width:64px; }
   .cal-agenda .ag-info { font-size:12.5px; color:#5a3345; flex:1; }
   /* Dark mode */
-  body.dark .cal-panel { background:rgba(120,30,70,.32); backdrop-filter:blur(6px) saturate(1.4); -webkit-backdrop-filter:blur(6px) saturate(1.4); border-color:rgba(255,158,194,.4); box-shadow:0 8px 32px rgba(0,0,0,.4); }
-  body.dark .cal-panel-body .sec-t { color:#ff9ec2; }
-  body.dark .cal-panel-body .row .tx { color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.6); }
-  body.dark .cal-panel-body .row .tx small { color:#ffc9dd; text-shadow:0 1px 3px rgba(0,0,0,.6); }
-  body.dark .cal-panel-body .row { border-bottom-color:rgba(255,158,194,.22); }
-  body.dark .cal-ev .ev-title { color:#ffd9e8; }
-  body.dark .cal-ev { border-bottom-color:#3a2f3d; }
-  body.dark .cal-agenda .ag-day { background:#2d2430; border-color:#3a2f3d; }
-  body.dark .cal-agenda .ag-info { color:#ffd9e8; }
-  body.dark .cal-nav, body.dark .cal-today { background:#2d2430; border-color:#4a3d4e; color:#ff9ec2; }
-  body.dark .cal-views { background:#3a2f3d; }
-  body.dark .cal-v { color:#ff9ec2; }
+  @media (prefers-color-scheme: dark) {
+    .cal-panel { background:rgba(120,30,70,.32); backdrop-filter:blur(6px) saturate(1.4); -webkit-backdrop-filter:blur(6px) saturate(1.4); border-color:rgba(255,158,194,.4); box-shadow:0 8px 32px rgba(0,0,0,.4); }
+    .cal-panel-body .sec-t { color:#ff9ec2; }
+    .cal-panel-body .row .tx { color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.6); }
+    .cal-panel-body .row .tx small { color:#ffc9dd; text-shadow:0 1px 3px rgba(0,0,0,.6); }
+    .cal-panel-body .row { border-bottom-color:rgba(255,158,194,.22); }
+    .cal-ev .ev-title { color:#ffd9e8; }
+    .cal-ev { border-bottom-color:#3a2f3d; }
+    .cal-agenda .ag-day { background:#2d2430; border-color:#3a2f3d; }
+    .cal-agenda .ag-info { color:#ffd9e8; }
+    .cal-nav, .cal-today { background:#2d2430; border-color:#4a3d4e; color:#ff9ec2; }
+    .cal-views { background:#3a2f3d; }
+    .cal-v { color:#ff9ec2; }
+  }
   /* Mobile : agenda par défaut, cibles ≥44px */
   @media (max-width:480px) {
     .cal .d { height:48px; }
@@ -429,35 +423,26 @@
   }
   .pick-pop.open { display:block; }
   .pick-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-  .pick-title { font-size:13px; font-weight:800; color:var(--accent); letter-spacing:.2px; }
+  .pick-title { font-size:13px; font-weight:800; color:#d6336c; letter-spacing:.2px; }
   .pick-nav {
-    width:28px; height:28px; border-radius:50%; border:1px solid var(--pink);
-    background: color-mix(in srgb, var(--card) 60%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    color:var(--accent); font-size:16px; font-weight:700; cursor:pointer; line-height:1;
+    width:28px; height:28px; border-radius:50%; border:1px solid rgba(214,51,108,.4);
+    background: rgba(255,255,255,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    color:#d6336c; font-size:16px; font-weight:700; cursor:pointer; line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
-  body.dark .pick-nav { background: rgba(255,255,255,.14); border-color: rgba(255,158,194,.5); }
-  .pick-nav:hover { background: var(--line); }
+  .pick-nav:hover { background: rgba(255,227,236,.8); }
   .pick-nav.pick-clear { font-size:11px; }
   .pick-dow { display:grid; grid-template-columns: repeat(7, 1fr); gap:2px; margin-bottom:4px; }
-  .pick-dow span { text-align:center; font-size:10px; font-weight:800; color:var(--pink); padding:3px 0; }
+  .pick-dow span { text-align:center; font-size:10px; font-weight:800; color:#d4578a; padding:3px 0; }
   .pick-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:2px; }
   .pick-grid button {
-    border:none; border-radius:10px; padding:7px 0;
-    font: inherit; font-size:12.5px; font-weight:800; color:#fff; cursor:pointer; text-align:center;
-    background: rgba(214,51,108,.28); text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    border:none; background:transparent; border-radius:10px; padding:7px 0;
+    font: inherit; font-size:12.5px; font-weight:700; color:#333; cursor:pointer; text-align:center;
   }
-  .pick-grid button:hover { background: rgba(214,51,108,.45); }
-  .pick-grid button.other { background: rgba(214,51,108,.10); color: rgba(255,255,255,.65); font-weight:600; text-shadow:none; }
-  .pick-grid button.today { background: rgba(255,107,157,.55); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.55); }
+  .pick-grid button:hover { background:#ffe3ec; }
+  .pick-grid button.other { color:#c9a3b4; font-weight:500; }
+  .pick-grid button.today { color:#d6336c; }
   .pick-grid button.sel { background:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3), 0 3px 10px rgba(20,184,166,.4); }
-  /* ── Popup toujours centré plein écran (jamais coupé, tous viewports) ── */
-  #pick-time-pop, #pick-date-pop {
-    position: fixed; left:50%; top:50%; transform:translate(-50%,-50%);
-    width: min(320px, calc(100vw - 32px)); max-width:none; margin:0;
-    box-shadow: 0 24px 60px rgba(214,51,108,.35), 0 4px 16px rgba(0,0,0,.25);
-  }
-  #pick-time-pop .wheel { height: 140px; }
   .pick-time { display:grid; grid-template-columns: repeat(4, 1fr); gap:4px; max-height:180px; overflow-y:auto; }
   .pick-time button {
     border:1px solid rgba(214,51,108,.3); background: rgba(255,255,255,.5);
@@ -467,31 +452,19 @@
   }
   .pick-time button:hover { background: rgba(255,227,236,.75); }
   .pick-time button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
-  /* Roue style alarme Apple : heures | minutes, sélection centrale */
-  .wheel-box { position:relative; display:flex; gap:8px; padding:6px 0; }
-  .wheel {
-    flex:1; height:150px; overflow-y:auto; scroll-snap-type:y mandatory;
-    -webkit-overflow-scrolling:touch; text-align:center;
-    scrollbar-width:none; -ms-overflow-style:none;
-    background: rgba(255,255,255,.14); border-radius:16px;
-    border: 1px solid rgba(255,255,255,.28);
-    mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%);
+  /* Sélecteur heure précise : rangée heures + rangée minutes */
+  .pick-ttl { text-align:center; font-size:26px; font-weight:800; color:#d6336c;
+    font-variant-numeric: tabular-nums; padding:2px 0 8px; letter-spacing:1px; }
+  .pick-hours, .pick-mins { display:grid; grid-template-columns: repeat(6, 1fr); gap:4px; margin-bottom:6px; }
+  .pick-mins { grid-template-columns: repeat(10, 1fr); }
+  .pick-hours button, .pick-mins button {
+    border:1px solid rgba(214,51,108,.3); background: rgba(255,255,255,.5);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border-radius:999px; padding:7px 0;
+    font: inherit; font-size:13px; font-weight:700; color:#333; cursor:pointer; text-align:center;
   }
-  .wheel::-webkit-scrollbar { display:none; }
-  .wheel-opt {
-    height:38px; line-height:38px; scroll-snap-align:center;
-    font-size:17px; font-weight:600; color:var(--dark); cursor:pointer;
-    font-variant-numeric:tabular-nums; user-select:none; white-space:nowrap;
-  }
-  .wheel-opt.sel { color:#fff; font-weight:800; text-shadow: 0 1px 3px rgba(0,0,0,.45); }
-  .wheel-sel {
-    position:absolute; left:8px; right:8px; top:50%; height:38px; transform:translateY(-50%);
-    background: linear-gradient(135deg, rgba(214,51,108,.92), rgba(255,107,157,.85));
-    border-radius:12px; pointer-events:none;
-    box-shadow: 0 0 0 1px rgba(255,255,255,.45), 0 4px 14px rgba(214,51,108,.5);
-  }
-  .pick-nav.pick-ok { background:#14b8a6; border-color:#14b8a6; color:#fff; font-size:14px; }
+  .pick-hours button:hover, .pick-mins button:hover { background: rgba(255,227,236,.75); }
+  .pick-hours button.sel, .pick-mins button.sel { background:#14b8a6; border-color:#14b8a6; color:#fff; box-shadow:0 0 0 2px rgba(20,184,166,.3); }
   .rem-urgent {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid #f1a9c0;
     background: #fff5f8; font-size: 16px; cursor: pointer; transition: all .15s ease; flex:none;
@@ -707,7 +680,6 @@
   </div>
   <div class="actions">
     <button class="btn" id="lang-btn">EN</button>
-    <button class="btn" id="theme-btn" title="🌙/☀️">🌙</button>
     <button class="btn" id="logout-btn" title="⏻">⏻</button>
   </div>
   <div class="tabs">
@@ -802,16 +774,11 @@
             <div class="pick-pop" id="pick-time-pop" role="dialog" aria-label="Time picker">
               <div class="pick-head">
                 <span class="pick-title" id="pt-title"></span>
-                <span style="display:flex;gap:6px;align-items:center">
-                  <button type="button" class="pick-nav pick-ok" id="pt-ok" aria-label="OK time" title="OK">✓</button>
-                  <button type="button" class="pick-nav pick-clear" id="pt-clear" aria-label="Clear time">✕</button>
-                </span>
+                <button type="button" class="pick-nav pick-clear" id="pt-clear" aria-label="Clear time">✕</button>
               </div>
-              <div class="wheel-box">
-                <div class="wheel" id="pt-hours" aria-label="Hours"></div>
-                <div class="wheel" id="pt-mins" aria-label="Minutes"></div>
-                <div class="wheel-sel" aria-hidden="true"></div>
-              </div>
+              <div class="pick-ttl" id="pt-value">--:--</div>
+              <div class="pick-hours" id="pt-hours"></div>
+              <div class="pick-mins" id="pt-mins"></div>
             </div>
           </div>
           <button type="button" class="rem-urgent" id="rem-loc" aria-pressed="false" title="Location">📍</button>
@@ -1135,24 +1102,6 @@ document.getElementById("lang-btn").addEventListener("click", () => {
   if (typeof remRender === "function") remRender();
   if (typeof window.__fillLabels === "function") { window.__fillLabels(); window.renderQuickRem(); window.renderTagsRem(); }
 });
-
-/* ═════════ Theme dark/light ═════════ */
-(function () {
-  const btn = document.getElementById("theme-btn");
-  const KEY = "papapig-theme";
-  function apply(theme) {
-    document.body.classList.toggle("dark", theme === "dark");
-    btn.textContent = theme === "dark" ? "☀️" : "🌙";
-    try { localStorage.setItem(KEY, theme); } catch (e) {}
-  }
-  let saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (e) {}
-  const darkAuto = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  apply(saved || (darkAuto ? "dark" : "light"));
-  btn.addEventListener("click", () => {
-    apply(document.body.classList.contains("dark") ? "light" : "dark");
-  });
-})();
 
 /* ═════════ Data ═════════ */
 function init() {
@@ -1494,18 +1443,41 @@ function remSetup() {
       fillLabels();
     }));
   }
+  const ptValue = document.getElementById("pt-value");
   const ptHours = document.getElementById("pt-hours");
   const ptMins = document.getElementById("pt-mins");
   let tSelH = null, tSelM = null;
-  const WHEEL_H = 38;
-  function wheelScrollTo(w, val) {
-    w.scrollTop = Math.max(0, val * WHEEL_H);
+  function renderTimePop() {
+    ptTitle.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time";
+    const [curH, curM] = (timeEl.value || "--:--").split(":");
+    tSelH = curH !== "--" ? curH : null;
+    tSelM = curM !== undefined && curM !== "--" ? curM : null;
+    const hours = [];
+    for (let h = 0; h < 24; h++) hours.push(String(h).padStart(2, "0"));
+    const mins = [];
+    for (let m = 0; m < 60; m++) mins.push(String(m).padStart(2, "0"));
+    ptHours.innerHTML = hours.map(h =>
+      "<button type='button' data-v='" + h + "' class='" + (tSelH === h ? "sel" : "") + "'>" + h + "</button>"
+    ).join("");
+    ptMins.innerHTML = mins.map(m =>
+      "<button type='button' data-v='" + m + "' class='" + (tSelM === m ? "sel" : "") + "'>" + m + "</button>"
+    ).join("");
+    updatePtValue();
+    ptHours.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      tSelH = b.dataset.v;
+      ptHours.querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+      updatePtValue();
+      if (tSelM) commitTime();
+    }));
+    ptMins.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      tSelM = b.dataset.v;
+      ptMins.querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+      updatePtValue();
+      if (tSelH) commitTime();
+    }));
   }
-  function wheelCurrent(w) {
-    return Math.min(Math.max(Math.round(w.scrollTop / WHEEL_H), 0), w.children.length - 1);
-  }
-  function wheelSel(w, idx) {
-    [...w.children].forEach((c, i) => c.classList.toggle("sel", i === idx));
+  function updatePtValue() {
+    ptValue.textContent = (tSelH || "--") + ":" + (tSelM || "--");
   }
   function commitTime() {
     timeEl.value = tSelH + ":" + tSelM;
@@ -1513,64 +1485,6 @@ function remSetup() {
     timePop.classList.remove("open");
     fillLabels();
   }
-  function renderTimePop() {
-    ptTitle.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time";
-    const [curH, curM] = (timeEl.value || "--:--").split(":");
-    tSelH = curH !== "--" ? curH : null;
-    tSelM = curM !== undefined && curM !== "--" ? curM : null;
-    ptHours.innerHTML = "";
-    ptMins.innerHTML = "";
-    for (let h = 0; h < 24; h++) {
-      const b = document.createElement("div");
-      b.className = "wheel-opt"; b.textContent = String(h).padStart(2, "0");
-      ptHours.appendChild(b);
-    }
-    for (let m = 0; m < 60; m++) {
-      const b = document.createElement("div");
-      b.className = "wheel-opt"; b.textContent = String(m).padStart(2, "0");
-      ptMins.appendChild(b);
-    }
-    // padding haut/bas pour que la 1re et la dernière valeur puissent se centrer
-    ptHours.style.paddingTop = ptHours.style.paddingBottom = (140 - WHEEL_H) / 2 + "px";
-    ptMins.style.paddingTop = ptMins.style.paddingBottom = (140 - WHEEL_H) / 2 + "px";
-    const hi = tSelH !== null ? parseInt(tSelH, 10) : 12;
-    const mi = tSelM !== null ? parseInt(tSelM, 10) : 0;
-    // scroll APRÈS ouverture (display:block) sinon scrollTop reste à 0
-    setTimeout(() => {
-      wheelScrollTo(ptHours, hi);
-      wheelScrollTo(ptMins, mi);
-      requestAnimationFrame(() => {
-        const h0 = wheelCurrent(ptHours), m0 = wheelCurrent(ptMins);
-        tSelH = String(h0).padStart(2, "0"); tSelM = String(m0).padStart(2, "0");
-        wheelSel(ptHours, h0); wheelSel(ptMins, m0);
-      });
-    }, 30);
-  }
-  function wireWheel(w, kind) {
-    // au scroll : on met à jour la sélection, on NE ferme PAS (validation par ✓)
-    w.addEventListener("scroll", () => {
-      const i = wheelCurrent(w);
-      wheelSel(w, i);
-      if (kind === "h") tSelH = String(i).padStart(2, "0");
-      else tSelM = String(i).padStart(2, "0");
-    }, { passive: true });
-    // clic sur une valeur : scroll doux vers elle, on ne ferme pas
-    w.addEventListener("click", e => {
-      const c = e.target.closest(".wheel-opt");
-      if (!c) return;
-      const i = [...w.children].indexOf(c);
-      wheelScrollTo(w, i);
-      if (kind === "h") tSelH = String(i).padStart(2, "0");
-      else tSelM = String(i).padStart(2, "0");
-      wheelSel(w, i);
-    });
-  }
-  wireWheel(ptHours, "h");
-  wireWheel(ptMins, "m");
-  // ✓ OK : valide et ferme
-  document.getElementById("pt-ok").addEventListener("click", () => {
-    if (tSelH !== null && tSelM !== null) commitTime();
-  });
   function closePops() { datePop.classList.remove("open"); timePop.classList.remove("open"); }
   dateBtn.addEventListener("click", () => {
     timePop.classList.remove("open");
@@ -1847,7 +1761,7 @@ async function loadEvents() {
     CAL.events = (Array.isArray(data) ? data : []).map(e => ({
       id: e.id, title: e.title, date: e.date, category: e.category || "autres",
       start_time: (e.start_time || "").slice(0, 5), end_time: (e.end_time || "").slice(0, 5),
-      created_via: e.created_via || "", location: e.location || "", note: e.note || ""
+      created_via: e.created_via || ""
     }));
   } catch (e) {
     try {
@@ -2149,7 +2063,6 @@ function calOpenDay(ds) {
       "<div class='row'>" +
         "<span class='ico'>" + catIcon(e.category) + "</span>" +
         "<div class='tx'>" + e.title + (e.created_via === "telegram" ? " ✈️" : "") +
-          (e.note ? "<small style='color:#8a8590;font-weight:400'>📝 " + e.note + "</small>" : "") +
           "<small>" + catName(e.category, LANG) + (e.start_time ? " · " + remFmtTimeBkk(e.date, e.start_time) + (e.end_time ? "–" + remFmtTimeBkk(e.date, e.end_time) : "") : "") + "</small>" +
         "</div>" +
         "<button type='button' class='cal-ev-del' data-id='" + e.id + "' data-date='" + ds + "' title='" +
