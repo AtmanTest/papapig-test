@@ -897,7 +897,7 @@
           <button type="button" class="rem-loc-ok" id="rem-loc-ok">✓</button>
         </div>
         <div class="rem-offset">
-          <div class="rem-offset-lbl" data-i18n="rem_off_lbl">🔔 เตือนล่วงหน้า</div>
+          <div class="rem-offset-lbl" data-i18n="rem_off_lbl">➕ เพิ่มการเตือนอื่นเพิ่มเติมถ้าต้องการ</div>
           <div class="rem-offset-row">
             <div class="rem-offset-opts" id="rem-offset-opts"></div>
             <button class="rem-add-btn" id="rem-add-btn" aria-label="Validate">
@@ -1020,9 +1020,9 @@ const TR = {
     rem_hint: "เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕",
     rem_loc_add: "📍 เพิ่มสถานที่", rem_loc_ok: "📍 เปิดแผนที่เพื่อเลือกสถานที่", rem_loc_err: "ไม่สามารถหาตำแหน่งได้ — เปิดลิงก์แผนที่เองได้",
     rem_loc_ph: "ลิงก์แผนที่หรือที่อยู่ (ไม่บังคับ)…",
-    rem_pick_date: "เพิ่มวันที่", rem_pick_time: "เลือกเวลา",
+    rem_pick_date: "เพิ่มวันที่", rem_pick_time: "เลือกเวลาเตือน",
     rem_validate: "ยืนยัน",
-    rem_ph: "เตือนฉันเรื่อง…", rem_body_ph: "รายละเอียด (ไม่บังคับ)…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "🔔 เตือนล่วงหน้า",
+    rem_ph: "เตือนฉันเรื่อง…", rem_body_ph: "รายละเอียด (ไม่บังคับ)…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "➕ เพิ่มการเตือนอื่นเพิ่มเติมถ้าต้องการ",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
     rem_per_morning: "เช้า", rem_per_noon: "เที่ยง", rem_per_afternoon: "บ่าย", rem_per_evening: "เย็น", rem_per_night: "กลางคืน",
@@ -1061,9 +1061,9 @@ const TR = {
     rem_hint: "Write what you want to be reminded of, pick a date & time, then click + to send it to papapig's WhatsApp 💕",
     rem_loc_add: "📍 Add a place", rem_loc_ok: "📍 Opening maps to pick a place", rem_loc_err: "Location unavailable — open the map link yourself",
     rem_loc_ph: "Map link or address (optional)…",
-    rem_pick_date: "Add a date", rem_pick_time: "Choose a time",
+    rem_pick_date: "Add a date", rem_pick_time: "Choose a remind time",
     rem_validate: "Validate",
-    rem_ph: "Put a title to your reminder", rem_body_ph: "Details (optional)…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "🔔 Remind me before",
+    rem_ph: "Put a title to your reminder", rem_body_ph: "Details (optional)…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "➕ Add other reminders if needed",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
     rem_per_morning: "Morning", rem_per_noon: "Noon", rem_per_afternoon: "Afternoon", rem_per_evening: "Evening", rem_per_night: "Night",
@@ -1618,7 +1618,7 @@ function remSetup() {
     fillLabels();
   }
   function renderTimePop() {
-    ptTitle.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time";
+    ptTitle.textContent = LANG === "th" ? "เลือกเวลาเตือน" : "Choose a remind time";
     const [curH, curM] = (timeEl.value || "--:--").split(":");
     tSelH = curH !== "--" ? String(parseInt(curH, 10) || 0).padStart(2, "0") : "12";
     tSelM = curM !== undefined && curM !== "--" ? String(parseInt(curM, 10) || 0).padStart(2, "0") : "00";
@@ -1808,7 +1808,7 @@ function remSetup() {
     if (dateEl.value) { dateLbl.textContent = appleDate(dateEl.value); dateBtn.classList.add("filled"); }
     else { dateLbl.textContent = LANG === "th" ? "เพิ่มวันที่" : "Add a date"; dateBtn.classList.remove("filled"); }
     if (timeEl.value) { timeLbl.textContent = appleTime(timeEl.value); timeBtn.classList.add("filled"); }
-    else { timeLbl.textContent = LANG === "th" ? "เลือกเวลา" : "Choose a time"; timeBtn.classList.remove("filled"); }
+    else { timeLbl.textContent = LANG === "th" ? "เลือกเวลาเตือน" : "Choose a remind time"; timeBtn.classList.remove("filled"); }
   };
   window.__fillLabels = fillLabels;
   fillLabels();
@@ -2445,6 +2445,7 @@ document.querySelectorAll("#login-langs button").forEach(b =>
     applyLang();
     showQuote();
     fillTestimonials();
+    if (typeof window.__fillLabels === "function") window.__fillLabels();
   })); 
 
 /* ═════════ Panneau latéral événements ═════════ */
