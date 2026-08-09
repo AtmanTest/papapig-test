@@ -412,13 +412,13 @@
   .rem-pick-ic { font-size:14px; }
   .rem-pick-lbl { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .rem-pick-ip { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
-  /* Popover date/heure — glass rose : très transparent, blur fort */
+  /* Popover date/heure — glass rose : on voit le fond à travers, flouté */
   .pick-pop {
     position:absolute; z-index:60; margin-top:6px; min-width: 260px;
-    background: linear-gradient(135deg, rgba(255,214,229,.42), rgba(255,232,240,.36));
-    backdrop-filter: blur(22px) saturate(1.5); -webkit-backdrop-filter: blur(22px) saturate(1.5);
-    border: 1.5px solid rgba(214,51,108,.55); border-radius: 18px;
-    box-shadow: 0 12px 32px rgba(214,51,108,.22), 0 2px 8px rgba(0,0,0,.08), inset 0 0 0 1px rgba(255,255,255,.35);
+    background: linear-gradient(135deg, rgba(255,214,229,.22), rgba(255,240,246,.16));
+    backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border: 1.5px solid rgba(214,51,108,.5); border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(214,51,108,.25), 0 2px 8px rgba(0,0,0,.1), inset 0 0 0 1px rgba(255,255,255,.45);
     padding: 10px; display:none;
   }
   .pick-pop.open { display:block; }
@@ -1717,6 +1717,11 @@ function remSetup() {
     if (b) payload = { title: txt, date: b.date, start_time: b.time };
     payload.remind_offsets = [...offsetSel].sort((a, z) => z - a);
     if (urgent) payload.priority = "urgent";
+    /* lieu : committe le champ ouvert si l'utilisateur a tapé sans cliquer ✓ / Entrée */
+    if (!loc && locField && !locField.classList.contains("hidden")) {
+      const v = locField.value.trim();
+      if (v) loc = v.startsWith("http") ? v : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(v);
+    }
     if (loc) payload.location = loc;
     try {
       const created = await ReminderSyncService.createReminder(payload);
