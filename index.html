@@ -624,6 +624,8 @@
     box-shadow: 0 0 0 3px rgba(31,138,95,.25); }
   .rem-item .rem-body { flex:1; min-width:0; }
   .rem-item .rem-txt { font-size: 14px; font-weight: 700; word-break: break-word; }
+  .rem-item .rem-note { font-size: 12px; color:#8a8590; font-weight:400; margin-top:2px; word-break: break-word; }
+  .rem-item.done .rem-note { text-decoration: line-through; }
   .rem-item.done .rem-txt { text-decoration: line-through; }
   .rem-item .rem-meta { font-size: 10.5px; color:#8a8590; margin-top: 2px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .rem-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:9.5px; font-weight:800; letter-spacing:.3px; }
@@ -1401,7 +1403,7 @@ const ReminderSyncService = {
     return r.status === 204 ? null : r.json();
   },
   async fetchAll() {
-    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via,location&profile=eq.penguinpig&order=date.asc");
+    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via,location,note&profile=eq.penguinpig&order=date.asc");
     return Array.isArray(d) ? d : [];
   },
   createReminder(payload) {
@@ -1472,6 +1474,7 @@ function remRender() {
     return "<div class='rem-item" + (isDone ? " done" : "") + "' data-rid='" + r.id + "'>" +
       "<button class='rem-chk' data-done='" + r.id + "' aria-label='" + t("rem_done") + "'>" + chk + "</button>" +
       "<div class='rem-body'><div class='rem-txt'>" + (r.is_private ? "🔒 " : "") + _tTxt(r.title) + "</div>" +
+      (r.note ? "<div class='rem-note'>📝 " + _tTxt(r.note) + "</div>" : "") +
       "<div class='rem-meta'>" + badges.join("") + meta.join(" · ") + "</div></div>" + undo + "</div>";
   }
   function periodOf(hm) {
