@@ -514,8 +514,9 @@
     color: #fff; font-size: 15px; cursor: pointer; flex:none;
   }
   .rem-offset { margin-top: 8px; }
-  .rem-offset-lbl { font-size: 11px; color:#8a8590; }
-  .rem-offset-opts { display:flex; flex-wrap:wrap; gap:6px; }
+  .rem-offset-lbl { font-size: 11px; color:#8a8590; margin-bottom: 6px; }
+  .rem-offset-row { display:flex; align-items:center; gap:8px; }
+  .rem-offset-row .rem-offset-opts { flex:1; min-width:0; display:flex; flex-wrap:wrap; gap:6px; }
   .rem-offset-opts button {
     font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 999px;
     border: 1px solid var(--pink); background: transparent; color: var(--pink);
@@ -864,13 +865,13 @@
           <button type="button" class="rem-loc-ok" id="rem-loc-ok">✓</button>
         </div>
         <div class="rem-offset">
-          <div class="rem-offset-head">
-            <div class="rem-offset-lbl" data-i18n="rem_off_lbl">🔔 เตือนล่วงหน้า</div>
+          <div class="rem-offset-lbl" data-i18n="rem_off_lbl">🔔 เตือนล่วงหน้า</div>
+          <div class="rem-offset-row">
+            <div class="rem-offset-opts" id="rem-offset-opts"></div>
             <button class="rem-add-btn" id="rem-add-btn" aria-label="Validate">
               <span class="rem-add-ic">✓</span><span class="rem-add-txt" data-i18n="rem_validate">ยืนยัน</span>
             </button>
           </div>
-          <div class="rem-offset-opts" id="rem-offset-opts"></div>
         </div>
         <div class="rem-list" id="rem-list" aria-live="polite"></div>
       </div>
