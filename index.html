@@ -1184,7 +1184,7 @@ window.addEventListener("mousemove", e => {
 }, { passive: true });
 document.getElementById("logout-btn").addEventListener("click", () => {
   sessionStorage.removeItem("pp_auth");
-  localStorage.removeItem(PWD_KEY);
+  sessionStorage.setItem("pp_logout", "1"); // verrouille mais garde le pwd mémorisé
   location.reload();
 });
 function showApp() {
@@ -1198,7 +1198,11 @@ else {
   if (savedPwd) {
     document.getElementById("pwd").value = savedPwd;
     document.getElementById("rem-pwd").checked = true;
-    tryLogin(); // auto-login silencieux
+    if (sessionStorage.getItem("pp_logout") === "1") {
+      sessionStorage.removeItem("pp_logout"); // verrouillé : pré-rempli, un clic suffit
+    } else {
+      tryLogin(); // auto-login silencieux
+    }
   }
 }
 
