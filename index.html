@@ -1473,10 +1473,12 @@ function remRender() {
     html.push(futureItems.map(itemHtml).join(""));
   }
   if (doneList.length) {
-    html.push("<img class='rem-done-gif' src='images/done-peppa.gif' alt='' aria-hidden='true'>");
     html.push("<div class='rem-sec rem-sec-done' data-done-toggle>"
       + t("rem_done") + " (" + doneList.length + ") <span class='rem-done-chev'>" + (doneHidden ? "▶" : "▼") + "</span></div>");
-    if (!doneHidden) html.push(doneList.map(itemHtml).join(""));
+    if (!doneHidden) {
+      html.push("<img class='rem-done-gif' src='images/done-peppa.gif' alt='' aria-hidden='true'>");
+      html.push(doneList.map(itemHtml).join(""));
+    }
   }
   list.innerHTML = html.join("");
   const doneToggle = list.querySelector("[data-done-toggle]");
