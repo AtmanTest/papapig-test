@@ -191,8 +191,12 @@
   .card h3 { font-size: 12px; text-transform: uppercase; letter-spacing:1.2px;
              color:#b06a86; margin-bottom: 10px; font-weight: 800; }
   .rem-card { border: 1.5px solid #f3a8c4; box-shadow: 0 3px 14px rgba(255,107,157,.14); }
-  .rem-card .rem-title { font-size: 15px; font-weight: 900; letter-spacing: .6px;
-             color: #d6336c; margin-bottom: 4px;
+  .rem-card .rem-title { font-size: 22px; font-weight: 900; letter-spacing: 1px;
+             color: #d6336c; margin-bottom: 6px;
+             background: linear-gradient(135deg, #d6336c, #ff6b9d); -webkit-background-clip: text;
+             background-clip: text; -webkit-text-fill-color: transparent; }
+  .card .cal-big-title { font-size: 22px; font-weight: 900; letter-spacing: 1px;
+             color: #d6336c; margin-bottom: 10px;
              background: linear-gradient(135deg, #d6336c, #ff6b9d); -webkit-background-clip: text;
              background-clip: text; -webkit-text-fill-color: transparent; }
   .card .big { font-size: 34px; font-weight: 800; line-height:1.15; }
@@ -800,7 +804,7 @@
         <div class="bar"><div id="j-energy-bar" style="width:50%"></div></div>
       </div>
       <div class="card full cal-card">
-        <h3 data-i18n="joy_cal" style="margin-bottom:8px">📅 Calendar — Mood · Weather · Food · Special Events</h3>
+        <h3 class="cal-big-title" data-i18n="joy_cal">📅 Calendar — Mood · Weather · Food · Special Events</h3>
         <div class="cal-toolbar">
           <div class="cal-title">
             <button class="cal-nav" id="cal-prev" aria-label="Previous month">◀</button>
@@ -1051,9 +1055,9 @@ const TR = {
   en: {
     login_btn: "Enter", pwd_ph: "enter your password here", rem_pwd: "🔒 Remember me",
     app_title: "Papapig AI — Real Intelligence", tab_joy: "Joy's Life", tab_papapig: "Papapig's Life", tab_tech: "Neural AI Brain",
-    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 Calendar — Mood · Weather · Food · Special Events",
+    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 CALENDAR — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
-    rem_title: "🔔 Reminder", rem_sub: "I keep the thread for you.",
+    rem_title: "🔔 REMINDER", rem_sub: "I keep the thread for you.",
     rem_hint: "Write what you want to be reminded of, pick a date & time, then click + to send it to papapig's WhatsApp 💕",
     rem_loc_add: "📍 Add a place", rem_loc_ok: "📍 Opening maps to pick a place", rem_loc_err: "Location unavailable — open the map link yourself",
     rem_loc_ph: "Map link or address (optional)…",
