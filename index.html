@@ -1059,8 +1059,10 @@ const TR = {
     rem_ph: "เตือนฉันเรื่อง…", rem_body_ph: "รายละเอียด (ไม่บังคับ)…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "➕ เพิ่มการเตือนอื่นเพิ่มเติมถ้าต้องการ",
     rem_inf_lbl: "♾️ เตือนแบบไม่มีวันสิ้นสุด (ทุกวัน)", rem_err_time: "⚠️ เลือกเวลาเตือนก่อน (🕐) — ไม่งั้นจะไม่มีการแจ้งเตือน",
     rem_cf_ttl: "ยืนยันการทำเครื่องหมาย ✓", rem_cf_txt: "คุณทำรายการนี้เสร็จแล้ว ใช่ไหม?",
-    rem_cf_inf: "นี่คือการเตือนแบบรายวัน (ทุกวัน) คุณแน่ใจว่าจะเสร็จแล้ว? คุณจะไม่ได้รับข้อความจากพ่อหมูอีกต่อไป แต่กด Undo เพื่อคืนค่าได้เสมอ",
+    rem_cf_inf: "นี่คือการเตือนแบบรายวัน (ทุกวัน) คุณแน่ใจว่าจะเสร็จแล้ว? คุณจะไม่ได้รับข้อความจากพ่อหมูอีกต่อไป แต่กด Undo เพื่อคืนค่าได้เสมอ หรือหยุดจาก WhatsApp ได้ด้วย (stop) และจากเว็บไซต์นี้ได้เช่นกัน",
     rem_cf_yes: "ใช่, เสร็จแล้ว", rem_cf_no: "ยกเลิก", rem_cf_undo: "กด Undo เพื่อคืนค่า",
+    rem_cr_ttl: "สร้างการเตือนแล้ว ✅", rem_cr_ok: "ตกลง", rem_cr_wa: "📲 ข้อความยืนยัน WhatsApp อาจใช้เวลาสักครู่",
+    rem_cr_inf: "♾️ ทุกวัน (ไม่มีวันสิ้นสุด)", rem_cr_stop_wa: "🛑 หยุดจาก WhatsApp ได้ด้วย: stop {id}",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
     rem_per_morning: "เช้า", rem_per_noon: "เที่ยง", rem_per_afternoon: "บ่าย", rem_per_evening: "เย็น", rem_per_night: "กลางคืน",
@@ -1104,8 +1106,10 @@ const TR = {
     rem_ph: "Put a title to your reminder", rem_body_ph: "Details (optional)…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "➕ Add other reminders if needed",
     rem_inf_lbl: "♾️ Endless reminder (every day)", rem_err_time: "⚠️ Choose a remind time first (🕐) — otherwise no notification will be sent",
     rem_cf_ttl: "Confirm completion ✓", rem_cf_txt: "Did you really finish this task?",
-    rem_cf_inf: "This is a daily (endless) reminder. Are you sure you want to complete it? You will no longer receive Papa Pig's messages — but you can always tap Undo to bring it back.",
+    rem_cf_inf: "This is a daily (endless) reminder. Are you sure you want to complete it? You will no longer receive Papa Pig's messages — but you can always tap Undo to bring it back, or stop it anytime from WhatsApp (stop) or right here on the site.",
     rem_cf_yes: "Yes, done", rem_cf_no: "Cancel", rem_cf_undo: "Tap Undo to restore it",
+    rem_cr_ttl: "Reminder created ✅", rem_cr_ok: "OK", rem_cr_wa: "📲 The WhatsApp confirmation may take a few minutes to arrive",
+    rem_cr_inf: "♾️ Every day (endless)", rem_cr_stop_wa: "🛑 Stop it from WhatsApp too: stop {id}",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
     rem_per_morning: "Morning", rem_per_noon: "Noon", rem_per_afternoon: "Afternoon", rem_per_evening: "Evening", rem_per_night: "Night",
@@ -1501,6 +1505,9 @@ function askConfirm(id, isInf, title) {
   const tt = document.getElementById("rem-cf-title");
   const tx = document.getElementById("rem-cf-txt");
   const undo = document.getElementById("rem-cf-undo");
+  const noBtn = document.getElementById("rem-cf-no");
+  const yesBtn = document.getElementById("rem-cf-yes");
+  noBtn.style.display = "";
   box.classList.toggle("cf-inf", !!isInf);
   ic.textContent = isInf ? "♾️" : "✅";
   tt.textContent = t(isInf ? "rem_cf_ttl" : "rem_cf_ttl");
@@ -1532,6 +1539,48 @@ function askConfirm(id, isInf, title) {
   document.getElementById("rem-cf-yes").onclick = () => finish(true);
   document.getElementById("rem-cf-no").onclick = () => finish(false);
   ov.onclick = e => { if (e.target === ov) finish(false); };
+}
+/* ── Popup de confirmation de création ✓ ── */
+function showCreated(ev) {
+  const ov = document.getElementById("rem-confirm");
+  if (!ov) return;
+  const box = ov.querySelector(".rem-confirm-box");
+  const ic = document.getElementById("rem-cf-ic");
+  const tt = document.getElementById("rem-cf-title");
+  const tx = document.getElementById("rem-cf-txt");
+  const undo = document.getElementById("rem-cf-undo");
+  const noBtn = document.getElementById("rem-cf-no");
+  const yesBtn = document.getElementById("rem-cf-yes");
+  box.classList.remove("cf-inf");
+  ic.textContent = "✅";
+  tt.textContent = t("rem_cr_ttl");
+  const T = LANG === "th";
+  const hm = ev.start_time ? ev.start_time.slice(0, 5) : (T ? "ไม่ระบุ" : "—");
+  let lines = [];
+  lines.push("📌 " + ev.title);
+  if (ev.date) lines.push("📅 " + ev.date);
+  if (ev.start_time) lines.push("⏰ " + hm);
+  if (ev.note) lines.push("📝 " + ev.note);
+  const isInf = Array.isArray(ev.remind_offsets) && ev.remind_offsets.some(o => String(o).toLowerCase() === "inf");
+  if (isInf) lines.push(t("rem_cr_inf"));
+  else if (Array.isArray(ev.remind_offsets) && ev.remind_offsets.length) {
+    const OF = {5: "5 min", 15: "15 min", 60: "1 h", 1440: "1 j"};
+    const lbls = ev.remind_offsets.map(m => OF[m] || (m + " min")).filter(Boolean);
+    if (lbls.length) lines.push("⏱ " + (T ? "เตือนล่วงหน้า: " : "Remind before: ") + lbls.join(" · "));
+  }
+  tx.innerHTML = lines.join("<br>");
+  undo.textContent = t("rem_cr_wa");
+  noBtn.style.display = "none";
+  yesBtn.textContent = t("rem_cr_ok");
+  ov.hidden = false;
+  const close = () => {
+    ov.hidden = true;
+    yesBtn.onclick = null;
+    noBtn.style.display = "";
+    noBtn.onclick = null;
+  };
+  yesBtn.onclick = close;
+  ov.onclick = e => { if (e.target === ov) close(); };
 }
 function remRender() {
   const list = document.getElementById("rem-list");
@@ -1996,7 +2045,8 @@ function remSetup() {
       }
       const badge = document.getElementById("rem-added");
       const badgeTxt = document.getElementById("rem-added-txt");
-      if (badge) {
+      if (row && row.id) showCreated(row);
+      else if (badge) {
         badgeTxt.textContent = (LANG === "th" ? "เตือน \"" : "Remind \"") + txt + (LANG === "th" ? "\" แล้ว" : "\" Created");
         badge.classList.remove("show");
         void badge.offsetWidth;
