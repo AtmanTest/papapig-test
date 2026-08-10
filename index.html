@@ -197,8 +197,12 @@
              background-clip: text; -webkit-text-fill-color: transparent; }
   .card .cal-big-title { font-size: 22px; font-weight: 900; letter-spacing: 1px;
              color: #d6336c; margin-bottom: 10px;
+             display:flex; align-items:center; gap:8px; }
+  .card .cal-big-title span {
              background: linear-gradient(135deg, #d6336c, #ff6b9d); -webkit-background-clip: text;
              background-clip: text; -webkit-text-fill-color: transparent; }
+  .cal-title-icon { width:22px; height:22px; border-radius:5px; flex:none;
+             box-shadow: 0 2px 6px rgba(214,51,108,.3); }
   .card .big { font-size: 34px; font-weight: 800; line-height:1.15; }
   .card .sub { font-size: 12px; color:#8a8590; margin-top:5px; }
   .mood-nav { display:flex; align-items:center; gap:8px; }
@@ -607,9 +611,9 @@
   @keyframes remCardFlash { 0%, 100% { box-shadow: 0 3px 14px rgba(255,107,157,.14); border-color:#f3a8c4; } 50% { box-shadow: 0 0 0 4px rgba(255,107,157,.55), 0 3px 18px rgba(255,107,157,.5); border-color:#ff6b9d; } }
   .rem-card.flash { animation: remCardFlash .45s ease-in-out 2; }
   .rem-list { margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
-  .rem-sec { font-size: 16px; font-weight: 900; color: var(--pink); margin: 8px 0 2px; text-transform: uppercase; letter-spacing: .6px; }
+  .rem-sec { font-size: 21px; font-weight: 900; color: var(--pink); margin: 8px 0 2px; text-transform: uppercase; letter-spacing: .6px; }
   .rem-open-title {
-    display:block; width: min(180px, 55vw); margin: 2px auto 8px; border-radius: 18px;
+    display:block; width: min(144px, 44vw); margin: 2px auto 8px; border-radius: 15px;
     opacity:.8; filter: saturate(1.05);
     box-shadow: 0 8px 22px rgba(214,51,108,.3), 0 0 0 1px rgba(214,51,108,.2);
   }
@@ -633,7 +637,7 @@
   }
   .rem-pager button:disabled { opacity:.35; cursor:default; }
   .rem-pager-lbl { font-size:11px; font-weight:800; color:#1f8a5f; }
-  .rem-sec-sub { font-size: 13px; font-weight: 800; color: #8a8590; margin: 6px 0 2px; }
+  .rem-sec-sub { font-size: 15px; font-weight: 800; color: #8a8590; margin: 6px 0 2px; }
   .rem-sec-sub::before { content: "· "; }
   .rem-item {
     display:flex; align-items:center; gap:10px; padding: 10px 12px;
@@ -863,7 +867,7 @@
         <div class="bar"><div id="j-energy-bar" style="width:50%"></div></div>
       </div>
       <div class="card full cal-card">
-        <h3 class="cal-big-title" data-i18n="joy_cal">📅 Calendar — Mood · Weather · Food · Special Events</h3>
+        <h3 class="cal-big-title"><img class="cal-title-icon" src="images/cal-title-icon.jpg" alt="" aria-hidden="true"><span data-i18n="joy_cal">📅 Calendar — Mood · Weather · Food · Special Events</span></h3>
         <div class="cal-toolbar">
           <div class="cal-title">
             <button class="cal-nav" id="cal-prev" aria-label="Previous month">◀</button>
@@ -1089,7 +1093,7 @@ const TR = {
   th: {
     login_btn: "เข้า", pwd_ph: "ใส่รหัสผ่านที่นี่", rem_pwd: "🔒 จำรหัสผ่าน",
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "ชีวิตจอย", tab_papapig: "ชีวิตพ่อหมู", tab_tech: "สมอง AI",
-    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "📅 ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
+    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     rem_title: "🔔 เตือนความจำ", rem_sub: "ฉันช่วยจดให้เอง",
     rem_hint: "เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕",
@@ -1138,7 +1142,7 @@ const TR = {
   en: {
     login_btn: "Enter", pwd_ph: "enter your password here", rem_pwd: "🔒 Remember me",
     app_title: "Papapig AI — Real Intelligence", tab_joy: "Joy's Life", tab_papapig: "Papapig's Life", tab_tech: "Neural AI Brain",
-    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "📅 CALENDAR — Mood · Weather · Food · Special Events",
+    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "CALENDAR — Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     rem_title: "🔔 REMINDER", rem_sub: "I keep the thread for you.",
     rem_hint: "Write what you want to be reminded of, pick a date & time, then click + to send it to papapig's WhatsApp 💕",
