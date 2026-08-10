@@ -534,20 +534,20 @@
   /* ── Modale de confirmation ✓ ── */
   .rem-confirm { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:rgba(30,10,25,.45); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); padding:20px; }
   .rem-confirm[hidden] { display:none; }
-  .rem-confirm-box { width:min(340px, 92vw); background:#fff; border-radius:22px; padding:24px 20px 18px; text-align:center; box-shadow:0 12px 40px rgba(214,51,108,.28), 0 0 0 1px rgba(214,51,108,.15); animation: cfPop .22s ease; position:relative; }
-  .rem-cf-x { position:absolute; top:10px; right:12px; width:30px; height:30px; border-radius:50%; border:none; background:#f2f0f4; color:#6b6470; font-size:14px; font-weight:800; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .rem-confirm-box { width:min(272px, 74vw); background:#fff; border-radius:18px; padding:18px 16px 14px; text-align:center; box-shadow:0 12px 40px rgba(214,51,108,.28), 0 0 0 1px rgba(214,51,108,.15); animation: cfPop .22s ease; position:relative; }
+  .rem-cf-x { position:absolute; top:8px; right:10px; width:26px; height:26px; border-radius:50%; border:none; background:#f2f0f4; color:#6b6470; font-size:13px; font-weight:800; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; }
   .rem-cf-x:hover { background:#e9e6ec; color:#d6336c; }
   @keyframes cfPop { from { transform:scale(.92); opacity:0; } to { transform:scale(1); opacity:1; } }
-  .rem-cf-ic { font-size:34px; line-height:1; margin-bottom:8px; }
-  .rem-cf-title { font-size:17px; font-weight:900; color:#d6336c; margin-bottom:8px; }
-  .rem-cf-txt { font-size:13px; font-weight:500; color:#4a4450; line-height:1.5; margin-bottom:16px; }
-  .rem-cf-actions { display:flex; gap:10px; justify-content:center; }
-  .rem-cf-no, .rem-cf-yes { flex:1; padding:11px 0; border-radius:999px; font-size:14px; font-weight:800; cursor:pointer; border:2px solid transparent; transition:all .15s ease; }
+  .rem-cf-ic { font-size:28px; line-height:1; margin-bottom:6px; }
+  .rem-cf-title { font-size:15px; font-weight:900; color:#d6336c; margin-bottom:7px; }
+  .rem-cf-txt { font-size:12px; font-weight:500; color:#4a4450; line-height:1.45; margin-bottom:14px; }
+  .rem-cf-actions { display:flex; gap:8px; justify-content:center; }
+  .rem-cf-no, .rem-cf-yes { flex:1; padding:9px 0; border-radius:999px; font-size:13px; font-weight:800; cursor:pointer; border:2px solid transparent; transition:all .15s ease; }
   .rem-cf-no { background:#f2f0f4; color:#6b6470; border-color:#e4e0e8; }
   .rem-cf-no:hover { background:#e9e6ec; }
   .rem-cf-yes { background:#d6336c; color:#fff; box-shadow:0 4px 14px rgba(214,51,108,.35); }
   .rem-cf-yes:hover { background:#c2255c; }
-  .rem-cf-undo { font-size:11px; color:#9a93a0; margin-top:12px; font-weight:500; }
+  .rem-cf-undo { font-size:10.5px; color:#9a93a0; margin-top:10px; font-weight:500; }
   .rem-confirm-box.cf-inf .rem-cf-ic { animation: cfSpin 2s linear infinite; }
   @keyframes cfSpin { to { transform: rotate(360deg); } }
   .rem-confirm-box.cf-inf { border-top:5px solid #7a4fd0; }
@@ -1764,6 +1764,15 @@ function remSetup() {
     const [curH, curM] = (timeEl.value || "--:--").split(":");
     tSelH = curH !== "--" ? String(parseInt(curH, 10) || 0).padStart(2, "0") : "12";
     tSelM = curM !== undefined && curM !== "--" ? String(parseInt(curM, 10) || 0).padStart(2, "0") : "00";
+    /* heure actuelle par défaut : FR si lang ≠ th, BKK si th */
+    if (curH === "--" || curH === undefined) {
+      try {
+        const tz = LANG === "th" ? "Asia/Bangkok" : "Europe/Paris";
+        const now = new Date().toLocaleTimeString("sv-SE", { timeZone: tz, hour12: false }).slice(0, 5);
+        const [nh, nm] = now.split(":");
+        tSelH = nh; tSelM = nm;
+      } catch (e) { /* garde 12:00 */ }
+    }
     ptHVal.textContent = tSelH;
     ptMVal.textContent = tSelM;
   }
@@ -2005,13 +2014,6 @@ function remSetup() {
   dateEl.value = "";
   renderTags();
   renderOffsets();
-  /* heure actuelle par défaut (FR si lang ≠ th, BKK si th) */
-  try {
-    const tz = LANG === "th" ? "Asia/Bangkok" : "Europe/Paris";
-    timeEl.value = new Date().toLocaleTimeString("sv-SE", { timeZone: tz, hour12: false }).slice(0, 5);
-    const lbl = document.getElementById("rem-time-lbl");
-    if (lbl) lbl.textContent = timeEl.value;
-  } catch (e) { /* champ vide → l'utilisateur choisit */ }
   let adding = false;
   const add = async () => {
     if (adding) return; /* verrou : ignore les doubles Entrée/clics pendant la création */
@@ -2054,12 +2056,7 @@ function remSetup() {
       const created = await ReminderSyncService.createReminder(payload);
       const row = Array.isArray(created) ? created[0] : created;
       if (row && row.id) { REMINDERS.push(row); remSyncState[row.id] = "synced"; }
-      /* heure actuelle par défaut (le champ se re-remplit) */
-      try {
-        const tz = LANG === "th" ? "Asia/Bangkok" : "Europe/Paris";
-        timeEl.value = new Date().toLocaleTimeString("sv-SE", { timeZone: tz, hour12: false }).slice(0, 5);
-        if (timeLbl) timeLbl.textContent = timeEl.value;
-      } catch (e) { timeEl.value = ""; }
+      timeEl.value = "";
       urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false");
       loc = null; locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false");
       renderTags(); renderOffsets(); remRender();
