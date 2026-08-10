@@ -608,6 +608,10 @@
   .rem-card.flash { animation: remCardFlash .45s ease-in-out 2; }
   .rem-list { margin-top: 12px; display:flex; flex-direction:column; gap:8px; }
   .rem-sec { font-size: 13px; font-weight: 700; color: var(--pink); margin: 6px 0 0; text-transform: uppercase; letter-spacing: .4px; }
+  .rem-open-title {
+    display:block; width: min(180px, 55vw); margin: 2px auto 8px; border-radius: 18px;
+    box-shadow: 0 8px 22px rgba(214,51,108,.3), 0 0 0 1px rgba(214,51,108,.2);
+  }
   .rem-done-gif { display:block; width:70%; max-width:224px; height:auto; margin:8px auto 2px; border-radius:14px; }
   .rem-sec-done { cursor:pointer; user-select:none; display:flex; align-items:center; gap:6px; color:#14532d; }
   .rem-sec-done:hover { opacity:.75; }
@@ -1681,6 +1685,9 @@ function remRender() {
   const todayItems = openList.filter(r => r.date === today);
   const futureItems = openList.filter(r => r.date !== today);
   const html = [];
+  if (todayItems.length || futureItems.length) {
+    html.push("<img class='rem-open-title' src='images/rem-open-title.jpg' alt='' aria-hidden='true'>");
+  }
   if (todayItems.length) {
     const grouped = {};
     todayItems.forEach(r => {
