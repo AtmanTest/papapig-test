@@ -1954,6 +1954,10 @@ function remSetup() {
     const t = timeEl.value, d = dateEl.value;
     if (!t) return null;
     try {
+      if (LANG === "th") {
+        /* TH : l'heure tapée est déjà en heure Bangkok (le picker pré-remplit en BKK) → stocker telle quelle */
+        return { ts: Date.now(), date: d, time: t.slice(0, 5) };
+      }
       const loc = new Date(d + "T" + t);
       if (isNaN(loc.getTime())) return null;
       const bkk = loc.toLocaleString("sv-SE", { timeZone: "Asia/Bangkok", hour12: false });
