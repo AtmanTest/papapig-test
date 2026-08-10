@@ -612,6 +612,15 @@
   .rem-sec-done { cursor:pointer; user-select:none; display:flex; align-items:center; gap:6px; color:#14532d; }
   .rem-sec-done:hover { opacity:.75; }
   .rem-done-chev { font-size:10px; opacity:.7; }
+  .rem-done-emo {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:31px; height:31px; border-radius:50%; flex:none;
+    background: radial-gradient(circle at 32% 28%, #8ef0a4 0%, #2fc46a 45%, #1f8a5f 100%);
+    color:#fff; font-size:17px; font-weight:900; line-height:1;
+    border:2px solid rgba(255,255,255,.85);
+    box-shadow: 0 0 0 3px rgba(31,138,95,.25), 0 2px 8px rgba(31,138,95,.45), inset 0 -2px 4px rgba(10,80,40,.35);
+    text-shadow: 0 0 3px #ff2d8a, 0 0 7px #ff2d8a, 0 0 12px rgba(255,45,138,.85);
+  }
   .rem-pager { display:flex; align-items:center; justify-content:center; gap:10px; margin-top:10px; }
   .rem-pager button {
     min-width:34px; height:30px; border-radius:999px; border:1px solid rgba(31,138,95,.4);
@@ -1692,6 +1701,7 @@ function remRender() {
   }
   if (doneList.length) {
     html.push("<div class='rem-sec rem-sec-done' data-done-toggle>"
+      + "<span class='rem-done-emo' aria-hidden='true'>✓</span>"
       + t("rem_done") + " (" + doneList.length + ") <span class='rem-done-chev'>" + (doneHidden ? "▶" : "▼") + "</span></div>");
     if (!doneHidden) {
       html.push("<img class='rem-done-gif' src='images/done-peppa.gif' alt='' aria-hidden='true'>");
