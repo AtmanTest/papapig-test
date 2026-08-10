@@ -1350,8 +1350,7 @@ document.getElementById("lang-btn").addEventListener("click", () => {
   }
   let saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
-  const darkAuto = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  apply(saved || (darkAuto ? "dark" : "light"));
+  apply(saved || "light");
   btn.addEventListener("click", () => {
     apply(document.body.classList.contains("dark") ? "light" : "dark");
   });
