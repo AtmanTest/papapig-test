@@ -531,6 +531,25 @@
   .rem-err.show { display:block; animation: errShake .35s ease; }
   @keyframes errShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
   .rem-pick-btn.warn { animation: errShake .35s ease; border-color:#dc2626 !important; }
+  /* ── Modale de confirmation ✓ ── */
+  .rem-confirm { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:rgba(30,10,25,.45); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); padding:20px; }
+  .rem-confirm[hidden] { display:none; }
+  .rem-confirm-box { width:min(340px, 92vw); background:#fff; border-radius:22px; padding:24px 20px 18px; text-align:center; box-shadow:0 12px 40px rgba(214,51,108,.28), 0 0 0 1px rgba(214,51,108,.15); animation: cfPop .22s ease; }
+  @keyframes cfPop { from { transform:scale(.92); opacity:0; } to { transform:scale(1); opacity:1; } }
+  .rem-cf-ic { font-size:34px; line-height:1; margin-bottom:8px; }
+  .rem-cf-title { font-size:17px; font-weight:900; color:#d6336c; margin-bottom:8px; }
+  .rem-cf-txt { font-size:13px; font-weight:500; color:#4a4450; line-height:1.5; margin-bottom:16px; }
+  .rem-cf-actions { display:flex; gap:10px; justify-content:center; }
+  .rem-cf-no, .rem-cf-yes { flex:1; padding:11px 0; border-radius:999px; font-size:14px; font-weight:800; cursor:pointer; border:2px solid transparent; transition:all .15s ease; }
+  .rem-cf-no { background:#f2f0f4; color:#6b6470; border-color:#e4e0e8; }
+  .rem-cf-no:hover { background:#e9e6ec; }
+  .rem-cf-yes { background:#d6336c; color:#fff; box-shadow:0 4px 14px rgba(214,51,108,.35); }
+  .rem-cf-yes:hover { background:#c2255c; }
+  .rem-cf-undo { font-size:11px; color:#9a93a0; margin-top:12px; font-weight:500; }
+  .rem-confirm-box.cf-inf .rem-cf-ic { animation: cfSpin 2s linear infinite; }
+  @keyframes cfSpin { to { transform: rotate(360deg); } }
+  .rem-confirm-box.cf-inf { border-top:5px solid #7a4fd0; }
+  .rem-confirm-box.cf-inf .rem-cf-title { color:#7a4fd0; }
   .rem-add { display:flex; flex-wrap:wrap; gap:8px; }
   .rem-add input {
     flex:1 1 100%; min-width:0; padding: 11px 14px; border-radius: 999px;
@@ -910,6 +929,18 @@
         </div>
         <div class="rem-list" id="rem-list" aria-live="polite"></div>
       </div>
+      <div class="rem-confirm" id="rem-confirm" role="dialog" aria-modal="true" aria-labelledby="rem-cf-title" hidden>
+        <div class="rem-confirm-box">
+          <div class="rem-cf-ic" id="rem-cf-ic">♾️</div>
+          <div class="rem-cf-title" id="rem-cf-title">Confirm completion ✓</div>
+          <div class="rem-cf-txt" id="rem-cf-txt">Did you really finish this task?</div>
+          <div class="rem-cf-actions">
+            <button class="rem-cf-no" id="rem-cf-no">Cancel</button>
+            <button class="rem-cf-yes" id="rem-cf-yes">Yes, done</button>
+          </div>
+          <div class="rem-cf-undo" id="rem-cf-undo">Tap Undo to restore it</div>
+        </div>
+      </div>
       <div class="card full">
         <h3 data-i18n="joy_goal">🎯 เป้าหมาย</h3>
         <div class="big" style="font-size:22px" id="j-goal">—</div>
@@ -1027,6 +1058,9 @@ const TR = {
     rem_validate: "ยืนยัน",
     rem_ph: "เตือนฉันเรื่อง…", rem_body_ph: "รายละเอียด (ไม่บังคับ)…", rem_recap: "📲 ส่งสรุปวันนี้ทาง WhatsApp", rem_off_lbl: "➕ เพิ่มการเตือนอื่นเพิ่มเติมถ้าต้องการ",
     rem_inf_lbl: "♾️ เตือนแบบไม่มีวันสิ้นสุด (ทุกวัน)", rem_err_time: "⚠️ เลือกเวลาเตือนก่อน (🕐) — ไม่งั้นจะไม่มีการแจ้งเตือน",
+    rem_cf_ttl: "ยืนยันการทำเครื่องหมาย ✓", rem_cf_txt: "คุณทำรายการนี้เสร็จแล้ว ใช่ไหม?",
+    rem_cf_inf: "นี่คือการเตือนแบบรายวัน (ทุกวัน) คุณแน่ใจว่าจะเสร็จแล้ว? คุณจะไม่ได้รับข้อความจากพ่อหมูอีกต่อไป แต่กด Undo เพื่อคืนค่าได้เสมอ",
+    rem_cf_yes: "ใช่, เสร็จแล้ว", rem_cf_no: "ยกเลิก", rem_cf_undo: "กด Undo เพื่อคืนค่า",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
     rem_per_morning: "เช้า", rem_per_noon: "เที่ยง", rem_per_afternoon: "บ่าย", rem_per_evening: "เย็น", rem_per_night: "กลางคืน",
@@ -1069,6 +1103,9 @@ const TR = {
     rem_validate: "Done !",
     rem_ph: "Put a title to your reminder", rem_body_ph: "Details (optional)…", rem_recap: "📲 Send today's summary on WhatsApp", rem_off_lbl: "➕ Add other reminders if needed",
     rem_inf_lbl: "♾️ Endless reminder (every day)", rem_err_time: "⚠️ Choose a remind time first (🕐) — otherwise no notification will be sent",
+    rem_cf_ttl: "Confirm completion ✓", rem_cf_txt: "Did you really finish this task?",
+    rem_cf_inf: "This is a daily (endless) reminder. Are you sure you want to complete it? You will no longer receive Papa Pig's messages — but you can always tap Undo to bring it back.",
+    rem_cf_yes: "Yes, done", rem_cf_no: "Cancel", rem_cf_undo: "Tap Undo to restore it",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
     rem_per_morning: "Morning", rem_per_noon: "Noon", rem_per_afternoon: "Afternoon", rem_per_evening: "Evening", rem_per_night: "Night",
@@ -1412,7 +1449,7 @@ const ReminderSyncService = {
     return r.status === 204 ? null : r.json();
   },
   async fetchAll() {
-    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via,location,note,remind_offsets&profile=eq.penguinpig&order=date.asc");
+    const d = await this._req("GET", "?select=id,title,date,start_time,category,status,priority,is_private,created_via,location,note,remind_offsets,validated_at&profile=eq.penguinpig&order=date.asc");
     return Array.isArray(d) ? d : [];
   },
   createReminder(payload) {
@@ -1421,8 +1458,8 @@ const ReminderSyncService = {
       status: "todo", priority: "normal", is_private: false
     }, payload));
   },
-  completeReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "done" }); },
-  uncompleteReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "todo" }); },
+  completeReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "done", validated_at: new Date().toISOString() }); },
+  uncompleteReminder(id) { return this._req("PATCH", "?id=eq." + id, { status: "todo", validated_at: null }); },
   deleteReminder(id) { return this._req("DELETE", "?id=eq." + id); }
 };
 let REMINDERS = [];
@@ -1454,6 +1491,47 @@ function remFmtTimeBkk(dateStr, timeStr) {
     if (isNaN(dt)) return hm;
     return dt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris", hour12: false });
   } catch (e) { return hm; }
+}
+/* ── Modale de confirmation avant de valider un rappel ── */
+function askConfirm(id, isInf, title) {
+  const ov = document.getElementById("rem-confirm");
+  if (!ov) return;
+  const box = ov.querySelector(".rem-confirm-box");
+  const ic = document.getElementById("rem-cf-ic");
+  const tt = document.getElementById("rem-cf-title");
+  const tx = document.getElementById("rem-cf-txt");
+  const undo = document.getElementById("rem-cf-undo");
+  box.classList.toggle("cf-inf", !!isInf);
+  ic.textContent = isInf ? "♾️" : "✅";
+  tt.textContent = t(isInf ? "rem_cf_ttl" : "rem_cf_ttl");
+  tx.textContent = t(isInf ? "rem_cf_inf" : "rem_cf_txt");
+  undo.textContent = t("rem_cf_undo");
+  document.getElementById("rem-cf-no").textContent = t("rem_cf_no");
+  document.getElementById("rem-cf-yes").textContent = t("rem_cf_yes");
+  ov.hidden = false;
+  const finish = async ok => {
+    ov.hidden = true;
+    document.getElementById("rem-cf-yes").onclick = null;
+    document.getElementById("rem-cf-no").onclick = null;
+    if (!ok) return;
+    const it = REMINDERS.find(x => x.id === id);
+    const card = document.querySelector('.rem-item[data-rid="' + id + '"]');
+    if (card && !card.classList.contains("validating")) {
+      card.classList.add("validating");
+      const msg = document.createElement("span");
+      msg.className = "rem-valid";
+      msg.textContent = (LANG === "th" ? "ยืนยันแล้ว" : "DONE") + " 👏 !";
+      card.appendChild(msg);
+    }
+    remSyncState[id] = "syncing"; remRender();
+    try { await ReminderSyncService.completeReminder(id); remSyncState[id] = "synced"; }
+    catch (e) { remSyncState[id] = "failed"; }
+    if (it) { it.status = "done"; it.validated_at = new Date().toISOString(); }
+    setTimeout(() => remRender(), 2400);
+  };
+  document.getElementById("rem-cf-yes").onclick = () => finish(true);
+  document.getElementById("rem-cf-no").onclick = () => finish(false);
+  ov.onclick = e => { if (e.target === ov) finish(false); };
 }
 function remRender() {
   const list = document.getElementById("rem-list");
@@ -1500,7 +1578,8 @@ function remRender() {
   }
   const PER_ORDER = ["morning", "noon", "afternoon", "evening", "night"];
   const PER_LBL = { morning: "rem_per_morning", noon: "rem_per_noon", afternoon: "rem_per_afternoon", evening: "rem_per_evening", night: "rem_per_night" };
-  const doneList = REMINDERS.filter(r => r.status === "done");
+  const doneList = REMINDERS.filter(r => r.status === "done")
+    .sort((a, b) => new Date(b.validated_at || 0) - new Date(a.validated_at || 0));
   const openList = REMINDERS.filter(r => r.status !== "done");
   const todayItems = openList.filter(r => r.date === today);
   const futureItems = openList.filter(r => r.date !== today);
@@ -1537,18 +1616,8 @@ function remRender() {
   list.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.done;
     const it = REMINDERS.find(x => x.id === id);
-    const card = b.closest(".rem-item");
-    if (card && !card.classList.contains("validating")) {
-      card.classList.add("validating");
-      const msg = document.createElement("span");
-      msg.className = "rem-valid";
-      msg.textContent = (LANG === "th" ? "ยืนยันแล้ว" : "DONE") + " 👏 !";
-      card.appendChild(msg);
-    }
-    try { await ReminderSyncService.completeReminder(id); remSyncState[id] = "synced"; }
-    catch (e) { remSyncState[id] = "failed"; }
-    if (it) it.status = "done";
-    setTimeout(() => remRender(), 2400); // laisse l'animation DONE ! se jouer
+    if (!it) return;
+    askConfirm(id, isInf(it), it.title);
   }));
   list.querySelectorAll("[data-undo]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.undo;
