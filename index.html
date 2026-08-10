@@ -664,7 +664,13 @@
   .rem-badge.loc { background:#e8f0ff; color:#2563eb; text-decoration:none; }
   .rem-badge.inf { background:#f1ebff; color:#7a4fd0; }
   .rem-hint { font-size: 11px; color:#e07020; margin: -4px 0 8px; line-height: 1.45; }
-  .rem-hint-val { font-weight: 800; color:#e07020; }
+  .rem-hint-val {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:50%; vertical-align:middle;
+    background: linear-gradient(135deg, #7ecdf7, #4db3ec);
+    color:#fff; font-size:12px; font-weight:900; line-height:1;
+    box-shadow: 0 1px 3px rgba(31,120,180,.4);
+  }
   .rem-sync { font-size:10px; font-weight:800; color:#1a9e90; }
   .rem-sync.pending { color:#8a8590; font-weight:600; }
   .rem-sync.failed { color:#d6455d; font-weight:700; }
@@ -1216,12 +1222,11 @@ function applyLang() {
   const pwd = document.getElementById("pwd");
   if (pwd) pwd.placeholder = t("pwd_ph");
   document.title = t("app_title");
-  /* mot valider en orange gras dans le hint rappels */
+  /* icône ✓ bleue dans le hint rappels (remplace l'ancien mot VALIDER) */
   const rh = document.querySelector(".rem-hint");
   if (rh) {
-    const v = t("rem_validate");
     rh.innerHTML = t("rem_hint").replace("+",
-      "<span class='rem-hint-val'>" + v + "</span>");
+      "<span class='rem-hint-val'>✓</span>");
   }
 }
 
