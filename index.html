@@ -612,6 +612,13 @@
   .rem-sec-done { cursor:pointer; user-select:none; display:flex; align-items:center; gap:6px; color:#14532d; }
   .rem-sec-done:hover { opacity:.75; }
   .rem-done-chev { font-size:10px; opacity:.7; }
+  .rem-pager { display:flex; align-items:center; justify-content:center; gap:10px; margin-top:10px; }
+  .rem-pager button {
+    min-width:34px; height:30px; border-radius:999px; border:1px solid rgba(31,138,95,.4);
+    background:#fff; color:#1f8a5f; font-size:12px; font-weight:800; cursor:pointer;
+  }
+  .rem-pager button:disabled { opacity:.35; cursor:default; }
+  .rem-pager-lbl { font-size:11px; font-weight:800; color:#1f8a5f; }
   .rem-sec-sub { font-size: 11px; font-weight: 600; color: #8a8590; margin: 4px 0 2px; }
   .rem-sec-sub::before { content: "· "; }
   .rem-item {
@@ -654,8 +661,8 @@
   .rem-item .rem-body { flex:1; min-width:0; }
   .rem-item .rem-txt { font-size: 14px; font-weight: 700; word-break: break-word; }
   .rem-item .rem-note { font-size: 12px; color:#8a8590; font-weight:400; margin-top:2px; word-break: break-word; }
-  .rem-item.done .rem-note { text-decoration: line-through; }
-  .rem-item.done .rem-txt { text-decoration: line-through; }
+  .rem-item.done .rem-note { text-decoration: line-through; color:#6f7d6f; }
+  .rem-item.done .rem-txt { font-size: 16px; font-weight: 800; color:#1f8a5f; text-decoration: line-through; text-decoration-color: rgba(31,138,95,.45); }
   .rem-item .rem-meta { font-size: 10.5px; color:#8a8590; margin-top: 2px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .rem-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:9.5px; font-weight:800; letter-spacing:.3px; }
   .rem-badge.wa { background:#e6faf7; color:#1a9e90; }
@@ -1611,6 +1618,7 @@ function remRender() {
   const now = new Date();
   const today = now.toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).slice(0, 10).replace(/\//g, "-");
   let doneHidden = localStorage.getItem("papapig-rem-done-hidden") === "1";
+  let donePage = parseInt(localStorage.getItem("papapig-rem-done-page") || "0", 10) || 0;
   if (!REMINDERS.length) {
     list.innerHTML = "<div class='rem-empty'>" + t("rem_empty") +
       "<br><button id='rem-empty-add'>" + t("rem_empty_add") + "</button></div>";
@@ -1652,6 +1660,10 @@ function remRender() {
   const PER_LBL = { morning: "rem_per_morning", noon: "rem_per_noon", afternoon: "rem_per_afternoon", evening: "rem_per_evening", night: "rem_per_night" };
   const doneList = REMINDERS.filter(r => r.status === "done")
     .sort((a, b) => new Date(b.validated_at || 0) - new Date(a.validated_at || 0));
+  const DONE_PER_PAGE = 5;
+  const donePages = Math.max(1, Math.ceil(doneList.length / DONE_PER_PAGE));
+  if (donePage >= donePages) donePage = donePages - 1;
+  const donePageItems = doneList.slice(donePage * DONE_PER_PAGE, donePage * DONE_PER_PAGE + DONE_PER_PAGE);
   const openList = REMINDERS.filter(r => r.status !== "done");
   const todayItems = openList.filter(r => r.date === today);
   const futureItems = openList.filter(r => r.date !== today);
@@ -1679,12 +1691,24 @@ function remRender() {
       + t("rem_done") + " (" + doneList.length + ") <span class='rem-done-chev'>" + (doneHidden ? "▶" : "▼") + "</span></div>");
     if (!doneHidden) {
       html.push("<img class='rem-done-gif' src='images/done-peppa.gif' alt='' aria-hidden='true'>");
-      html.push(doneList.map(itemHtml).join(""));
+      html.push(donePageItems.map(itemHtml).join(""));
+      if (donePages > 1) {
+        html.push("<div class='rem-pager'><button type='button' data-dp='prev' " + (donePage === 0 ? "disabled" : "") + ">◀</button>"
+          + "<span class='rem-pager-lbl'>" + (donePage + 1) + " / " + donePages + "</span>"
+          + "<button type='button' data-dp='next' " + (donePage >= donePages - 1 ? "disabled" : "") + ">▶</button></div>");
+      }
     }
   }
   list.innerHTML = html.join("");
   const doneToggle = list.querySelector("[data-done-toggle]");
   if (doneToggle) doneToggle.addEventListener("click", () => { doneHidden = !doneHidden; localStorage.setItem("papapig-rem-done-hidden", doneHidden ? "1" : "0"); remRender(); });
+  list.querySelectorAll("[data-dp]").forEach(b => b.addEventListener("click", () => {
+    const dir = b.dataset.dp;
+    const np = dir === "prev" ? donePage - 1 : donePage + 1;
+    if (np < 0 || np >= donePages) return;
+    localStorage.setItem("papapig-rem-done-page", String(np));
+    remRender();
+  }));
   list.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", async () => {
     const id = b.dataset.done;
     const it = REMINDERS.find(x => x.id === id);
