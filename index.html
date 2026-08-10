@@ -1581,7 +1581,7 @@ function showCreated(ev) {
     const OF = {5: "5 min", 15: "15 min", 60: "1 h", 1440: "1 j"};
     const lbls = ev.remind_offsets.map(m => OF[m] || (m + " min")).filter(Boolean);
     if (lbls.length) lines.push("⏱ " + (T ? "เตือนล่วงหน้า: " : "Remind before: ") + lbls.join(" · "));
-  }
+  } else lines.push("⏱ " + (T ? "เตือนตามเวลา" : "Remind at the time"));
   tx.innerHTML = lines.join("<br>");
   undo.textContent = t("rem_cr_wa");
   noBtn.style.display = "none";
@@ -1905,7 +1905,7 @@ function remSetup() {
     if (b) { maxM = Math.floor((b.ts - Date.now()) / 60000); }
     const visible = OFF_OPTS.filter(o => !maxM || o.m < maxM - 5);
     [...offsetSel].forEach(m => { if (!visible.some(o => o.m === m)) offsetSel.delete(m); });
-    if (!offsetSel.size) offsetSel.add(180);
+    /* pas de fallback : aucun offset visible → aucun rappel anticipé (le rappel principal sonne à l'heure) */
     box.innerHTML = visible.map(o =>
       "<button type='button' data-m='" + o.m + "' class='" + (offsetSel.has(o.m) ? "on" : "") + "'>" + o.l + "</button>"
     ).join("");
