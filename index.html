@@ -649,8 +649,12 @@
     font-size: 14px; line-height: 1; cursor: pointer; display:flex; align-items:center; justify-content:center;
     transition: background .15s, color .15s;
   }
-  .rem-item.done .rem-chk { background: #1f8a5f; color: #fff;
-    border-color: #1f8a5f; box-shadow: 0 0 0 3px rgba(31,138,95,.25); }
+  .rem-item.done .rem-chk {
+    background: radial-gradient(circle at 32% 28%, #8ef0a4 0%, #2fc46a 45%, #1f8a5f 100%);
+    color: #fff; border-color: rgba(255,255,255,.85);
+    box-shadow: 0 0 0 3px rgba(31,138,95,.25), 0 2px 8px rgba(31,138,95,.45), inset 0 -2px 4px rgba(10,80,40,.35);
+    text-shadow: 0 0 3px #ff2d8a, 0 0 7px #ff2d8a, 0 0 12px rgba(255,45,138,.85);
+  }
   .cal-ev-chk {
     flex:none; width: 22px; height: 22px; border-radius: 50%;
     border: 2px solid #d6336c; background: transparent; color: transparent;
