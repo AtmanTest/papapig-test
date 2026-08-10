@@ -534,7 +534,9 @@
   /* ── Modale de confirmation ✓ ── */
   .rem-confirm { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:rgba(30,10,25,.45); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); padding:20px; }
   .rem-confirm[hidden] { display:none; }
-  .rem-confirm-box { width:min(340px, 92vw); background:#fff; border-radius:22px; padding:24px 20px 18px; text-align:center; box-shadow:0 12px 40px rgba(214,51,108,.28), 0 0 0 1px rgba(214,51,108,.15); animation: cfPop .22s ease; }
+  .rem-confirm-box { width:min(340px, 92vw); background:#fff; border-radius:22px; padding:24px 20px 18px; text-align:center; box-shadow:0 12px 40px rgba(214,51,108,.28), 0 0 0 1px rgba(214,51,108,.15); animation: cfPop .22s ease; position:relative; }
+  .rem-cf-x { position:absolute; top:10px; right:12px; width:30px; height:30px; border-radius:50%; border:none; background:#f2f0f4; color:#6b6470; font-size:14px; font-weight:800; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .rem-cf-x:hover { background:#e9e6ec; color:#d6336c; }
   @keyframes cfPop { from { transform:scale(.92); opacity:0; } to { transform:scale(1); opacity:1; } }
   .rem-cf-ic { font-size:34px; line-height:1; margin-bottom:8px; }
   .rem-cf-title { font-size:17px; font-weight:900; color:#d6336c; margin-bottom:8px; }
@@ -931,6 +933,7 @@
       </div>
       <div class="rem-confirm" id="rem-confirm" role="dialog" aria-modal="true" aria-labelledby="rem-cf-title" hidden>
         <div class="rem-confirm-box">
+          <button type="button" class="rem-cf-x" id="rem-cf-x" aria-label="Close">✕</button>
           <div class="rem-cf-ic" id="rem-cf-ic">♾️</div>
           <div class="rem-cf-title" id="rem-cf-title">Confirm completion ✓</div>
           <div class="rem-cf-txt" id="rem-cf-txt">Did you really finish this task?</div>
@@ -1061,7 +1064,7 @@ const TR = {
     rem_cf_ttl: "ยืนยันการทำเครื่องหมาย ✓", rem_cf_txt: "คุณทำรายการนี้เสร็จแล้ว ใช่ไหม?",
     rem_cf_inf: "นี่คือการเตือนแบบรายวัน (ทุกวัน) คุณแน่ใจว่าจะเสร็จแล้ว? คุณจะไม่ได้รับข้อความจากพ่อหมูอีกต่อไป แต่กด Undo เพื่อคืนค่าได้เสมอ หรือหยุดจาก WhatsApp ได้ด้วย (stop) และจากเว็บไซต์นี้ได้เช่นกัน",
     rem_cf_yes: "ใช่, เสร็จแล้ว", rem_cf_no: "ยกเลิก", rem_cf_undo: "กด Undo เพื่อคืนค่า",
-    rem_cr_ttl: "สร้างการเตือนแล้ว ✅", rem_cr_ok: "ตกลง", rem_cr_wa: "📲 ข้อความยืนยัน WhatsApp อาจใช้เวลาสักครู่",
+    rem_cr_ttl: "สร้างการเตือนแล้ว", rem_cr_ok: "ตกลง", rem_cr_wa: "📲 ข้อความยืนยัน WhatsApp อาจใช้เวลาสักครู่",
     rem_cr_inf: "♾️ ทุกวัน (ไม่มีวันสิ้นสุด)", rem_cr_stop_wa: "🛑 หยุดจาก WhatsApp ได้ด้วย: stop {id}",
     rem_empty: "ยังไม่มีรายการที่ต้องจำ ✨", rem_empty_add: "เพิ่มรายการแรก",
     rem_sec_today: "วันนี้", rem_sec_upcoming: "เร็วๆ นี้",
@@ -1108,7 +1111,7 @@ const TR = {
     rem_cf_ttl: "Confirm completion ✓", rem_cf_txt: "Did you really finish this task?",
     rem_cf_inf: "This is a daily (endless) reminder. Are you sure you want to complete it? You will no longer receive Papa Pig's messages — but you can always tap Undo to bring it back, or stop it anytime from WhatsApp (stop) or right here on the site.",
     rem_cf_yes: "Yes, done", rem_cf_no: "Cancel", rem_cf_undo: "Tap Undo to restore it",
-    rem_cr_ttl: "Reminder created ✅", rem_cr_ok: "OK", rem_cr_wa: "📲 The WhatsApp confirmation may take a few minutes to arrive",
+    rem_cr_ttl: "Reminder created", rem_cr_ok: "OK", rem_cr_wa: "📲 The WhatsApp confirmation may take a few minutes to arrive",
     rem_cr_inf: "♾️ Every day (endless)", rem_cr_stop_wa: "🛑 Stop it from WhatsApp too: stop {id}",
     rem_empty: "Nothing to remember yet ✨", rem_empty_add: "Add your first",
     rem_sec_today: "Today", rem_sec_upcoming: "Upcoming",
@@ -1520,6 +1523,7 @@ function askConfirm(id, isInf, title) {
     ov.hidden = true;
     document.getElementById("rem-cf-yes").onclick = null;
     document.getElementById("rem-cf-no").onclick = null;
+    document.getElementById("rem-cf-x").onclick = null;
     if (!ok) return;
     const it = REMINDERS.find(x => x.id === id);
     const card = document.querySelector('.rem-item[data-rid="' + id + '"]');
@@ -1538,6 +1542,7 @@ function askConfirm(id, isInf, title) {
   };
   document.getElementById("rem-cf-yes").onclick = () => finish(true);
   document.getElementById("rem-cf-no").onclick = () => finish(false);
+  document.getElementById("rem-cf-x").onclick = () => finish(false);
   ov.onclick = e => { if (e.target === ov) finish(false); };
 }
 /* ── Popup de confirmation de création ✓ ── */
@@ -1578,8 +1583,10 @@ function showCreated(ev) {
     yesBtn.onclick = null;
     noBtn.style.display = "";
     noBtn.onclick = null;
+    document.getElementById("rem-cf-x").onclick = null;
   };
   yesBtn.onclick = close;
+  document.getElementById("rem-cf-x").onclick = close;
   ov.onclick = e => { if (e.target === ov) close(); };
 }
 function remRender() {
@@ -1989,6 +1996,13 @@ function remSetup() {
   dateEl.value = "";
   renderTags();
   renderOffsets();
+  /* heure actuelle par défaut (FR si lang ≠ th, BKK si th) */
+  try {
+    const tz = LANG === "th" ? "Asia/Bangkok" : "Europe/Paris";
+    timeEl.value = new Date().toLocaleTimeString("sv-SE", { timeZone: tz, hour12: false }).slice(0, 5);
+    const lbl = document.getElementById("rem-time-lbl");
+    if (lbl) lbl.textContent = timeEl.value;
+  } catch (e) { /* champ vide → l'utilisateur choisit */ }
   let adding = false;
   const add = async () => {
     if (adding) return; /* verrou : ignore les doubles Entrée/clics pendant la création */
@@ -2031,7 +2045,12 @@ function remSetup() {
       const created = await ReminderSyncService.createReminder(payload);
       const row = Array.isArray(created) ? created[0] : created;
       if (row && row.id) { REMINDERS.push(row); remSyncState[row.id] = "synced"; }
-      timeEl.value = "";
+      /* heure actuelle par défaut (le champ se re-remplit) */
+      try {
+        const tz = LANG === "th" ? "Asia/Bangkok" : "Europe/Paris";
+        timeEl.value = new Date().toLocaleTimeString("sv-SE", { timeZone: tz, hour12: false }).slice(0, 5);
+        if (timeLbl) timeLbl.textContent = timeEl.value;
+      } catch (e) { timeEl.value = ""; }
       urgent = false; urgentBtn.classList.remove("on"); urgentBtn.setAttribute("aria-pressed", "false");
       loc = null; locBtn.classList.remove("on"); locBtn.setAttribute("aria-pressed", "false");
       renderTags(); renderOffsets(); remRender();
