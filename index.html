@@ -192,11 +192,13 @@
              color:#b06a86; margin-bottom: 10px; font-weight: 800; }
   .rem-card { border: 1.5px solid #f3a8c4; box-shadow: 0 3px 14px rgba(255,107,157,.14); }
   .rem-card .rem-title { font-size: 22px; font-weight: 900; letter-spacing: 1px;
-             color: #d6336c; margin-bottom: 6px;
+             text-align:center; margin: 0 0 2px;
              background: linear-gradient(135deg, #d6336c, #ff6b9d); -webkit-background-clip: text;
              background-clip: text; -webkit-text-fill-color: transparent; }
+  .cal-big-sub { font-size: 11px; font-weight: 600; color:#8a8590; letter-spacing:.5px;
+             text-align:center; margin:-4px 0 10px; }
   .card .cal-big-title { font-size: 22px; font-weight: 900; letter-spacing: 1px;
-             color: #d6336c; margin-bottom: 10px;
+             color: #d6336c; margin: 0 0 2px;
              display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
   .card .cal-big-title span {
              background: linear-gradient(135deg, #d6336c, #ff6b9d); -webkit-background-clip: text;
@@ -208,6 +210,7 @@
   .mood-nav { display:flex; align-items:center; gap:8px; }
   .mood-nav .cal-nav { flex:none; }
   .mood-main { flex:1; min-width:0; }
+  .mood-main .mood-down { color:#4aa8e8; }
   .mood-date { font-size:10.5px; opacity:.75; letter-spacing:.4px; }
   .full { grid-column: 1 / -1; }
   .bar { height: 10px; border-radius: 999px; background: #ffe3ec; overflow:hidden; margin-top: 10px; }
@@ -389,7 +392,7 @@
   #meal-zoom { position:fixed; inset:0; z-index:999; background:rgba(20,10,20,.75); display:none; align-items:center; justify-content:center; cursor:zoom-out; }
   #meal-zoom.open { display:flex; }
   #meal-zoom img { max-width:92vw; max-height:88vh; border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,.5); }
-  .rem-sub { font-size: 12px; color:#8a8590; margin-top:-6px; margin-bottom: 10px; }
+  .rem-sub { font-size: 12px; color:#8a8590; text-align:center; margin-top:-4px; margin-bottom: 10px; }
   .rem-tags { display:flex; flex-wrap:wrap; gap:6px; min-height: 2px; margin-top: 8px; }
   .rem-tag {
     display:inline-flex; align-items:center; gap:5px; font-size: 12px;
@@ -867,7 +870,8 @@
         <div class="bar"><div id="j-energy-bar" style="width:50%"></div></div>
       </div>
       <div class="card full cal-card">
-        <h3 class="cal-big-title"><img class="cal-title-icon" src="images/cal-title-icon.jpg" alt="" aria-hidden="true"><span data-i18n="joy_cal">📅 Calendar — Mood · Weather · Food · Special Events</span></h3>
+        <h3 class="cal-big-title"><img class="cal-title-icon" src="images/cal-title-icon.jpg" alt="" aria-hidden="true"><span data-i18n="joy_cal">📅 Calendar</span></h3>
+        <div class="cal-big-sub" data-i18n="joy_cal_sub">Mood · Weather · Food · Special Events</div>
         <div class="cal-toolbar">
           <div class="cal-title">
             <button class="cal-nav" id="cal-prev" aria-label="Previous month">◀</button>
@@ -1093,7 +1097,7 @@ const TR = {
   th: {
     login_btn: "เข้า", pwd_ph: "ใส่รหัสผ่านที่นี่", rem_pwd: "🔒 จำรหัสผ่าน",
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "ชีวิตจอย", tab_papapig: "ชีวิตพ่อหมู", tab_tech: "สมอง AI",
-    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "ปฏิทิน — อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
+    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "ปฏิทิน", joy_cal_sub: "อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
     joy_meals: "🍜 กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     rem_title: "🔔 เตือนความจำ", rem_sub: "ฉันช่วยจดให้เอง",
     rem_hint: "เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕",
@@ -1142,7 +1146,7 @@ const TR = {
   en: {
     login_btn: "Enter", pwd_ph: "enter your password here", rem_pwd: "🔒 Remember me",
     app_title: "Papapig AI — Real Intelligence", tab_joy: "Joy's Life", tab_papapig: "Papapig's Life", tab_tech: "Neural AI Brain",
-    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "CALENDAR — Mood · Weather · Food · Special Events",
+    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "CALENDAR", joy_cal_sub: "Mood · Weather · Food · Special Events",
     joy_meals: "🍜 Detected Meals", joy_goal: "🎯 Goal",
     rem_title: "🔔 REMINDER", rem_sub: "I keep the thread for you.",
     rem_hint: "Write what you want to be reminded of, pick a date & time, then click + to send it to papapig's WhatsApp 💕",
@@ -1369,7 +1373,9 @@ function renderMood(J) {
   const v = e.mood;
   const emo = MOOD_EMO[v] || "😐";
   const feel = (MOOD_FEEL[LANG] || MOOD_FEEL.en)[v] || "";
-  document.getElementById("j-mood-today").textContent = emo + " " + feel;
+  const moodEl = document.getElementById("j-mood-today");
+  moodEl.className = "big" + (v === 4 ? " mood-down" : "");
+  moodEl.textContent = emo + " " + feel;
   document.getElementById("j-mood-note").textContent = (LANG === "en" ? (e.summary_en || e.summary) : (e.summary || e.summary_en)) || e.note || "";
   document.getElementById("j-mood-date").textContent = (i === 0 ? (LANG === "th" ? "วันนี้" : "today") + " · " : "") + e.date;
 }
