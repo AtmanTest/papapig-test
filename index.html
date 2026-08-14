@@ -216,6 +216,7 @@
   .card .big { font-size: 34px; font-weight: 800; line-height:1.15; }
   .card .sub { font-size: 12px; color:#8a8590; margin-top:5px; }
   .mood-nav { display:flex; align-items:center; gap:8px; }
+  .site-updated { font-size:12px; color:#8a8590; margin-bottom:6px; font-weight:600; }
   .mood-nav .cal-nav { flex:none; }
   .mood-main { flex:1; min-width:0; }
   .mood-main .mood-down { color:#4aa8e8; }
@@ -862,6 +863,7 @@
     <div class="grid">
       <div class="card">
         <h3 data-i18n="joy_mood_today">😊 อารมณ์วันนี้</h3>
+        <div class="site-updated" id="site-updated" data-i18n="site_updated"></div>
         <div class="mood-nav">
           <button class="cal-nav" id="mood-prev" aria-label="Previous mood">◀</button>
           <div class="mood-main">
@@ -1105,7 +1107,7 @@ const TR = {
   th: {
     login_btn: "เข้า", pwd_ph: "ใส่รหัสผ่านที่นี่", rem_pwd: "🔒 จำรหัสผ่าน",
     app_title: "Papapig AI — ความฉลาดที่แท้จริง", tab_joy: "ชีวิตจอย", tab_papapig: "ชีวิตพ่อหมู", tab_tech: "สมอง AI",
-    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "ปฏิทิน", joy_cal_sub: "อารมณ์ · อากาศ · อาหาร · วันสำคัญ",
+    joy_mood_today: "😊 อารมณ์วันนี้", joy_energy: "⚡ พลังงาน", joy_cal: "ปฏิทิน", joy_cal_sub: "อารมณ์ · อากาศ · อาหาร · วันสำคัญ", site_updated: "อัปเดตล่าสุด",
     joy_meals: "กินอะไรมาบ้าง", joy_goal: "🎯 เป้าหมาย",
     rem_title: "🔔 เตือนความจำ", rem_sub: "ฉันช่วยจดให้เอง",
     rem_hint: "เขียนสิ่งที่อยากให้เตือน เลือกวัน เวลา แล้วกด + เพื่อส่งไปที่ WhatsApp ของพ่อหมู 💕",
@@ -1154,7 +1156,7 @@ const TR = {
   en: {
     login_btn: "Enter", pwd_ph: "enter your password here", rem_pwd: "🔒 Remember me",
     app_title: "Papapig AI — Real Intelligence", tab_joy: "Joy's Life", tab_papapig: "Papapig's Life", tab_tech: "Neural AI Brain",
-    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "CALENDAR", joy_cal_sub: "Mood · Weather · Food · Special Events",
+    joy_mood_today: "😊 Today's Mood", joy_energy: "⚡ Energy", joy_cal: "CALENDAR", joy_cal_sub: "Mood · Weather · Food · Special Events", site_updated: "Last updated",
     joy_meals: "Detected Meals", joy_goal: "🎯 Goal",
     rem_title: "🔔 REMINDER", rem_sub: "I keep the thread for you.",
     rem_hint: "Write what you want to be reminded of, pick a date & time, then click + to send it to papapig's WhatsApp 💕",
@@ -1397,6 +1399,10 @@ document.addEventListener("DOMContentLoaded", bindMoodNav);
 
 function render(s) {
   const J = s.joy || {}, P = s.papapig || {};
+
+  /* Date de dernière mise à jour (generated_at du backend, fuseau BKK) */
+  const updEl = document.getElementById("site-updated");
+  if (updEl && s.generated_at) updEl.textContent = "🕐 " + t("site_updated") + " " + s.generated_at;
 
   /* Joy — mood du jour (historique navigable ← →) */
   renderMood(J);
