@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-08-14 23:30 Bangkok",
+  "generated_at": "2026-08-15 00:00 Bangkok",
   "joy": {
-    "mood_today": 3,
-    "mood_note": "ฉันเหนื่อยมากเลย",
+    "mood_today": null,
+    "mood_note": "",
     "moods": [
       {
         "date": "2026-08-07",
@@ -91,7 +91,7 @@
       }
     },
     "energy": 70,
-    "goal": "นอนเร็วขึ้น 💤",
+    "goal": "",
     "streak": 0,
     "mood_summary": ""
   },
@@ -276,11 +276,6 @@
     }
   },
   "weather": {
-    "2026-07-31": {
-      "tmax": 30.7,
-      "tmin": 24.2,
-      "pop": 100
-    },
     "2026-08-01": {
       "tmax": 32.8,
       "tmin": 25.0,
@@ -415,6 +410,11 @@
       "tmax": 27.0,
       "tmin": 25.2,
       "pop": 92
+    },
+    "2026-08-28": {
+      "tmax": 30.5,
+      "tmin": 25.2,
+      "pop": 96
     }
   }
 }
