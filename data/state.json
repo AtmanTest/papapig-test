@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-08-15 23:30 Bangkok",
+  "generated_at": "2026-08-16 00:00 Bangkok",
   "joy": {
-    "mood_today": 3,
-    "mood_note": "Good morning papapig ช่วงนี้ฉันเหนื่อยมากงานเยอะเเละวุ่นวายมากฉันเลยไม่ค่อยได้คุ",
+    "mood_today": null,
+    "mood_note": "",
     "moods": [
       {
         "date": "2026-08-07",
@@ -102,7 +102,7 @@
       }
     },
     "energy": 70,
-    "goal": "นอนเร็วขึ้น 💤",
+    "goal": "",
     "streak": 0,
     "mood_summary": ""
   },
@@ -287,11 +287,6 @@
     }
   },
   "weather": {
-    "2026-08-01": {
-      "tmax": 32.8,
-      "tmin": 25.0,
-      "pop": 99
-    },
     "2026-08-02": {
       "tmax": 33.3,
       "tmin": 25.8,
@@ -426,6 +421,11 @@
       "tmax": 30.7,
       "tmin": 25.5,
       "pop": 98
+    },
+    "2026-08-29": {
+      "tmax": 30.6,
+      "tmin": 25.4,
+      "pop": 90
     }
   }
 }
