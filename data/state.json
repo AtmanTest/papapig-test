@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-16 23:00 Bangkok",
+  "generated_at": "2026-08-16 23:30 Bangkok",
   "joy": {
     "mood_today": null,
     "mood_note": "",
@@ -60,7 +60,29 @@
         "goal_parole": ""
       }
     ],
-    "meals": [],
+    "meals": [
+      {
+        "emoji": "☕",
+        "at": "23:13",
+        "date": "2026-08-07",
+        "word": "มอคค่า",
+        "ts": 1786119212
+      },
+      {
+        "emoji": "🍽️",
+        "at": "02:08",
+        "date": "2026-08-06",
+        "word": "ข้าว",
+        "ts": 1785956887
+      },
+      {
+        "emoji": "🍵",
+        "at": "01:21",
+        "date": "2026-08-05",
+        "word": "ชา",
+        "ts": 1785867667
+      }
+    ],
     "meal_photos": {
       "2026-08-08": {
         "url": "images/meals/2026-08-08.jpg",
@@ -87,15 +109,15 @@
   "papapig": {
     "persona": "papapig",
     "energy": 85,
-    "hunger": 40,
+    "hunger": 100,
     "sleep": 60,
-    "xp": 120,
+    "xp": 125,
     "level": 2,
     "valence": 0.3,
     "activation": 0.5,
     "emotion": "joie",
-    "last_meal_emoji": null,
-    "last_meal_at": null,
+    "last_meal_emoji": "☕",
+    "last_meal_at": "23:13",
     "crons": [
       {
         "name": "papapig-news",
@@ -130,7 +152,13 @@
         "status": "active"
       }
     ],
-    "activity": []
+    "activity": [
+      {
+        "t": "🏠 กลับถึงบ้าน",
+        "d": "08-06 22:10"
+      }
+    ],
+    "last_meal_ts": 1786119212
   },
   "holidays": {
     "2026-01-01": {
