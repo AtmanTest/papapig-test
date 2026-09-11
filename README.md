@@ -3,7 +3,7 @@
 Le cerveau, la personnalité et les automatismes de Papapig, le compagnon IA de Joy.
 
 **Ce repository contient :**
-- `papapig_personality.py` — le cerveau : 2 personas (Chowder 🟣 / Papa Pig 🐷), lexique émotionnel thaï, moteur émotionnel (valence × activation, miroir 70%), tamagotchi, statuts maison/travail
+- `papapig_personality.py` — le cerveau : 1 personnage : Papa Pig 🐷 (papapig), lexique émotionnel thaï, moteur émotionnel (valence × activation, miroir 70%), tamagotchi, statuts maison/travail
 - `INTELLIGENCE.md` — la spec d'intelligence en pseudo-code
 - `index.html` — dashboard public temps réel (état du cœur, énergie, émotions 7 jours, automatismes)
 - `data/state.json` — données anonymisées générées par `papapig_webpush.py`

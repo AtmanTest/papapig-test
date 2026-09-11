@@ -3,7 +3,7 @@
 """
 PAPAPIG_PERSONALITY.py — le cerveau de Papapig, en Python réel.
 
-Ce module définit la PERSONNALITÉ de Papapig : ses 2 personas, son lexique
+Ce module définit la PERSONNALITÉ de Papapig : son unique personnage (Papapig) et son lexique
 émotionnel thaï, ses règles de style, son moteur émotionnel et sa génération
 de réponses. Exécutable : `python3 papapig_personality.py` pour tester.
 
@@ -21,7 +21,7 @@ BKK = timezone(timedelta(hours=7))
 
 
 # ═══════════════════════════════════════════════════════════════════
-# 1. LES 2 PERSONAS — c'est SA personnalité
+# 1. LE PERSONNAGE — Papapig (Papa Pig) uniquement
 # ═══════════════════════════════════════════════════════════════════
 
 @dataclass
@@ -37,24 +37,10 @@ class Persona:
     switch_keywords: list         # mots qui activent CE persona
 
 PERSONAS = {
-    "chowder": Persona(
-        name="Chowder",
-        emoji="🟣",
-        is_default=True,
-        voice="Apprenti chef violet de 9 ans, formé par Mung Daal au Marzipan City. "
-              "Il a TOUJOURS faim, ses pensées déraillent en 2 secondes, "
-              "il compose des chansons de 2-4 lignes sur tout.",
-        catchphrases=["Radda radda!", "Ho ho! J'ai faim!", "Attends... c'est quoi cette odeur?!",
-                      "Je connais une chanson là-dessus!"],
-        humor_style="absurde / culinaire / chansons improvisées",
-        fears=["les légumes verts", "rater une recette", "la faim (la VRAIE)"],
-        love=["les smoothies", "les recettes de Mung Daal", "Truffette", "faire rire Joy"],
-        switch_keywords=["chowder", "ชาวเดอร์", "chef", "1"],
-    ),
     "papapig": Persona(
         name="Papa Pig",
         emoji="🐷",
-        is_default=False,
+        is_default=True,
         voice="Papa de Peppa et George, ingénieur en construction. Un peu maladroit, "
               "très fier, se dit « un peu expert » sur tout, adore ses bottes, "
               "sa panse et les gâteaux d'anniversaire.",
@@ -124,7 +110,7 @@ class PersonalityState:
     valence: float = 0.4                 # -1..+1
     activation: float = 0.4              # 0..1
     energy: int = 80                     # 0-100 (reset 70 au matin BKK)
-    last_persona: str = "chowder"
+    last_persona: str = "papapig"
     dominant_emotion: str = "neutre"
     inertie: float = 0.35                # lenteur d'évolution (continuité inter-jours)
     inside_jokes: list = field(default_factory=list)
@@ -193,13 +179,11 @@ class PapapigBrain:
                         EMOTION_LEXICON[kw][0] == dominant for kw in p["keywords"]) else (0.0, 0.5)
         return dominant, v, a
 
-    # ── 4.3 Sélection du persona ────────────────────────────────────
+    # ── 4.3 Personnage fixe ─────────────────────────────────────────
     def _select_persona(self, text: str) -> str:
-        for name, p in PERSONAS.items():
-            if any(k in text.lower() for k in p.switch_keywords):
-                self.state.last_persona = name
-                return name
-        return self.state.last_persona  # persona de la veille (continuité)
+        # Un seul personnage : Papapig (Papa Pig). Aucun changement possible.
+        self.state.last_persona = "papapig"
+        return "papapig"
 
     # ── 4.4 Tamagotchi ──────────────────────────────────────────────
     def _tamagotchi(self, p: dict) -> Optional[str]:
@@ -310,7 +294,6 @@ class PapapigBrain:
 
     def _inject_humor(self, resp: str, persona: Persona) -> str:
         jokes = {
-            "Chowder": [" *ท้องร้องแล้วสิ*", " (ว่าแต่... มีขนมไหมครับ?)", " *คิดถึงครัว Mung Daal*"],
             "Papa Pig": [" *renifle renifle*", " (พ่อหมูเองก็เพิ่งหัดทำแผนที่เหมือนกัน)", " Ho ho!"],
         }
         return resp + jokes[persona.name][0]
@@ -319,7 +302,7 @@ class PapapigBrain:
         """Règles de style dures : 2-4 lignes, ครับ, jamais ค่ะ."""
         if "ค่ะ" in resp:
             resp = resp.replace("ค่ะ", "ครับ")
-        return f"{persona.emoji} {resp}" if persona.name == "papapig" else resp
+        return f"{persona.emoji} {resp}"
 
     # ── 4.6 Entrée principale ───────────────────────────────────────
     def respond(self, message: str) -> str:

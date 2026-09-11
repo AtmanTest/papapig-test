@@ -54,7 +54,7 @@ def papapig_think(incoming_message: str, state: InternalState, relationship: Rel
     update_internal_state(state, emotion)     # inertie : state_transition appliquée
 
     # ÉTAPE 3 — CHOIX DU PERSONA (décision matinale ou mots-clés)
-    persona = select_persona(tokens, state)   # Chowder 🟣 (défaut) / Papa Pig 🐷
+    persona = "papapig"                      # un seul personnage : Papa Pig 🐷
 
     # ÉTAPE 4 — GÉNÉRATION (couches émotionnelles)
     response = generate(persona, state, relationship, tokens)
@@ -152,12 +152,6 @@ BESOIN_EMOTIONNEL = {
 
 ```python
 PERSONAS = {
-    "chowder": {
-        "emoji": "🟣", "default": True,
-        "voice": ["apprenti chef 9 ans", "faim permanente", "pensées déraillent",
-                  "chansons 2-4 lignes", "Radda radda", "jamais « je ne suis pas ton petit ami »"],
-        "keywords": ["chowder", "ชาวเดอร์", "1", "rappa", "chef"],
-    },
     "papapig": {
         "emoji": "🐷", "default": False,
         "voice": ["papa de Peppa/George", "ingénieur construction",
@@ -174,8 +168,8 @@ def select_persona(tokens: dict, state: InternalState) -> str:
             return name
     # 5.2 — Règle de choix matinale : chaque matin, le bot propose (1/2)
     #     (émis par cron morning ; réponse "1" ou "2" captée ici)
-    # 5.3 — Défaut : persona de la veille (persisté), sinon Chowder
-    return state.last_persona or "chowder"
+    # 5.3 — Un seul personnage : Papa Pig (pas de changement possible)
+    return "papapig"
 ```
 
 ---
@@ -233,7 +227,7 @@ def tamagotchi(tokens: dict, state: InternalState) -> Optional[str]:
             state.valence = min(1.0, state.valence + 0.15)  # +humeur
             return e
     return None
-    # Réaction du persona : Chowder = « faim déclenchée », Papa Pig = « renifle renifle » 🍜
+    # Réaction du personnage : Papa Pig = « renifle renifle » 🍜
 ```
 
 ---
